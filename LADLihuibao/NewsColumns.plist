@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>catid</key>
+		<integer>100</integer>
+		<key>cname</key>
+		<string>本地新闻</string>
+	</dict>
+	<dict>
+		<key>catid</key>
+		<integer>101</integer>
+		<key>cname</key>
+		<string>政府信息</string>
+	</dict>
+	<dict>
+		<key>catid</key>
+		<integer>102</integer>
+		<key>cname</key>
+		<string>热点关注</string>
+	</dict>
+</array>
+</plist>
