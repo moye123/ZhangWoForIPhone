@@ -15,6 +15,7 @@
     if (self) {
         [self.navigationBar setHidden:NO];
         [self setNavigationStyle:LHBNavigationStyleDefault];
+        [self.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16.0]}];
     }
     return self;
 }

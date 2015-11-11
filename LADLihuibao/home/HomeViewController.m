@@ -14,19 +14,24 @@
 #import "GoodsDetailViewController.h"
 
 @implementation HomeViewController
-
+@synthesize local;
 - (void)viewDidLoad{
     [super viewDidLoad];
-    UISearchBar *searchBar = [[UISearchBar alloc] init];
-    [searchBar setPlaceholder:@"搜索商家，分类，地点"];
-    UITextField *searchField = [searchBar valueForKey:@"_searchField"];
-    // Change search bar text color
-    searchField.textColor = [UIColor blackColor];
-
-    self.navigationItem.titleView = searchBar;
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"六盘水" style:UIBarButtonItemStylePlain target:self action:nil];
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(clickShowMore)];
+    [self.view setBackgroundColor:[UIColor backColor]];
     
+    UITapGestureRecognizer *localTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showDistrict)];
+    self.local = [[localView alloc] initWithFrame:CGRectMake(0, 29, 60, 29)];
+    [self.local addGestureRecognizer:localTap];
+    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithCustomView:self.local];
+    self.navigationItem.leftBarButtonItem = leftButton;
+    
+    searchBar *search = [[searchBar alloc] initWithFrame:CGRectMake(0, 0, 280, 29)];
+    self.navigationItem.titleView = search;
+    
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    self.navigationItem.rightBarButtonItem.width = 29;
+    
+    //主体
     UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
     
     CGFloat y;
@@ -124,10 +129,24 @@
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     [self.view resignFirstResponder];
+    [self.navigationController.view resignFirstResponder];
 }
 
 - (void)clickShowMore{
     //[[DSXUI sharedUI] showLoginFromViewController:self];
+}
+
+- (void)showDistrict{
+    DistrictViewController *districtController = [[DistrictViewController alloc] init];
+    districtController.delegate = self;
+    LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:districtController];
+    [nav setNavigationStyle:LHBNavigationStyleGray];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+#pragma mark - 
+- (void)locationChangeWithName:(NSString *)name{
+    self.local.textLabel.text = name;
 }
 
 @end

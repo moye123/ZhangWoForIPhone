@@ -49,7 +49,7 @@
     
     [tabBarController setViewControllers:@[navHome,navIncome,navInvite,navMy]];
     [tabBarController.tabBar setBackgroundColor:[UIColor tabBarColor]];
-    [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]} forState:UIControlStateNormal];
+    [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName:[UIFont systemFontOfSize:16.0]} forState:UIControlStateNormal];
     return YES;
 }
 

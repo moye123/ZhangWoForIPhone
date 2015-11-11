@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
 
-@interface InviteViewController : UIViewController
+@interface InviteViewController : UIViewController{
+    @private
+    NSString *_inviteKey;
+}
 - (void)getInviteCode;
 
 @property(nonatomic,strong)NSString *inviteCode;

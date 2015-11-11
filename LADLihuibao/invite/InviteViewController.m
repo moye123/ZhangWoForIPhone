@@ -19,6 +19,12 @@
     [self.navigationController.tabBarItem setTitle:@"邀请"];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     self.userStatus = [LHBUserStatus status];
+    _inviteKey = [NSString stringWithFormat:@"inviteCode_%d",self.userStatus.uid];
+    self.inviteCode = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:_inviteKey];
+    if ([self.inviteCode length] < 8) {
+        [self getInviteCode];
+    }
+    
     
     IncomeView *myIncomeView = [[IncomeView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
     [self.view addSubview:myIncomeView];
@@ -28,7 +34,7 @@
     [codeButton setFrame:CGRectMake((SWIDTH-280)/2, 230, 280, 36)];
     [codeButton setImage:[UIImage imageNamed:@"button-invitecode.png"] forState:UIControlStateNormal];
     [codeButton setImage:[UIImage imageNamed:@"button-invitecode-on.png"] forState:UIControlStateHighlighted];
-    [codeButton addTarget:self action:@selector(getInviteCode) forControlEvents:UIControlEventTouchUpInside];
+    //[codeButton addTarget:self action:@selector(getInviteCode) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:codeButton];
     
     //邀请好友
@@ -53,6 +59,7 @@
         id dictionay = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([dictionay isKindOfClass:[NSDictionary class]]) {
             self.inviteCode = [dictionay objectForKey:@"invitecode"];
+            [[NSUserDefaults standardUserDefaults] setObject:self.inviteCode forKey:_inviteKey];
             //NSLog(@"%@",self.inviteCode);
         }
         

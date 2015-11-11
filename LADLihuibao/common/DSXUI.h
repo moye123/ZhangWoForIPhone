@@ -11,14 +11,14 @@
 
 typedef enum {
     DSXBarButtonStyleBack,
-    DSXBarButtonStyleBack2,
+    DSXBarButtonStyleBackBlack,
     DSXBarButtonStyleAdd,
     DSXBarButtonStyleLike,
     DSXBarButtonStyleShare,
     DSXBarButtonStyleFavorite,
     DSXBarButtonStyleRefresh,
     DSXBarButtonStyleMore,
-    DSXBarButtonStyleMore2
+    DSXBarButtonStyleMoreBlack
 }DSXBarButtonStyle;
 
 typedef NS_ENUM(NSInteger,DSXPopViewStyle){

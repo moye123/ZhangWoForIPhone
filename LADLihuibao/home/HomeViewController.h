@@ -11,9 +11,12 @@
 #import "HomeCategoryView.h"
 #import "HomeFoodView.h"
 #import "HomeNewsView.h"
+#import "localView.h"
+#import "searchBar.h"
+#import "DistrictViewController.h"
 
-@interface HomeViewController : UIViewController<showNewsDelegate,showCategoryDelegate,HomeFoodViewDelegate>
+@interface HomeViewController : UIViewController<showNewsDelegate,showCategoryDelegate,HomeFoodViewDelegate,LocationChangeDelegate>
 
-
+@property(nonatomic,retain)localView *local;
 
 @end

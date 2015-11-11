@@ -33,13 +33,13 @@
     titleLabel.font = [UIFont systemFontOfSize:18.0 weight:500];
     [self addSubview:titleLabel];
     
-    UILabel *numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
-    numberLabel.text = @"￥3:00";
-    numberLabel.textColor = [UIColor colorWithRed:0.44 green:0.82 blue:0.67 alpha:1];
-    numberLabel.font = [UIFont systemFontOfSize:30.0 weight:500];
-    [numberLabel sizeToFit];
-    [numberLabel setCenter:self.center];
-    [self addSubview:numberLabel];
+    self.incomeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    self.incomeLabel.text = @"￥0:00";
+    self.incomeLabel.textColor = [UIColor colorWithRed:0.44 green:0.82 blue:0.67 alpha:1];
+    self.incomeLabel.font = [UIFont systemFontOfSize:30.0 weight:500];
+    [self.incomeLabel sizeToFit];
+    [self.incomeLabel setCenter:CGPointMake(self.center.x, self.center.y-20)];
+    [self addSubview:self.incomeLabel];
     
     UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, self.frame.size.height-50, self.frame.size.width, 0.8)];
     line.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1];
@@ -51,17 +51,17 @@
     [inviteTitleLabel sizeToFit];
     [self addSubview:inviteTitleLabel];
     
-    UILabel *totalInviteLable = [[UILabel alloc] init];
-    totalInviteLable.text = @"1人";
-    totalInviteLable.textColor = [UIColor colorWithRed:0.42 green:0.82 blue:0.67 alpha:1];
-    totalInviteLable.font = [UIFont systemFontOfSize:18.0];
-    [totalInviteLable sizeToFit];
+    self.inviteNumLabel = [[UILabel alloc] init];
+    self.inviteNumLabel.text = @"0人";
+    self.inviteNumLabel.textColor = [UIColor colorWithRed:0.42 green:0.82 blue:0.67 alpha:1];
+    self.inviteNumLabel.font = [UIFont systemFontOfSize:18.0];
+    [self.inviteNumLabel sizeToFit];
     
-    CGRect frame = totalInviteLable.frame;
+    CGRect frame = self.inviteNumLabel.frame;
     frame.origin.x = self.frame.size.width - frame.size.width -20;
     frame.origin.y = self.frame.size.height - 36;
-    [totalInviteLable setFrame:frame];
-    [self addSubview:totalInviteLable];
+    [self.inviteNumLabel setFrame:frame];
+    [self addSubview:self.inviteNumLabel];
 }
 
 @end

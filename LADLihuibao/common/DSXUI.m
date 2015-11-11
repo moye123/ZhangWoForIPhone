@@ -30,9 +30,9 @@
     NSString *imageName;
     switch (style) {
         case DSXBarButtonStyleBack:
-            imageName = @"icon-back.png";
+            imageName = @"icon-back-white.png";
             break;
-        case DSXBarButtonStyleBack2:
+        case DSXBarButtonStyleBackBlack:
             imageName = @"icon-back2.png";
             break;
         case DSXBarButtonStyleFavorite:
@@ -53,7 +53,7 @@
         case DSXBarButtonStyleMore:
             imageName = @"icon-more.png";
             break;
-        case DSXBarButtonStyleMore2:
+        case DSXBarButtonStyleMoreBlack:
             imageName = @"icon-more2.png";
             break;
         default:

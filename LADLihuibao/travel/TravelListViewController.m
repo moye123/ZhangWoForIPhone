@@ -21,7 +21,7 @@
     [super viewDidLoad];
     [self setTitle:@"六盘水旅游"];
     [self.view setBackgroundColor:[UIColor backColor]];
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack2 target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     self.travelArray = [NSMutableArray array];
     self.tableView.delegate = self;

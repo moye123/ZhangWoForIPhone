@@ -19,7 +19,7 @@
     [self setTitle:@"本地资讯"];
     [self.view setBackgroundColor:[UIColor backColor]];
     
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack2 target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 64, SWIDTH, 50)];
     [self.toolbar setHidden:YES];

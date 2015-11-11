@@ -11,4 +11,7 @@
 @interface IncomeView : UIView
 
 - (instancetype)initWithFrame:(CGRect)frame;
+
+@property(nonatomic,retain)UILabel *incomeLabel;
+@property(nonatomic,retain)UILabel *inviteNumLabel;
 @end
