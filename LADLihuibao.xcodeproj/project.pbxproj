@@ -67,6 +67,7 @@
 		1803A7DF1BDB68DE003E0538 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1803A7CD1BDB68DE003E0538 /* UIImageView+HighlightedWebCache.m */; };
 		1803A7E01BDB68DE003E0538 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1803A7CF1BDB68DE003E0538 /* UIImageView+WebCache.m */; };
 		1803A7E11BDB68DE003E0538 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1803A7D11BDB68DE003E0538 /* UIView+WebCacheOperation.m */; };
+		18051E8D1BF4D1F000BB3B88 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 18051E8C1BF4D1F000BB3B88 /* placeholder.png */; };
 		181D29B71BE6F185001E29E7 /* icon-more.png in Resources */ = {isa = PBXBuildFile; fileRef = 181D29B41BE6F185001E29E7 /* icon-more.png */; };
 		181D29B81BE6F185001E29E7 /* icon-more@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 181D29B51BE6F185001E29E7 /* icon-more@2x.png */; };
 		181D29B91BE6F185001E29E7 /* icon-more@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 181D29B61BE6F185001E29E7 /* icon-more@3x.png */; };
@@ -88,6 +89,8 @@
 		1825B5911BE5CCB000DFC4CD /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 1825B5871BE5CCB000DFC4CD /* AFURLResponseSerialization.m */; };
 		1825B5921BE5CCB000DFC4CD /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1825B5891BE5CCB000DFC4CD /* AFURLSessionManager.m */; };
 		1825B5961BE5F5A300DFC4CD /* RefreshHeadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1825B5951BE5F5A300DFC4CD /* RefreshHeadView.m */; };
+		184126811BF5CB87007B6F55 /* nav-bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 184126801BF5CB87007B6F55 /* nav-bg@3x.png */; };
+		184126831BF5CC9D007B6F55 /* top-bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 184126821BF5CC9D007B6F55 /* top-bg@3x.png */; };
 		18455A611BE0A51900EAF946 /* DSXUI.m in Sources */ = {isa = PBXBuildFile; fileRef = 18455A5E1BE0A51900EAF946 /* DSXUI.m */; };
 		18455A621BE0A51900EAF946 /* DSXUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 18455A601BE0A51900EAF946 /* DSXUtil.m */; };
 		185551CF1BF1DB7F0003B9AA /* localView.m in Sources */ = {isa = PBXBuildFile; fileRef = 185551CE1BF1DB7F0003B9AA /* localView.m */; };
@@ -127,7 +130,6 @@
 		185B12EE1BE84D44002AFBC4 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B12ED1BE84D44002AFBC4 /* LoginViewController.m */; };
 		185B12F11BE84D57002AFBC4 /* RegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B12F01BE84D57002AFBC4 /* RegisterViewController.m */; };
 		185B12F71BE85345002AFBC4 /* RegisterViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B12F61BE85345002AFBC4 /* RegisterViewController2.m */; };
-		185B12FA1BE86A4A002AFBC4 /* LHBNavigationController2.m in Sources */ = {isa = PBXBuildFile; fileRef = 185B12F91BE86A4A002AFBC4 /* LHBNavigationController2.m */; };
 		185B12FC1BE86B48002AFBC4 /* navbg2.png in Resources */ = {isa = PBXBuildFile; fileRef = 185B12FB1BE86B48002AFBC4 /* navbg2.png */; };
 		185B13001BE87C94002AFBC4 /* icon-more2.png in Resources */ = {isa = PBXBuildFile; fileRef = 185B12FD1BE87C94002AFBC4 /* icon-more2.png */; };
 		185B13011BE87C94002AFBC4 /* icon-more2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 185B12FE1BE87C94002AFBC4 /* icon-more2@2x.png */; };
@@ -144,6 +146,7 @@
 		1862A42C1BF1F579007AF731 /* icon-back-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 1862A4291BF1F579007AF731 /* icon-back-white.png */; };
 		1862A42D1BF1F579007AF731 /* icon-back-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1862A42A1BF1F579007AF731 /* icon-back-white@2x.png */; };
 		1862A42E1BF1F579007AF731 /* icon-back-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1862A42B1BF1F579007AF731 /* icon-back-white@3x.png */; };
+		187747601BF48168007A1326 /* DSXSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1877475F1BF48168007A1326 /* DSXSliderView.m */; };
 		1885CE0B1BE2103000594F1E /* CategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1885CE021BE2103000594F1E /* CategoryCollectionViewCell.m */; };
 		1885CE0E1BE2103000594F1E /* HomeFoodView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1885CE081BE2103000594F1E /* HomeFoodView.m */; };
 		1885CE0F1BE2103000594F1E /* HomeNewsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1885CE0A1BE2103000594F1E /* HomeNewsView.m */; };
@@ -197,7 +200,6 @@
 		18B585331BE9D2100060F32C /* icon-info.png in Resources */ = {isa = PBXBuildFile; fileRef = 18B585301BE9D2100060F32C /* icon-info.png */; };
 		18B585341BE9D2100060F32C /* icon-info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18B585311BE9D2100060F32C /* icon-info@2x.png */; };
 		18B585351BE9D2100060F32C /* icon-info@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18B585321BE9D2100060F32C /* icon-info@3x.png */; };
-		18B585371BE9DEC40060F32C /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 18B585361BE9DEC40060F32C /* icon.png */; };
 		18B585421BE9F4DC0060F32C /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B585411BE9F4DC0060F32C /* libz.tbd */; };
 		18B585451BE9F5120060F32C /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B585431BE9F5120060F32C /* AddressBook.framework */; };
 		18B585461BE9F5120060F32C /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B585441BE9F5120060F32C /* AddressBookUI.framework */; };
@@ -304,6 +306,7 @@
 		1803A7CF1BDB68DE003E0538 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		1803A7D01BDB68DE003E0538 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		1803A7D11BDB68DE003E0538 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		18051E8C1BF4D1F000BB3B88 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
 		181D29B41BE6F185001E29E7 /* icon-more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-more.png"; sourceTree = "<group>"; };
 		181D29B51BE6F185001E29E7 /* icon-more@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-more@2x.png"; sourceTree = "<group>"; };
 		181D29B61BE6F185001E29E7 /* icon-more@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-more@3x.png"; sourceTree = "<group>"; };
@@ -340,6 +343,8 @@
 		1825B5891BE5CCB000DFC4CD /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
 		1825B5941BE5F5A300DFC4CD /* RefreshHeadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefreshHeadView.h; sourceTree = "<group>"; };
 		1825B5951BE5F5A300DFC4CD /* RefreshHeadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RefreshHeadView.m; sourceTree = "<group>"; };
+		184126801BF5CB87007B6F55 /* nav-bg@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav-bg@3x.png"; sourceTree = "<group>"; };
+		184126821BF5CC9D007B6F55 /* top-bg@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bg@3x.png"; sourceTree = "<group>"; };
 		18455A5D1BE0A51900EAF946 /* DSXUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXUI.h; sourceTree = "<group>"; };
 		18455A5E1BE0A51900EAF946 /* DSXUI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXUI.m; sourceTree = "<group>"; };
 		18455A5F1BE0A51900EAF946 /* DSXUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXUtil.h; sourceTree = "<group>"; };
@@ -393,8 +398,6 @@
 		185B12F01BE84D57002AFBC4 /* RegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterViewController.m; sourceTree = "<group>"; };
 		185B12F51BE85345002AFBC4 /* RegisterViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisterViewController2.h; sourceTree = "<group>"; };
 		185B12F61BE85345002AFBC4 /* RegisterViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterViewController2.m; sourceTree = "<group>"; };
-		185B12F81BE86A4A002AFBC4 /* LHBNavigationController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHBNavigationController2.h; sourceTree = "<group>"; };
-		185B12F91BE86A4A002AFBC4 /* LHBNavigationController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHBNavigationController2.m; sourceTree = "<group>"; };
 		185B12FB1BE86B48002AFBC4 /* navbg2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbg2.png; sourceTree = "<group>"; };
 		185B12FD1BE87C94002AFBC4 /* icon-more2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-more2.png"; sourceTree = "<group>"; };
 		185B12FE1BE87C94002AFBC4 /* icon-more2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-more2@2x.png"; sourceTree = "<group>"; };
@@ -414,6 +417,8 @@
 		1862A4291BF1F579007AF731 /* icon-back-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back-white.png"; sourceTree = "<group>"; };
 		1862A42A1BF1F579007AF731 /* icon-back-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back-white@2x.png"; sourceTree = "<group>"; };
 		1862A42B1BF1F579007AF731 /* icon-back-white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back-white@3x.png"; sourceTree = "<group>"; };
+		1877475E1BF48168007A1326 /* DSXSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXSliderView.h; sourceTree = "<group>"; };
+		1877475F1BF48168007A1326 /* DSXSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXSliderView.m; sourceTree = "<group>"; };
 		1885CE011BE2103000594F1E /* CategoryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryCollectionViewCell.h; sourceTree = "<group>"; };
 		1885CE021BE2103000594F1E /* CategoryCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryCollectionViewCell.m; sourceTree = "<group>"; };
 		1885CE071BE2103000594F1E /* HomeFoodView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeFoodView.h; sourceTree = "<group>"; };
@@ -479,7 +484,6 @@
 		18B585301BE9D2100060F32C /* icon-info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-info.png"; sourceTree = "<group>"; };
 		18B585311BE9D2100060F32C /* icon-info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-info@2x.png"; sourceTree = "<group>"; };
 		18B585321BE9D2100060F32C /* icon-info@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-info@3x.png"; sourceTree = "<group>"; };
-		18B585361BE9DEC40060F32C /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		18B585411BE9F4DC0060F32C /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		18B585431BE9F5120060F32C /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		18B585441BE9F5120060F32C /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
@@ -758,10 +762,12 @@
 		1803A7951BDB6851003E0538 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				184126821BF5CC9D007B6F55 /* top-bg@3x.png */,
+				184126801BF5CB87007B6F55 /* nav-bg@3x.png */,
+				18051E8C1BF4D1F000BB3B88 /* placeholder.png */,
 				1862A4291BF1F579007AF731 /* icon-back-white.png */,
 				1862A42A1BF1F579007AF731 /* icon-back-white@2x.png */,
 				1862A42B1BF1F579007AF731 /* icon-back-white@3x.png */,
-				18B585361BE9DEC40060F32C /* icon.png */,
 				18B585301BE9D2100060F32C /* icon-info.png */,
 				18B585311BE9D2100060F32C /* icon-info@2x.png */,
 				18B585321BE9D2100060F32C /* icon-info@3x.png */,
@@ -1103,6 +1109,8 @@
 		18BCAC041BE8A91D0006C852 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				1877475E1BF48168007A1326 /* DSXSliderView.h */,
+				1877475F1BF48168007A1326 /* DSXSliderView.m */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -1112,8 +1120,6 @@
 			children = (
 				185A97291BDF1E1E0027B9B5 /* LHBNavigationController.h */,
 				185A972A1BDF1E1E0027B9B5 /* LHBNavigationController.m */,
-				185B12F81BE86A4A002AFBC4 /* LHBNavigationController2.h */,
-				185B12F91BE86A4A002AFBC4 /* LHBNavigationController2.m */,
 			);
 			name = controller;
 			sourceTree = "<group>";
@@ -1189,6 +1195,7 @@
 				189307E31BE320A200E58E86 /* button-invite@2x.png in Resources */,
 				18BCAC031BE8A5760006C852 /* icon-location.png in Resources */,
 				189307BD1BE3039300E58E86 /* icon-home.png in Resources */,
+				184126831BF5CC9D007B6F55 /* top-bg@3x.png in Resources */,
 				1803A7A11BDB6852003E0538 /* ShareSDKLocalizable.strings in Resources */,
 				189307E11BE320A200E58E86 /* button-invite-on@2x.png in Resources */,
 				188D98FD1BE4550800CDC72A /* icon-star.png in Resources */,
@@ -1212,7 +1219,9 @@
 				181D29B91BE6F185001E29E7 /* icon-more@3x.png in Resources */,
 				185B13111BE899B1002AFBC4 /* button-login.png in Resources */,
 				189307FA1BE32F8B00E58E86 /* nav-bg@2x.png in Resources */,
+				18051E8D1BF4D1F000BB3B88 /* placeholder.png in Resources */,
 				185B13011BE87C94002AFBC4 /* icon-more2@2x.png in Resources */,
+				184126811BF5CB87007B6F55 /* nav-bg@3x.png in Resources */,
 				185A975F1BDF25700027B9B5 /* icon-invitefill.png in Resources */,
 				1862A42D1BF1F579007AF731 /* icon-back-white@2x.png in Resources */,
 				189307F21BE3288C00E58E86 /* icon-withdrawal.png in Resources */,
@@ -1259,7 +1268,6 @@
 				189307BB1BE3038200E58E86 /* icon-homefill.png in Resources */,
 				181D29C81BE73F62001E29E7 /* icon-back2.png in Resources */,
 				185A97551BDF25700027B9B5 /* icon-homefill@3x.png in Resources */,
-				18B585371BE9DEC40060F32C /* icon.png in Resources */,
 				189308131BE3400400E58E86 /* icon-like@3x.png in Resources */,
 				185B12FC1BE86B48002AFBC4 /* navbg2.png in Resources */,
 				189308141BE3400400E58E86 /* icon-share.png in Resources */,
@@ -1332,7 +1340,6 @@
 				1803A7D81BDB68DE003E0538 /* SDWebImageDownloaderOperation.m in Sources */,
 				1803A7981BDB6851003E0538 /* NewsViewController.m in Sources */,
 				1825B5921BE5CCB000DFC4CD /* AFURLSessionManager.m in Sources */,
-				185B12FA1BE86A4A002AFBC4 /* LHBNavigationController2.m in Sources */,
 				1803A7961BDB6851003E0538 /* HomeViewController.m in Sources */,
 				18F971F11BEB32B300417D86 /* LHBUserStatus.m in Sources */,
 				1825B58A1BE5CCB000DFC4CD /* AFHTTPRequestOperation.m in Sources */,
@@ -1342,6 +1349,7 @@
 				1803A7D41BDB68DE003E0538 /* SDImageCache.m in Sources */,
 				1803A7AF1BDB6852003E0538 /* TravelViewController.m in Sources */,
 				1803A7AE1BDB6852003E0538 /* ShoppingViewController.m in Sources */,
+				187747601BF48168007A1326 /* DSXSliderView.m in Sources */,
 				1803A7DC1BDB68DE003E0538 /* UIImage+GIF.m in Sources */,
 				1825B5911BE5CCB000DFC4CD /* AFURLResponseSerialization.m in Sources */,
 				185B12F71BE85345002AFBC4 /* RegisterViewController2.m in Sources */,

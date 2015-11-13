@@ -15,7 +15,7 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"top-bg"]];
+        self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"top-bg.png"]];
         self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 80, 80)];
         self.imageView.layer.cornerRadius = 40;
         self.imageView.layer.masksToBounds = YES;

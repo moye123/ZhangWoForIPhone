@@ -114,9 +114,10 @@
     }
     NSDictionary *newsItem = [self.newsArray objectAtIndex:indexPath.row];
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 8, SWIDTH-16, 140)];
-    imageView.layer.cornerRadius = 10.0;
+    imageView.layer.cornerRadius = 3.0;
     imageView.layer.masksToBounds = YES;
-    [imageView sd_setImageWithURL:[NSURL URLWithString:[newsItem objectForKey:@"pic"]]];
+    //imageView.contentMode = UIViewContentModeScaleAspectFill;
+    [imageView sd_setImageWithURL:[NSURL URLWithString:[newsItem objectForKey:@"pic"]] placeholderImage:[UIImage imageNamed:@"placeholder.png"]];
     [cell.contentView addSubview:imageView];
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 155, SWIDTH-16, 32)];

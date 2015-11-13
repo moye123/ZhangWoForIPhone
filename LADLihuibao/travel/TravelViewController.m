@@ -7,183 +7,126 @@
 //
 
 #import "TravelViewController.h"
-#import "UIImageView+WebCache.h"
-#import "TravelDetailViewController.h"
-#import "RefreshHeadView.h"
+#import "TravelListViewController.h"
 
 @implementation TravelViewController
-@synthesize mainTableView;
-@synthesize travelArray;
+@synthesize categoryList;
+@synthesize slideView;
+
+- (instancetype)init{
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    self = [super initWithCollectionViewLayout:layout];
+    return self;
+}
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    [self setTitle:@"六盘水旅游"];
+    [self setTitle:@"旅游"];
     [self.view setBackgroundColor:[UIColor backColor]];
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-
-    self.travelArray = [NSMutableArray array];
+    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBackBlack target:self action:@selector(back)];
     
-    CGRect frame = self.view.frame;
-    //frame.size.height = SHEIGHT - 66;
-    self.mainTableView = [[UITableView alloc] initWithFrame:frame];
-    self.mainTableView.delegate = self;
-    self.mainTableView.dataSource = self;
-    [self.view addSubview:self.mainTableView];
+    self.slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
+    NSString *sliderAPI = [SITEAPI stringByAppendingString:@"&mod=travel&ac=showlist&pagesize=3"];
+    AFHTTPRequestOperationManager *slideManager = [AFHTTPRequestOperationManager manager];
+    slideManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [slideManager GET:sliderAPI parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([array isKindOfClass:[NSArray class]]) {
+            NSMutableArray *mutableArray = [[NSMutableArray alloc] init];
+            for (NSDictionary *dict in array) {
+                [mutableArray addObject:@{@"id":[dict objectForKey:@"id"],@"pic":[dict objectForKey:@"pic"]}];
+            }
+            //NSLog(@"%@",mutableArray);
+            self.slideView.picList = [NSArray arrayWithArray:mutableArray];
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
+    }];
     
-    //下拉刷新
-    _refreshControl = [[LHBRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    UITableViewController *tableViewController = [[UITableViewController alloc] init];
-    tableViewController.refreshControl = _refreshControl;
-    tableViewController.tableView = self.mainTableView;
+    self.categoryList = [NSArray array];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"travelItem"];
+    [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Slider"];
+    self.collectionView.delegate = self;
+    self.collectionView.dataSource = self;
+    self.collectionView.backgroundColor = [UIColor backColor];
     
-    //上拉加载更多
-    _pullUpView = [[LHBPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    _pullUpView.hidden = YES;
-    self.mainTableView.tableFooterView = _pullUpView;
-    
-    [self showTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"travelList"]];
-    [self refresh];
-    
-}
-
-- (void)back{
-    if (![self.navigationController popViewControllerAnimated:YES]) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-    
-}
-
-#pragma mark 
-- (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=travel&ac=showlist&page=%d",_page];
+    //从服务器读取分类数据
+    NSString *urlString = [SITEAPI stringByAppendingString:@"&mod=travel&ac=getcategory"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSData *data = (NSData *)responseObject;
-        if ([data length] > 0) {
-            id array = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-            if ([array isKindOfClass:[NSArray class]]) {
-                if (_isRefreshing) {
-                    [[NSUserDefaults standardUserDefaults] setObject:array forKey:@"travelList"];
-                    
-                }
-                [self showTableViewWithArray:array];
-            }
+        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([array isKindOfClass:[NSArray class]]) {
+            self.categoryList = array;
+            [self.collectionView reloadData];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);
     }];
 }
 
-- (void)showTableViewWithArray:(NSArray *)array{
-    
-    if ([array count]>0) {
-        if (_isRefreshing) {
-            [self.travelArray removeAllObjects];
-            [self.mainTableView reloadData];
-        }
-        
-        for (NSDictionary *item in array) {
-            [self.travelArray addObject:item];
-        }
-        [self.mainTableView reloadData];
-    }
-    if ([_refreshControl isRefreshing]) {
-        [_refreshControl endRefreshing];
-    }
-    [_pullUpView endLoading];
-    if ([array count] >= 20) {
-        _pullUpView.hidden = NO;
-    }else{
-        _pullUpView.hidden = YES;
+- (void)back{
+    if (![self.navigationController popViewControllerAnimated:YES]) {
+        [self dismissViewControllerAnimated:NO completion:nil];
     }
 }
 
-- (void)refresh{
-    _page = 1;
-    _isRefreshing = YES;
-    [self loadData];
-}
-
-- (void)loadMore{
-    _page++;
-    _isRefreshing = NO;
-    [self loadData];
-}
-
-#pragma mark - tableView delegate
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [self.travelArray count];
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    return [self.categoryList count];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 100;
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+    return CGSizeMake(100, 95);
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"travelCell"];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"travelCell"];
-    }else{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"travelItem" forIndexPath:indexPath];
+    if (cell) {
         for (UIView *subview in cell.contentView.subviews) {
             [subview removeFromSuperview];
         }
     }
     
-    NSDictionary *travelItem = [self.travelArray objectAtIndex:indexPath.row];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 100, 80)];
-    imageView.layer.cornerRadius = 5.0;
-    imageView.layer.masksToBounds = YES;
-    [imageView sd_setImageWithURL:[travelItem objectForKey:@"pic"]];
+    NSDictionary *category = [self.categoryList objectAtIndex:indexPath.row];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 10, 60, 60)];
+    [imageView sd_setImageWithURL:[category objectForKey:@"pic"]];
     [cell.contentView addSubview:imageView];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 10, SWIDTH-100, 40)];
-    titleLabel.text = [travelItem objectForKey:@"title"];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 75, 100, 20)];
+    titleLabel.text = [category objectForKey:@"cname"];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = [UIFont systemFontOfSize:16.0];
-    titleLabel.numberOfLines = 2;
-    [titleLabel sizeToFit];
     [cell.contentView addSubview:titleLabel];
     
-    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 48, SWIDTH-100, 20)];
-    priceLabel.text = [NSString stringWithFormat:@"票价: %@",[travelItem objectForKey:@"fare"]];
-    priceLabel.font = [UIFont systemFontOfSize:14.0];
-    [cell.contentView addSubview:priceLabel];
-    
-    UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 70, SWIDTH-100, 20)];
-    locationLabel.text = [NSString stringWithFormat:@"%@  %@",[travelItem objectForKey:@"province"],[travelItem objectForKey:@"city"]];
-    locationLabel.font = [UIFont systemFontOfSize:12.0];
-    locationLabel.textColor = [UIColor grayColor];
-    [cell.contentView addSubview:locationLabel];
-    
-    cell.tag = [[travelItem objectForKey:@"id"] intValue];
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    [cell setSelected:NO animated:YES];
-    
-    TravelDetailViewController *detailController = [[TravelDetailViewController alloc] init];
-    detailController.travelID = cell.tag;
-    detailController.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:detailController animated:YES];
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    NSDictionary *category = [self.categoryList objectAtIndex:indexPath.row];
+    TravelListViewController *listController = [[TravelListViewController alloc] init];
+    listController.catid = [[category objectForKey:@"catid"] intValue];
+    listController.title = [category objectForKey:@"cname"];
+    [self.navigationController pushViewController:listController animated:YES];
 }
 
-#pragma mark - scrollView delegate
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    CGFloat diffHeight = scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentSize.height;
-    if (diffHeight > 100) {
-        if (_pullUpView.hidden == NO) {
-            [_pullUpView beginLoading];
-            [self loadMore];
-        }
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
+    return CGSizeMake(SWIDTH, 200);
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
+    UICollectionReusableView *reuseView = nil;
+    
+    if (kind == UICollectionElementKindSectionHeader) {
+        reuseView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Slider" forIndexPath:indexPath];
+        [reuseView addSubview:self.slideView];
         
     }
+    return reuseView;
 }
+
 
 @end

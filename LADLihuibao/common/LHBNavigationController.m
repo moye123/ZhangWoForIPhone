@@ -15,7 +15,7 @@
     if (self) {
         [self.navigationBar setHidden:NO];
         [self setNavigationStyle:LHBNavigationStyleDefault];
-        [self.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16.0]}];
+        [self.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18.0]}];
     }
     return self;
 }
@@ -24,10 +24,12 @@
     switch (style) {
         case LHBNavigationStyleGray:
             [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbg2.png"] forBarMetrics:UIBarMetricsDefault];
+            [self.navigationBar setBarStyle:UIBarStyleDefault];
             break;
             
         default:
             [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"nav-bg.png"] forBarMetrics:UIBarMetricsDefault];
+            [self.navigationBar setBarStyle:UIBarStyleBlack];
             break;
     }
 }

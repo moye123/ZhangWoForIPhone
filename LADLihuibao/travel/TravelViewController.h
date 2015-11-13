@@ -9,15 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
 
-@interface TravelViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>{
-    @private
-    int _page;
-    BOOL _isRefreshing;
-    LHBRefreshControl *_refreshControl;
-    LHBPullUpView *_pullUpView;
-}
+@interface TravelViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout>
 
-@property(nonatomic,retain)UITableView *mainTableView;
-@property(nonatomic,strong)NSMutableArray *travelArray;
+- (instancetype)init;
+
+@property(nonatomic,strong)NSArray *categoryList;
+@property(nonatomic,retain)DSXSliderView *slideView;
 
 @end

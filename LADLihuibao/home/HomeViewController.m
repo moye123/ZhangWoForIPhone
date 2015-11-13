@@ -9,7 +9,7 @@
 #import "HomeViewController.h"
 #import "NewsViewController.h"
 #import "NewsDetailViewController.h"
-#import "TravelListViewController.h"
+#import "TravelViewController.h"
 #import "GoodsListViewController.h"
 #import "GoodsDetailViewController.h"
 
@@ -54,18 +54,16 @@
 
 - (void)showCategoryWithTag:(NSString *)tag{
     if ([tag isEqualToString:@"travel"]) {
-        TravelListViewController *travelController = [[TravelListViewController alloc] init];
+        TravelViewController *travelController = [[TravelViewController alloc] init];
         LHBNavigationController *travelNav = [[LHBNavigationController alloc] initWithRootViewController:travelController];
-        travelNav.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
         [travelNav setNavigationStyle:LHBNavigationStyleGray];
-        [self presentViewController:travelNav animated:YES completion:nil];
+        [self presentViewController:travelNav animated:NO completion:nil];
     }
     if ([tag isEqualToString:@"news"]) {
         NewsViewController *newsController = [[NewsViewController alloc] init];
         LHBNavigationController *newsNav = [[LHBNavigationController alloc] initWithRootViewController:newsController];
         [newsNav setNavigationStyle:LHBNavigationStyleGray];
-        [newsNav setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
-        [self presentViewController:newsNav animated:YES completion:nil];
+        [self presentViewController:newsNav animated:NO completion:nil];
     }
     
     if ([tag isEqualToString:@"market"]) {
@@ -116,7 +114,7 @@
     detailView.newsID = (int)newsID;
     detailView.hidesBottomBarWhenPushed = YES;
     //[self.navigationController pushViewController:detailView animated:YES];
-    LHBNavigationController2 *nav = [[LHBNavigationController2 alloc] initWithRootViewController:detailView];
+    LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:detailView];
     [self presentViewController:nav animated:YES completion:nil];
 }
 

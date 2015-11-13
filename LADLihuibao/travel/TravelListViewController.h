@@ -17,5 +17,6 @@
     LHBPullUpView *_pullUpView;
 }
 @property(nonatomic,strong)NSMutableArray *travelArray;
+@property(nonatomic,assign)int catid;
 
 @end
