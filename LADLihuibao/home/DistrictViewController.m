@@ -16,7 +16,7 @@
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBackBlack target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;

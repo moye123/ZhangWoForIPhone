@@ -10,10 +10,6 @@
 #import "UIImageView+WebCache.h"
 #import "GoodsDetailViewController.h"
 
-@interface GoodsListViewController ()
-
-@end
-
 @implementation GoodsListViewController
 @synthesize catid;
 @synthesize goodsArray;
@@ -22,6 +18,8 @@
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
     self.goodsArray = [NSMutableArray array];
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame];
@@ -42,7 +40,9 @@
 }
 
 - (void)back{
-    [self.navigationController popViewControllerAnimated:YES];
+    if (![self.navigationController popViewControllerAnimated:YES]) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 #pragma mark - 
@@ -138,24 +138,26 @@
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 10, SWIDTH-130, 20)];
     titleLabel.text = [goods objectForKey:@"name"];
-    titleLabel.font = [UIFont systemFontOfSize:14.0];
+    titleLabel.font = [UIFont systemFontOfSize:16.0];
     [titleLabel sizeToFit];
     [cell.contentView addSubview:titleLabel];
     
     NSInteger starnum = [[goods objectForKey:@"score"] integerValue];
     DSXStarView *starView = [[DSXStarView alloc] initWithStar:starnum];
-    starView.frame = CGRectMake(120, 33, 88, 16);
+    starView.frame = CGRectMake(120, 35, 88, 16);
     [cell.contentView addSubview:starView];
     
     //价格
-    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 65, 80, 18)];
+    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 73, 80, 18)];
     priceLabel.text = [NSString stringWithFormat:@"￥%@",[goods objectForKey:@"price"]];
     priceLabel.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
-    priceLabel.font = [UIFont systemFontOfSize:16.0];
+    priceLabel.font = [UIFont systemFontOfSize:18.0];
     
     cell.tag = [[goods objectForKey:@"id"] integerValue];
     [cell.contentView addSubview:priceLabel];
     
+    cell.selectionStyle = UITableViewCellSelectionStyleGray;
+    cell.contentView.backgroundColor = [UIColor whiteColor];
     return cell;
 }
 
@@ -163,9 +165,11 @@
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
     
+    NSDictionary *goods = [self.goodsArray objectAtIndex:indexPath.row];
     GoodsDetailViewController *detailController = [[GoodsDetailViewController alloc] init];
     detailController.hidesBottomBarWhenPushed = YES;
     detailController.goodsid = cell.tag;
+    detailController.title = [goods objectForKey:@"name"];
     [self.navigationController pushViewController:detailController animated:YES];
 }
 

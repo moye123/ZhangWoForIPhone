@@ -32,8 +32,8 @@
         case DSXBarButtonStyleBack:
             imageName = @"icon-back.png";
             break;
-        case DSXBarButtonStyleBackBlack:
-            imageName = @"icon-back2.png";
+        case DSXBarButtonStyleBackWhite:
+            imageName = @"icon-back-white.png";
             break;
         case DSXBarButtonStyleFavorite:
             imageName = @"icon-favorite.png";
@@ -53,8 +53,11 @@
         case DSXBarButtonStyleMore:
             imageName = @"icon-more.png";
             break;
-        case DSXBarButtonStyleMoreBlack:
-            imageName = @"icon-more2.png";
+        case DSXBarButtonStyleMoreWhite:
+            imageName = @"icon-more-white.png";
+            break;
+        case DSXBarButtonStyleClose:
+            imageName = @"icon-close.png";
             break;
         default:
             break;

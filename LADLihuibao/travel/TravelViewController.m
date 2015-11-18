@@ -23,7 +23,7 @@
     [super viewDidLoad];
     [self setTitle:@"旅游"];
     [self.view setBackgroundColor:[UIColor backColor]];
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBackBlack target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     self.slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 150)];
     NSString *sliderAPI = [SITEAPI stringByAppendingString:@"&mod=travel&ac=showlist&pagesize=3"];

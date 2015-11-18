@@ -20,10 +20,7 @@
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    UIBarButtonItem *shareButton = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleShare target:self action:nil];
-    UIBarButtonItem *favorButton = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleFavorite target:self action:nil];
-    UIBarButtonItem *likeButton = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleLike target:self action:nil];
-    self.navigationItem.rightBarButtonItems = @[shareButton,favorButton,likeButton];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
     self.mainWebView = [[UIWebView alloc] initWithFrame:self.view.frame];
     self.mainWebView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];

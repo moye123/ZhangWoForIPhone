@@ -8,10 +8,20 @@
 
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
+#import "CommentView.h"
 
-@interface NewsDetailViewController : UIViewController
+@interface NewsDetailViewController : UIViewController<UIScrollViewDelegate,UIWebViewDelegate,CommentViewDelegate>{
+    UIButton *commButton;
+    NSInteger commentNum;
+}
 
 @property(nonatomic,assign)NSInteger newsID;
-@property(nonatomic,retain)UIWebView *mainWebView;
+@property(nonatomic,retain)UIWebView *contentWebView;
+@property(nonatomic,retain)UIWebView *commentWebView;
+@property(nonatomic,retain)UIScrollView *scrollView;
+@property(nonatomic,retain)AFHTTPRequestOperationManager *afmanager;
+@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)CommentView *commentView;
+@property(nonatomic,strong)NSDictionary *articleData;
 
 @end
