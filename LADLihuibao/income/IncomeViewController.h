@@ -11,4 +11,11 @@
 
 @interface IncomeViewController : UIViewController
 
+- (instancetype)init;
+
+@property(nonatomic,strong)NSString *income;
+@property(nonatomic,retain)AFHTTPRequestOperationManager *afmanager;
+@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)UIScrollView *scrollView;
+
 @end

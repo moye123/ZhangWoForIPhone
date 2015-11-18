@@ -15,6 +15,7 @@
     BOOL _isRefreshing;
     LHBRefreshControl *_refreshControl;
     LHBPullUpView *_pullUpView;
+    UILabel *_tipsLabel;
 }
 @property(nonatomic,strong)NSMutableArray *travelArray;
 @property(nonatomic,assign)int catid;

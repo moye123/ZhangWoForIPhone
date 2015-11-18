@@ -10,7 +10,7 @@
 #import "LHBCommon.h"
 #import "HomeViewController.h"
 #import "IncomeViewController.h"
-#import "InviteViewController.h"
+#import "CartViewController.h"
 #import "MyViewController.h"
 
 @implementation AppDelegate
@@ -26,7 +26,7 @@
     self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
     
-    LHBNavigationController *navHome,*navIncome,*navInvite,*navMy;
+    LHBNavigationController *navHome,*navIncome,*navCart,*navMy;
     HomeViewController *homeView = [[HomeViewController alloc] init];
     [homeView setTitle:@"主页"];
     navHome = [[LHBNavigationController alloc] initWithRootViewController:homeView];
@@ -37,17 +37,17 @@
     navIncome = [[LHBNavigationController alloc] initWithRootViewController:incomeView];
     navIncome.tabBarItem = [self tabBarItemWithTitle:@"收益" image:@"icon-income.png" selectedImage:@"icon-incomefill.png"];
     
-    InviteViewController *inviteView = [[InviteViewController alloc] init];
-    [inviteView setTitle:@"邀请"];
-    navInvite = [[LHBNavigationController alloc] initWithRootViewController:inviteView];
-    navInvite.tabBarItem = [self tabBarItemWithTitle:@"邀请" image:@"icon-invite.png" selectedImage:@"icon-invitefill.png"];
+    CartViewController *cartView = [[CartViewController alloc] init];
+    [cartView setTitle:@"邀请"];
+    navCart = [[LHBNavigationController alloc] initWithRootViewController:cartView];
+    navCart.tabBarItem = [self tabBarItemWithTitle:@"购物车" image:@"icon-cart.png" selectedImage:@"icon-cartfill.png"];
     
     MyViewController *myView = [[MyViewController alloc] init];
     [myView setTitle:@"我的"];
     navMy = [[LHBNavigationController alloc] initWithRootViewController:myView];
     navMy.tabBarItem = [self tabBarItemWithTitle:@"我的" image:@"icon-my.png" selectedImage:@"icon-myfill.png"];
     
-    [tabBarController setViewControllers:@[navHome,navIncome,navInvite,navMy]];
+    [tabBarController setViewControllers:@[navHome,navIncome,navCart,navMy]];
     [tabBarController.tabBar setBackgroundColor:[UIColor tabBarColor]];
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]} forState:UIControlStateNormal];
     return YES;

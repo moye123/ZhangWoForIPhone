@@ -12,7 +12,7 @@
 @synthesize picList = _picList;
 @synthesize scrollView;
 @synthesize pageControl;
-@synthesize touchDelegate;
+@synthesize delegate;
 
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
@@ -42,10 +42,13 @@
     for (int i = 0; i < [_picList count]; i++) {
         newFrame.origin.x = self.frame.size.width * i;
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:newFrame];
-        imageView.tag = [[_picList[i] objectForKey:@"id"] intValue];
+        imageView.tag = [[_picList[i] objectForKey:@"id"] integerValue];
         [imageView sd_setImageWithURL:[NSURL URLWithString:[_picList[i] objectForKey:@"pic"]]];
         [imageView setContentMode:UIViewContentModeScaleAspectFill];
         [self.scrollView addSubview:imageView];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTap:)];
+        [imageView addGestureRecognizer:tap];
     }
     
     self.scrollView.contentSize = CGSizeMake(self.frame.size.width * [_picList count], self.frame.size.height);
@@ -55,6 +58,12 @@
 - (void)pageControlClick:(UIPageControl *)sender{
     CGFloat x = sender.currentPage * self.frame.size.width;
     [self.scrollView setContentOffset:CGPointMake(x, 0) animated:YES];
+}
+
+- (void)imageViewTap:(UITapGestureRecognizer *)tap{
+    if ([self.delegate respondsToSelector:@selector(picShouldTouchedWithTag:)]) {
+        [self.delegate picShouldTouchedWithTag:tap.view.tag];
+    }
 }
 
 #pragma mark - scrollView delegate

@@ -79,7 +79,7 @@
     }
     [userInfo setObject:account forKey:@"account"];
     [userInfo setObject:password forKey:@"password"];
-    UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"登录中..."];
+    UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"登录中,请稍后..."];
     [[LHBUserStatus status] login:userInfo success:^(id responseObject) {
         [[NSUserDefaults standardUserDefaults] setObject:userInfo forKey:@"loginInfo"];
         [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(loginSucceed:) userInfo:loadingView repeats:NO];

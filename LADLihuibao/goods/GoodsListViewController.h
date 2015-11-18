@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
+#import "DSXStarView.h"
 
 @interface GoodsListViewController : UITableViewController<UIScrollViewDelegate>{
     @private

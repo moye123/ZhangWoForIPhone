@@ -10,10 +10,6 @@
 #import "UIImageView+WebCache.h"
 #import "TravelDetailViewController.h"
 
-@interface TravelListViewController ()
-
-@end
-
 @implementation TravelListViewController
 @synthesize catid;
 @synthesize travelArray;
@@ -51,7 +47,7 @@
 
 #pragma mark
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=travel&ac=showlist&page=%d",_page];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=travel&ac=showlist&catid=%d&page=%d", self.catid,_page];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
@@ -92,6 +88,18 @@
         _pullUpView.hidden = NO;
     }else{
         _pullUpView.hidden = YES;
+    }
+    
+    if (_tipsLabel) {
+        [_tipsLabel removeFromSuperview];
+    }
+    if ([self.travelArray count] == 0) {
+        _tipsLabel = [[UILabel alloc] initWithFrame:CGRectMake((SWIDTH-200)/2, 100, 200, 30)];
+        _tipsLabel.text = @"此板块暂无数据..";
+        _tipsLabel.font = [UIFont systemFontOfSize:14.0];
+        _tipsLabel.textColor = [UIColor grayColor];
+        _tipsLabel.textAlignment = NSTextAlignmentCenter;
+        [self.view addSubview:_tipsLabel];
     }
 }
 

@@ -25,7 +25,7 @@
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBackBlack target:self action:@selector(back)];
     
-    self.slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
+    self.slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 150)];
     NSString *sliderAPI = [SITEAPI stringByAppendingString:@"&mod=travel&ac=showlist&pagesize=3"];
     AFHTTPRequestOperationManager *slideManager = [AFHTTPRequestOperationManager manager];
     slideManager.responseSerializer = [AFHTTPResponseSerializer serializer];
@@ -92,7 +92,7 @@
     }
     
     NSDictionary *category = [self.categoryList objectAtIndex:indexPath.row];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 10, 60, 60)];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(17, 10, 66, 66)];
     [imageView sd_setImageWithURL:[category objectForKey:@"pic"]];
     [cell.contentView addSubview:imageView];
     
@@ -114,7 +114,7 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
-    return CGSizeMake(SWIDTH, 200);
+    return CGSizeMake(SWIDTH, 150);
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{

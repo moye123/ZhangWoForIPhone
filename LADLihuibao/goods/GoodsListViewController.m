@@ -142,22 +142,16 @@
     [titleLabel sizeToFit];
     [cell.contentView addSubview:titleLabel];
     
-    UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 30, SWIDTH - 130, 20)];
-    locationLabel.text = [goods objectForKey:@"address"];
-    locationLabel.font = [UIFont systemFontOfSize:12.0];
-    locationLabel.textColor = [UIColor grayColor];
-    [cell.contentView addSubview:locationLabel];
+    NSInteger starnum = [[goods objectForKey:@"score"] integerValue];
+    DSXStarView *starView = [[DSXStarView alloc] initWithStar:starnum];
+    starView.frame = CGRectMake(120, 33, 88, 16);
+    [cell.contentView addSubview:starView];
     
-    UILabel *iconLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 70, 20, 10)];
-    iconLabel.text = @"￥";
-    iconLabel.textColor = [UIColor redColor];
-    iconLabel.font = [UIFont systemFontOfSize:12.0];
-    [cell addSubview:iconLabel];
-    
-    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(132, 65, 80, 18)];
-    priceLabel.text = [goods objectForKey:@"price"];
-    priceLabel.textColor = [UIColor redColor];
-    priceLabel.font = [UIFont systemFontOfSize:18.0 weight:300];
+    //价格
+    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 65, 80, 18)];
+    priceLabel.text = [NSString stringWithFormat:@"￥%@",[goods objectForKey:@"price"]];
+    priceLabel.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
+    priceLabel.font = [UIFont systemFontOfSize:16.0];
     
     cell.tag = [[goods objectForKey:@"id"] integerValue];
     [cell.contentView addSubview:priceLabel];
