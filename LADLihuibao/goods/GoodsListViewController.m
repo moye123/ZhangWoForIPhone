@@ -144,7 +144,7 @@
     
     NSInteger starnum = [[goods objectForKey:@"score"] integerValue];
     DSXStarView *starView = [[DSXStarView alloc] initWithStar:starnum];
-    starView.frame = CGRectMake(120, 35, 88, 16);
+    starView.frame = CGRectMake(120, 35, starView.frame.size.width, starView.frame.size.height);
     [cell.contentView addSubview:starView];
     
     //价格

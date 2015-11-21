@@ -7,7 +7,6 @@
 //
 
 #import "TravelListViewController.h"
-#import "UIImageView+WebCache.h"
 #import "TravelDetailViewController.h"
 
 @implementation TravelListViewController
@@ -18,10 +17,17 @@
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    //实例化afnetworking manager
+    _afmanager = [AFHTTPRequestOperationManager manager];
+    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
+    //初始化列表数组
     self.travelArray = [NSMutableArray array];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.showsVerticalScrollIndicator = NO;
     
     //下拉刷新
     _refreshControl = [[LHBRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
@@ -48,9 +54,7 @@
 #pragma mark
 - (void)loadData{
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=travel&ac=showlist&catid=%d&page=%d", self.catid,_page];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         NSData *data = (NSData *)responseObject;
         if ([data length] > 0) {
             id array = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
@@ -125,7 +129,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 156;
+    return 150;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -137,31 +141,37 @@
             [subview removeFromSuperview];
         }
     }
-    
+    cell.contentView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
     NSDictionary *travelItem = [self.travelArray objectAtIndex:indexPath.row];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 8, SWIDTH-16, 140)];
-    imageView.layer.cornerRadius = 10.0;
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 140)];
+    //imageView.layer.cornerRadius = 10.0;
     imageView.layer.masksToBounds = YES;
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
     [imageView sd_setImageWithURL:[travelItem objectForKey:@"pic"]];
     [cell.contentView addSubview:imageView];
     
+    //显示标题
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 80, SWIDTH-76, 40)];
     titleLabel.text = [travelItem objectForKey:@"title"];
     titleLabel.font = [UIFont systemFontOfSize:16.0];
     titleLabel.textColor = [UIColor whiteColor];
-    titleLabel.numberOfLines = 2;
+    //titleLabel.numberOfLines = 2;
     [titleLabel sizeToFit];
     [cell.contentView addSubview:titleLabel];
     
-    UIImageView *locationIcon = [[UIImageView alloc] initWithFrame:CGRectMake(20, 110, 20, 20)];
-    [locationIcon setImage:[UIImage imageNamed:@"icon-location.png"]];
-    [cell.contentView addSubview:locationIcon];
+    //显示位置信息
+    if ([travelItem objectForKey:@"province"]) {
+        UIImageView *locationIcon = [[UIImageView alloc] initWithFrame:CGRectMake(20, 110, 20, 20)];
+        [locationIcon setImage:[UIImage imageNamed:@"icon-location.png"]];
+        [cell.contentView addSubview:locationIcon];
+        
+        UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(43, 108, SWIDTH-60, 20)];
+        locationLabel.text = [NSString stringWithFormat:@"%@  %@",[travelItem objectForKey:@"province"],[travelItem objectForKey:@"city"]];
+        locationLabel.font = [UIFont systemFontOfSize:12.0];
+        locationLabel.textColor = [UIColor whiteColor];
+        [cell.contentView addSubview:locationLabel];
+    }
     
-    UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 110, SWIDTH-60, 20)];
-    locationLabel.text = [NSString stringWithFormat:@"%@  %@",[travelItem objectForKey:@"province"],[travelItem objectForKey:@"city"]];
-    locationLabel.font = [UIFont systemFontOfSize:12.0];
-    locationLabel.textColor = [UIColor whiteColor];
-    [cell.contentView addSubview:locationLabel];
 
     cell.tag = [[travelItem objectForKey:@"id"] intValue];
     return cell;

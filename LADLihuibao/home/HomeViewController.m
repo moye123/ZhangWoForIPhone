@@ -29,7 +29,7 @@
     search.textField.enabled = NO;
     self.navigationItem.titleView = search;
     
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMoreWhite target:self action:nil];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMoreWhite target:self action:@selector(showMap)];
     self.navigationItem.rightBarButtonItem.width = 29;
     
     //主体
@@ -53,13 +53,17 @@
     [self.view addSubview:scrollView];
 }
 
+- (void)showMap{
+
+}
+
 - (void)showCategoryWithTag:(NSString *)tag{
     //旅游
     if ([tag isEqualToString:@"travel"]) {
         TravelViewController *travelController = [[TravelViewController alloc] init];
         LHBNavigationController *travelNav = [[LHBNavigationController alloc] initWithRootViewController:travelController];
         [travelNav setNavigationStyle:LHBNavigationStyleGray];
-        [self presentViewController:travelNav animated:NO completion:nil];
+        [self presentViewController:travelNav animated:YES completion:nil];
     }
     
     //资讯
@@ -67,7 +71,7 @@
         NewsViewController *newsController = [[NewsViewController alloc] init];
         LHBNavigationController *newsNav = [[LHBNavigationController alloc] initWithRootViewController:newsController];
         [newsNav setNavigationStyle:LHBNavigationStyleGray];
-        [self presentViewController:newsNav animated:NO completion:nil];
+        [self presentViewController:newsNav animated:YES completion:nil];
     }
     
     //超市
@@ -75,7 +79,9 @@
         GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
         goodsListController.catid = 3;
         goodsListController.title = @"生活超市";
-        [self.navigationController pushViewController:goodsListController animated:YES];
+        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
+        [nav setNavigationStyle:LHBNavigationStyleGray];
+        [self presentViewController:nav animated:YES completion:nil];
     }
     
     //名优特产
@@ -85,7 +91,7 @@
         goodsListController.title = @"名优特产";
         LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
         [nav setNavigationStyle:LHBNavigationStyleGray];
-        [self presentViewController:nav animated:NO completion:nil];
+        [self presentViewController:nav animated:YES completion:nil];
     }
     
     //特色小吃
@@ -93,7 +99,9 @@
         GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
         goodsListController.catid = 18;
         goodsListController.title = @"特色小吃";
-        [self.navigationController pushViewController:goodsListController animated:YES];
+        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
+        [nav setNavigationStyle:LHBNavigationStyleGray];
+        [self presentViewController:nav animated:YES completion:nil];
     }
     
     //外卖
@@ -101,21 +109,27 @@
         GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
         goodsListController.catid = 19;
         goodsListController.title = @"我要外卖";
-        [self.navigationController pushViewController:goodsListController animated:YES];
+        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
+        [nav setNavigationStyle:LHBNavigationStyleGray];
+        [self presentViewController:nav animated:YES completion:nil];
     }
     
     if ([tag isEqualToString:@"food"]) {
         GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
         goodsListController.catid = 1;
         goodsListController.title = @"美食";
-        [self.navigationController pushViewController:goodsListController animated:YES];
+        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
+        [nav setNavigationStyle:LHBNavigationStyleGray];
+        [self presentViewController:nav animated:YES completion:nil];
     }
     
     if ([tag isEqualToString:@"service"]) {
         GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
         goodsListController.catid = 1;
         goodsListController.title = @"本地服务";
-        [self.navigationController pushViewController:goodsListController animated:YES];
+        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
+        [nav setNavigationStyle:LHBNavigationStyleGray];
+        [self presentViewController:nav animated:YES completion:nil];
     }
 }
 
@@ -125,6 +139,7 @@
     detailView.hidesBottomBarWhenPushed = YES;
     //[self.navigationController pushViewController:detailView animated:YES];
     LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:detailView];
+    [nav setNavigationStyle:LHBNavigationStyleGray];
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -132,7 +147,9 @@
     GoodsDetailViewController *detailController = [[GoodsDetailViewController alloc] init];
     detailController.goodsid = foodID;
     detailController.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:detailController animated:YES];
+    LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:detailController];
+    [nav setNavigationStyle:LHBNavigationStyleGray];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{

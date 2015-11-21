@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
 
-@interface TravelDetailViewController : UIViewController
+@interface TravelDetailViewController : UIViewController<UIWebViewDelegate>
 
 @property(nonatomic,assign)int travelID;
 @property(nonatomic,strong)NSDictionary *travelData;
-@property(nonatomic,retain)UIWebView *webView;
+@property(nonatomic,retain)UIWebView *contentWebView;
 
 @end

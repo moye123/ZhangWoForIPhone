@@ -8,6 +8,8 @@
 	<string>长沃</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIconFile</key>
+	<string>icon.png</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -20,6 +22,19 @@
 	<string>1.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>zhangwoo</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>zwapp</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -37,7 +52,9 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>CFBundleIconFile</key>
-	<string>icon.png</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string></string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string></string>
 </dict>
 </plist>

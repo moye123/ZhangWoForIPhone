@@ -18,5 +18,6 @@
 - (NSData *)dataWithURL:(NSString *)urlString;
 - (NSData *)sendDataForURL:(NSString *)urlString params:(NSMutableDictionary *)params;
 - (void)addFavoriteWithParams:(NSMutableDictionary *)params;
+- (NSDictionary *)parseQueryString:(NSString *)query;
 
 @end

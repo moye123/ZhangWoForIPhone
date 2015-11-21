@@ -15,11 +15,11 @@
     [self setTitle:@"关于我们"];
     
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.frame];
+    UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
     webView.backgroundColor = [UIColor backColor];
     [self.view addSubview:webView];
     
-    NSString *urlString = [SITEAPI stringByAppendingString:@"&mod=page&page=1"];
+    NSString *urlString = [SITEAPI stringByAppendingString:@"&mod=page&ac=showdetail&pageid=13"];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     [webView loadRequest:request];
 }

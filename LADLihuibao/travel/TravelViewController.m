@@ -8,10 +8,11 @@
 
 #import "TravelViewController.h"
 #import "TravelListViewController.h"
+#import "TravelDetailViewController.h"
 
 @implementation TravelViewController
-@synthesize categoryList;
-@synthesize slideView;
+@synthesize categoryList = _categoryList;
+@synthesize slideView = _slideView;
 
 - (instancetype)init{
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
@@ -24,26 +25,34 @@
     [self setTitle:@"旅游"];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    _afmanager = [AFHTTPRequestOperationManager manager];
+    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    self.slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 150)];
-    NSString *sliderAPI = [SITEAPI stringByAppendingString:@"&mod=travel&ac=showlist&pagesize=3"];
-    AFHTTPRequestOperationManager *slideManager = [AFHTTPRequestOperationManager manager];
-    slideManager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [slideManager GET:sliderAPI parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    //初始化幻灯片
+    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 150)];
+    [_afmanager GET:[SITEAPI stringByAppendingString:@"&mod=travel&ac=showlist&pagesize=3"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {
-            NSMutableArray *mutableArray = [[NSMutableArray alloc] init];
+            
+            NSMutableArray *imageViews = [[NSMutableArray alloc] init];
             for (NSDictionary *dict in array) {
-                [mutableArray addObject:@{@"id":[dict objectForKey:@"id"],@"pic":[dict objectForKey:@"pic"]}];
+                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sliderTap:)];
+                UIImageView *imageView = [[UIImageView alloc] init];
+                imageView.tag = [[dict objectForKey:@"id"] integerValue];
+                [imageView sd_setImageWithURL:[dict objectForKey:@"pic"] placeholderImage:[UIImage imageNamed:@"placeholder600x300.png"]];
+                [imageView setContentMode:UIViewContentModeScaleAspectFill];
+                [imageView.layer setMasksToBounds:YES];
+                [imageView addGestureRecognizer:tap];
+                [imageView setUserInteractionEnabled:YES];
+                [imageViews addObject:imageView];
             }
-            //NSLog(@"%@",mutableArray);
-            self.slideView.picList = [NSArray arrayWithArray:mutableArray];
+            self.slideView.imageViews = imageViews;
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);
     }];
     
-    self.categoryList = [NSArray array];
+    _categoryList = [NSArray array];
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"travelItem"];
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Slider"];
     self.collectionView.delegate = self;
@@ -51,13 +60,10 @@
     self.collectionView.backgroundColor = [UIColor backColor];
     
     //从服务器读取分类数据
-    NSString *urlString = [SITEAPI stringByAppendingString:@"&mod=travel&ac=getcategory"];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager GET:[SITEAPI stringByAppendingString:@"&mod=travel&ac=getcategory"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {
-            self.categoryList = array;
+            _categoryList = array;
             [self.collectionView reloadData];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
@@ -71,12 +77,20 @@
     }
 }
 
+- (void)sliderTap:(UITapGestureRecognizer *)sender{
+    NSInteger travelid = sender.view.tag;
+    TravelDetailViewController *detailView = [[TravelDetailViewController alloc] init];
+    detailView.travelID = travelid;
+    [self.navigationController pushViewController:detailView animated:YES];
+}
+
+#pragma mark - tableView delegate
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return 1;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return [self.categoryList count];
+    return [_categoryList count];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
@@ -91,7 +105,7 @@
         }
     }
     
-    NSDictionary *category = [self.categoryList objectAtIndex:indexPath.row];
+    NSDictionary *category = [_categoryList objectAtIndex:indexPath.row];
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(17, 10, 66, 66)];
     [imageView sd_setImageWithURL:[category objectForKey:@"pic"]];
     [cell.contentView addSubview:imageView];

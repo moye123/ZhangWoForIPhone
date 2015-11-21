@@ -38,18 +38,34 @@
     navIncome.tabBarItem = [self tabBarItemWithTitle:@"收益" image:@"icon-income.png" selectedImage:@"icon-incomefill.png"];
     
     CartViewController *cartView = [[CartViewController alloc] init];
-    [cartView setTitle:@"邀请"];
+    [cartView setTitle:@"购物车"];
     navCart = [[LHBNavigationController alloc] initWithRootViewController:cartView];
     navCart.tabBarItem = [self tabBarItemWithTitle:@"购物车" image:@"icon-cart.png" selectedImage:@"icon-cartfill.png"];
     
     MyViewController *myView = [[MyViewController alloc] init];
     [myView setTitle:@"我的"];
     navMy = [[LHBNavigationController alloc] initWithRootViewController:myView];
+    [navMy setNavigationStyle:LHBNavigationStyleGray];
     navMy.tabBarItem = [self tabBarItemWithTitle:@"我的" image:@"icon-my.png" selectedImage:@"icon-myfill.png"];
     
     [tabBarController setViewControllers:@[navHome,navIncome,navCart,navMy]];
     [tabBarController.tabBar setBackgroundColor:[UIColor tabBarColor]];
     [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]} forState:UIControlStateNormal];
+    
+    CLLocationManager *clmanager = [[CLLocationManager alloc] init];
+    if ([CLLocationManager locationServicesEnabled]) {
+        CLLocation *location = [clmanager location];
+        CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+        [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+            if ([placemarks count] > 0) {
+                CLPlacemark *placeMark = [placemarks firstObject];
+                [[NSUserDefaults standardUserDefaults] setObject:placeMark.locality forKey:@"locality"];
+            }else {
+                NSLog(@"%@", error);
+            }
+        }];
+    }
+    
     return YES;
 }
 

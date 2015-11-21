@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
 
-@interface TravelViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout>
+@interface TravelViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout>{
+    AFHTTPRequestOperationManager *_afmanager;
+}
 
 - (instancetype)init;
 

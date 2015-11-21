@@ -9,46 +9,14 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "LADLihuibao/travel/TravelDetailViewController.m"
-            timestampString = "468232562.297172"
+            filePath = "LADLihuibao/member/MyFavoriteViewController.m"
+            timestampString = "469765701.685064"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
-            landmarkName = "-viewDidLoad"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[TravelDetailViewController viewDidLoad]"
-                  moduleName = "LADLihuibao"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/apple/Desktop/LADLihuibao/LADLihuibao/travel/TravelDetailViewController.m"
-                  timestampString = "468048380.266563"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "26"
-                  endingLineNumber = "26"
-                  offsetFromSymbolStart = "518">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__41-[TravelDetailViewController viewDidLoad]_block_invoke"
-                  moduleName = "LADLihuibao"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/apple/Desktop/LADLihuibao/LADLihuibao/travel/TravelDetailViewController.m"
-                  timestampString = "468048380.268996"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "26"
-                  endingLineNumber = "26"
-                  offsetFromSymbolStart = "91">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

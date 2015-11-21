@@ -24,8 +24,7 @@
     [self setTitle:@"本地资讯"];
     
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    UIImage *moreImage = [[UIImage imageNamed:@"icon-more2.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:moreImage style:UIBarButtonItemStylePlain target:self action:nil];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
     //初始化用户登录状态
     self.userStatus = [[LHBUserStatus alloc] init];

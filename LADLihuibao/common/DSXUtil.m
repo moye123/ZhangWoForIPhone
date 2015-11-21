@@ -55,4 +55,19 @@
     }
 }
 
+- (NSDictionary *)parseQueryString:(NSString *)query{
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    NSArray *array = [query componentsSeparatedByString:@"&"];
+    for (NSString *param in array) {
+        NSArray *arr = [param componentsSeparatedByString:@"="];
+        if ([arr count] < 2) {
+            [dictionary setObject:@"" forKey:arr[0]];
+        }else {
+            NSString *value = [arr[1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            [dictionary setObject:value forKey:arr[0]];
+        }
+    }
+    return dictionary;
+}
+
 @end

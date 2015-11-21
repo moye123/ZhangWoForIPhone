@@ -16,6 +16,7 @@
     LHBRefreshControl *_refreshControl;
     LHBPullUpView *_pullUpView;
     UILabel *_tipsLabel;
+    AFHTTPRequestOperationManager *_afmanager;
 }
 @property(nonatomic,strong)NSMutableArray *travelArray;
 @property(nonatomic,assign)int catid;

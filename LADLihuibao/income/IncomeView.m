@@ -33,11 +33,11 @@
     titleLabel.font = [UIFont systemFontOfSize:18.0 weight:500];
     [self addSubview:titleLabel];
     
-    self.incomeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    self.incomeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 240, 30)];
     self.incomeLabel.text = @"￥0:00";
     self.incomeLabel.textColor = [UIColor colorWithRed:0.44 green:0.82 blue:0.67 alpha:1];
-    self.incomeLabel.font = [UIFont systemFontOfSize:30.0 weight:500];
-    [self.incomeLabel sizeToFit];
+    self.incomeLabel.font = [UIFont systemFontOfSize:30.0 weight:200];
+    self.incomeLabel.textAlignment = NSTextAlignmentCenter;
     [self.incomeLabel setCenter:CGPointMake(self.center.x, self.center.y-20)];
     [self addSubview:self.incomeLabel];
     

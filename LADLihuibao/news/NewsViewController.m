@@ -20,6 +20,7 @@
     [self.view setBackgroundColor:[UIColor backColor]];
     
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
     self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 64, SWIDTH, 50)];
     [self.toolbar setHidden:YES];

@@ -7,15 +7,12 @@
 //
 
 #import "TravelDetailViewController.h"
-
-@interface TravelDetailViewController ()
-
-@end
+#import "MarkMapViewController.h"
 
 @implementation TravelDetailViewController
 @synthesize travelID;
 @synthesize travelData;
-@synthesize webView;
+@synthesize contentWebView = _contentWebView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -25,23 +22,12 @@
     
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=travel&ac=showdetail&id=%d",self.travelID];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
-    self.webView = [[UIWebView alloc] initWithFrame:self.view.frame];
-    self.webView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
-    [self.webView loadRequest:request];
-    [self.view addSubview:self.webView];
+    _contentWebView = [[UIWebView alloc] initWithFrame:self.view.frame];
+    _contentWebView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
+    _contentWebView.delegate = self;
+    [_contentWebView loadRequest:request];
+    [self.view addSubview:_contentWebView];
     
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSData *data = (NSData *)responseObject;
-        id dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-        if ([dictionary isKindOfClass:[NSDictionary class]]) {
-            self.travelData = dictionary;
-        }
-        
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
-    }];
     
     
 }
@@ -50,6 +36,21 @@
     if (![self.navigationController popViewControllerAnimated:YES]) {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+#pragma mark - webView delegate
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
+    NSURL *url = [request URL];
+    NSDictionary *params = [[DSXUtil sharedUtil] parseQueryString:[url query]];
+    if ([[url scheme] isEqualToString:@"zwapp"]) {
+        NSString *cmd = [url host];
+        if ([cmd isEqualToString:@"showmap"]) {
+            MarkMapViewController *mapView = [[MarkMapViewController alloc] init];
+            mapView.address = [params objectForKey:@"address"];
+            [self.navigationController pushViewController:mapView animated:YES];
+        }
+    }
+    return YES;
 }
 
 - (void)didReceiveMemoryWarning {

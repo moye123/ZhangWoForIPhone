@@ -39,7 +39,8 @@
         id dictionary = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([dictionary isKindOfClass:[NSDictionary class]]) {
             self.income = [dictionary objectForKey:@"income"];
-            myIncomeView.incomeLabel.text = self.income;
+            float income = [[dictionary objectForKey:@"income"] floatValue];
+            myIncomeView.incomeLabel.text = [NSString stringWithFormat:@"￥: %.2f",income];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);
@@ -71,12 +72,14 @@
     [_afmanager GET:[SITEAPI stringByAppendingString:@"&mod=travel&ac=showlist&pagesize=3"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {
-            NSMutableArray *mutableArray = [[NSMutableArray alloc] init];
+            NSMutableArray *imageViews = [[NSMutableArray alloc] init];
             for (NSDictionary *dict in array) {
-                [mutableArray addObject:@{@"id":[dict objectForKey:@"id"],@"pic":[dict objectForKey:@"pic"]}];
+                UIImageView *imageView = [[UIImageView alloc] init];
+                [imageView sd_setImageWithURL:[dict objectForKey:@"pic"] placeholderImage:[UIImage imageNamed:@"placeholder600x300.png"]];
+                [imageView setContentMode:UIViewContentModeScaleAspectFill];
+                [imageViews addObject:imageView];
             }
-            //NSLog(@"%@",mutableArray);
-            slider.picList = [NSArray arrayWithArray:mutableArray];
+            slider.imageViews = imageViews;
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);

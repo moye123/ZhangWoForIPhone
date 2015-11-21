@@ -9,61 +9,47 @@
 #import "DSXSliderView.h"
 
 @implementation DSXSliderView
-@synthesize picList = _picList;
-@synthesize scrollView;
-@synthesize pageControl;
-@synthesize delegate;
+@synthesize imageViews = _imageViews;
+@synthesize scrollView = _scrollView;
+@synthesize pageControl = _pageControl;
 
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor colorWithHexString:@"0xd1d1d1"];
-        self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
-        self.scrollView.pagingEnabled = YES;
-        self.scrollView.showsVerticalScrollIndicator = NO;
-        self.scrollView.showsHorizontalScrollIndicator = NO;
-        self.scrollView.delegate = self;
-        [self addSubview:self.scrollView];
+        self.backgroundColor = [UIColor grayColor];
+        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+        _scrollView.pagingEnabled = YES;
+        _scrollView.showsVerticalScrollIndicator = NO;
+        _scrollView.showsHorizontalScrollIndicator = NO;
+        _scrollView.delegate = self;
+        [self addSubview:_scrollView];
         
-        self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, self.frame.size.height-30, self.frame.size.width, 20)];
-        [self.pageControl addTarget:self action:@selector(pageControlClick:) forControlEvents:UIControlEventValueChanged];
-        [self addSubview:self.pageControl];
+        _pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, self.frame.size.height-30, self.frame.size.width, 20)];
+        [_pageControl addTarget:self action:@selector(pageControlClick:) forControlEvents:UIControlEventValueChanged];
+        [self addSubview:_pageControl];
     }
     return self;
 }
 
-- (void)setPicList:(NSArray *)picList{
-    _picList = picList;
-    [self loadData];
-}
 
-- (void)loadData{
-    CGRect newFrame = self.frame;
-    for (int i = 0; i < [_picList count]; i++) {
-        newFrame.origin.x = self.frame.size.width * i;
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:newFrame];
-        imageView.tag = [[_picList[i] objectForKey:@"id"] integerValue];
-        [imageView sd_setImageWithURL:[NSURL URLWithString:[_picList[i] objectForKey:@"pic"]]];
-        [imageView setContentMode:UIViewContentModeScaleAspectFill];
-        [self.scrollView addSubview:imageView];
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTap:)];
-        [imageView addGestureRecognizer:tap];
+- (void)setImageViews:(NSArray *)imageViews{
+    _imageViews = imageViews;
+    for (UIView *subview in _scrollView.subviews) {
+        [subview removeFromSuperview];
     }
-    
-    self.scrollView.contentSize = CGSizeMake(self.frame.size.width * [_picList count], self.frame.size.height);
-    self.pageControl.numberOfPages = [_picList count];
+    CGRect frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    for (int i=0; i < [_imageViews count]; i++) {
+        frame.origin.x = self.frame.size.width * i;
+        [_imageViews[i] setFrame:frame];
+        [_scrollView addSubview:_imageViews[i]];
+    }
+    _scrollView.contentSize = CGSizeMake(self.frame.size.width * [_imageViews count], self.frame.size.height);
+    _pageControl.numberOfPages = [_imageViews count];
 }
 
 - (void)pageControlClick:(UIPageControl *)sender{
     CGFloat x = sender.currentPage * self.frame.size.width;
     [self.scrollView setContentOffset:CGPointMake(x, 0) animated:YES];
-}
-
-- (void)imageViewTap:(UITapGestureRecognizer *)tap{
-    if ([self.delegate respondsToSelector:@selector(picShouldTouchedWithTag:)]) {
-        [self.delegate picShouldTouchedWithTag:tap.view.tag];
-    }
 }
 
 #pragma mark - scrollView delegate

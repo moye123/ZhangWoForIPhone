@@ -8,6 +8,8 @@
 
 #import "MyViewController.h"
 #import "MyHeadView.h"
+#import "MyFavoriteViewController.h"
+#import "AboutusViewController.h"
 
 @implementation MyViewController
 @synthesize mainTableView;
@@ -54,6 +56,20 @@
     self.navigationController.navigationBar.hidden = NO;
 }
 
+- (UIButton *)buttonWithTitle:(NSString *)title image:(NSString *)imageName{
+    CGFloat width = SWIDTH / 5;
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, -1, width, 102)];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake((width-30)/2, 10, 30, 30)];
+    imageView.image = [UIImage imageNamed:imageName];
+    [button addSubview:imageView];
+    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, width, 20)];
+    textLabel.text = title;
+    textLabel.font = [UIFont systemFontOfSize:16.0];
+    textLabel.textAlignment = NSTextAlignmentCenter;
+    [button addSubview:textLabel];
+    return button;
+}
+
 #pragma mark - tableView delegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 4;
@@ -63,16 +79,20 @@
     if (section == 0) {
         return 1;
     }else if (section == 1){
-        return 6;
+        return 2;
     }else if (section == 2){
-        return 3;
+        return 4;
     }else{
         return 1;
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 50;
+    if (indexPath.section == 1 && indexPath.row == 1) {
+        return 100;
+    }else {
+        return 50;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -80,7 +100,7 @@
     
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            cell.textLabel.text = @"我的收益";
+            cell.textLabel.text = @"我的钱包";
             cell.textLabel.textAlignment = NSTextAlignmentLeft;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             UILabel *totalIncomeLabel = [[UILabel alloc] init];
@@ -89,56 +109,52 @@
             totalIncomeLabel.font = [UIFont systemFontOfSize:14.0];
             [totalIncomeLabel sizeToFit];
             cell.accessoryView = totalIncomeLabel;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
     }
     
     if (indexPath.section == 1) {
         if (indexPath.row == 0) {
             cell.textLabel.text = @"我的订单";
+            
+            UILabel *tipLabel = [[UILabel alloc] init];
+            tipLabel.text = @"查看全部订单";
+            tipLabel.textColor = [UIColor grayColor];
+            tipLabel.font = [UIFont systemFontOfSize:16.0];
+            [tipLabel sizeToFit];
+            cell.accessoryView = tipLabel;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
+        
         if (indexPath.row == 1) {
-            cell.textLabel.text = @"我的优惠券";
+            cell.contentView.layer.masksToBounds = YES;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
-        
-        if (indexPath.row == 2) {
-            cell.textLabel.text = @"我的收藏";
-        }
-        if (indexPath.row == 3) {
-            cell.textLabel.text = @"待评论";
-        }
-        
-        if (indexPath.row == 4) {
-            cell.textLabel.text = @"我的评论";
-        }
-        
-        if (indexPath.row == 5) {
-            cell.textLabel.text = @"每日推荐";
-        }
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
     if (indexPath.section == 2) {
         if (indexPath.row == 0) {
-            cell.textLabel.text = @"关于";
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.textLabel.text = @"我的收藏";
         }
         if (indexPath.row == 1) {
-            cell.textLabel.text = @"评分";
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.textLabel.text = @"关于我们";
         }
         
         if (indexPath.row == 2) {
-            float cacheSize = [[SDImageCache sharedImageCache] getSize]/1048576;
+            cell.textLabel.text = @"评分";
+        }
+        if (indexPath.row == 3) {
+            cell.textLabel.text = @"清除缓存";
+            float cacheSize = (float)[[SDImageCache sharedImageCache] getSize]/1048576;
             UILabel *cacheSizeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 50)];
             cacheSizeLabel.text = [NSString stringWithFormat:@"%.2fMB",cacheSize];
             cacheSizeLabel.textColor = [UIColor grayColor];
             cacheSizeLabel.font = [UIFont systemFontOfSize:14.0];
             [cacheSizeLabel sizeToFit];
-            cell.textLabel.text = @"清除缓存";
             cell.accessoryType = UITableViewCellAccessoryNone;
             cell.accessoryView = cacheSizeLabel;
         }
-        
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
     if (indexPath.section == 3) {
@@ -163,13 +179,29 @@
     [cell setSelected:NO animated:YES];
     
     if (indexPath.section == 2) {
+        //我的收藏
         if (indexPath.row == 0) {
+            if (self.userStatus.isLogined) {
+                MyFavoriteViewController *favorView = [[MyFavoriteViewController alloc] init];
+                [self.navigationController pushViewController:favorView animated:YES];
+            }else{
+                [self showLogin];
+            }
             
         }
+        //关于我们
         if (indexPath.row == 1) {
-            
+            AboutusViewController *aboutView = [[AboutusViewController alloc] init];
+            [self.navigationController pushViewController:aboutView animated:YES];
         }
+        
+        //打开评分页面
         if (indexPath.row == 2) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.apple.com/cn"]];
+        }
+        
+        //清除缓存
+        if (indexPath.row == 3) {
             [[SDImageCache sharedImageCache] clearDisk];
             [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"已成功清除缓存"];
             [self.mainTableView reloadData];
@@ -182,6 +214,14 @@
         }
         [self showLogin];
     }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 0.01;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 15.0;
 }
 
 #pragma mark -
