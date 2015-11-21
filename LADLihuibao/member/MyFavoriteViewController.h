@@ -9,6 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
 
-@interface MyFavoriteViewController : UITableViewController
+@interface MyFavoriteViewController : UITableViewController<UIScrollViewDelegate>{
+    LHBPullUpView *_pullUpView;
+    LHBRefreshControl *_refreshContorl;
+    BOOL _isRefreshing;
+    int _page;
+}
 
+@property(nonatomic,strong)NSMutableArray *favoriteList;
+@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)AFHTTPRequestOperationManager *afmanager;
 @end

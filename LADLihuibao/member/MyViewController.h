@@ -9,7 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
 
-@interface MyViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
+@interface MyViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
+    @private
+    UIButton *_buttonMessage;
+    UIButton *_buttonSetting;
+}
 
 @property(nonatomic,retain)UIView *topView;
 @property(nonatomic,retain)UITableView *mainTableView;
