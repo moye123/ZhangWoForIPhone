@@ -9,8 +9,20 @@
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
 
-@interface MyOrderViewController : UITableViewController
+@interface MyOrderViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
+    @private
+    AFHTTPRequestOperationManager *_afmanager;
+    LHBRefreshControl *_refreshControl;
+    LHBPullUpView *_pullUpView;
+    BOOL _isRefreshing;
+    int _page;
+}
+
+- (instancetype)init;
 
 @property(nonatomic,assign)NSInteger status;
+@property(nonatomic,strong)NSMutableArray *orderList;
+@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)UITableView *tableView;
 
 @end

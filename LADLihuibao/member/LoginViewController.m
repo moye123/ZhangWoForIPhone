@@ -20,7 +20,7 @@
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     [self setTitle:@"登录利惠宝"];
     
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(closeLogin)];
+    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBackWhite target:self action:@selector(closeLogin)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"注册" style:UIBarButtonItemStylePlain target:self action:@selector(showRegister)];
     
     //用户名输入框

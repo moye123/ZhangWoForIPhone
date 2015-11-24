@@ -19,6 +19,6 @@
     AFHTTPRequestOperationManager *_afmanager;
 }
 @property(nonatomic,strong)NSMutableArray *travelArray;
-@property(nonatomic,assign)int catid;
+@property(nonatomic,assign)NSInteger catid;
 
 @end

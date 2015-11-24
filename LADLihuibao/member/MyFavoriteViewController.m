@@ -24,8 +24,9 @@
     self.userStatus = [LHBUserStatus status];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    self.tableView.backgroundColor = [UIColor backColor];
     
-    _refreshContorl = [[LHBRefreshControl alloc] init];
+    _refreshContorl = [[LHBRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshContorl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     _pullUpView = [[LHBPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _pullUpView.hidden = YES;
@@ -34,6 +35,7 @@
     
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [self refresh];
 }
 
 - (void)back{
@@ -53,7 +55,7 @@
 }
 
 - (void)loadData{
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=member&ac=showfavorite&page=%d&uid=%ld",_page,(long)self.userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=favorite&ac=showlist&page=%d&uid=%ld",_page,(long)self.userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {
             [self reloadTableViewWithArray:array];
@@ -108,7 +110,7 @@
             [subview removeFromSuperview];
         }
     }
-    
+    cell.textLabel.text = [[_favoriteList objectAtIndex:indexPath.row] objectForKey:@"title"];
     return cell;
 }
 

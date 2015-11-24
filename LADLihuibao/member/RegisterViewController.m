@@ -23,7 +23,7 @@
     [self setTitle:@"手机注册"];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBackWhite target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"邮箱注册" style:UIBarButtonItemStylePlain target:self action:@selector(showRegister)];
     
     //手机号输入框

@@ -9,10 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
 
-@interface BuyViewController : UITableViewController<UITableViewDataSource,UITableViewDelegate>
+@interface BuyViewController : UITableViewController<UITableViewDataSource,UITableViewDelegate>{
+    @private
+    UILabel *_buyNum;
+    UITextField *_numField;
+    UIButton *_useCoupons;
+    UILabel *_total;
+    UIButton *_submitButton;
+}
 
 @property(nonatomic,assign)NSInteger goodsid;
 @property(nonatomic,strong)NSDictionary *goodsdata;
 @property(nonatomic,retain)UITableView *contentTableView;
+@property(nonatomic,retain)LHBUserStatus *userStatus;
 
 @end
