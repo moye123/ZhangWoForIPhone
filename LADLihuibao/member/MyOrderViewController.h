@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
 
-@interface MyOrderViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
+@interface MyOrderViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>{
     @private
     AFHTTPRequestOperationManager *_afmanager;
     LHBRefreshControl *_refreshControl;

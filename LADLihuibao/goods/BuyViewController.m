@@ -146,6 +146,7 @@
             [_useCoupons setBackgroundImage:[UIImage imageNamed:@"icon-select.png"] forState:UIControlStateNormal];
             [_useCoupons setBackgroundImage:[UIImage imageNamed:@"icon-selectfill.png"] forState:UIControlStateSelected];
             [_useCoupons addTarget:self action:@selector(toggleSelect:) forControlEvents:UIControlEventTouchUpInside];
+            [_useCoupons setUserInteractionEnabled:YES];
             cell.accessoryView = _useCoupons;
         }
     }

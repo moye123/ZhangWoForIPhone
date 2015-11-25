@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LHBCommon.h"
 
 @interface IncomeView : UIView
 

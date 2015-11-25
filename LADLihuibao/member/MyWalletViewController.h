@@ -9,6 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
 
-@interface MyWalletViewController : UIViewController
+@interface MyWalletViewController : UITableViewController{
+    @private
+    AFHTTPRequestOperationManager *_afmanager;
+    UIView *_headerView;
+    UIView *_footerView;
+    UILabel *_totalLabel;
+}
+
+@property(nonatomic,strong)NSDictionary *walletData;
+@property(nonatomic,retain)LHBUserStatus *userStatus;
 
 @end

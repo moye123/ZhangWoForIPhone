@@ -30,6 +30,7 @@
         default:
             [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"nav-bg.png"] forBarMetrics:UIBarMetricsDefault];
             [self.navigationBar setBarStyle:UIBarStyleBlack];
+            [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]} forState:UIControlStateNormal];
             break;
     }
 }

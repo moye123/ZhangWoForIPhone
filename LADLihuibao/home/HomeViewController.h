@@ -9,14 +9,24 @@
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
 #import "HomeCategoryView.h"
-#import "HomeFoodView.h"
-#import "HomeNewsView.h"
+#import "RecommendSliderView.h"
+#import "RecommendSliderView2.h"
 #import "localView.h"
 #import "searchBar.h"
 #import "DistrictViewController.h"
+@interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,showCategoryDelegate,RecommendDelegate,LocationChangeDelegate>{
+    @private
+    AFHTTPRequestOperationManager *_afmanager;
+}
 
-@interface HomeViewController : UIViewController<showNewsDelegate,showCategoryDelegate,HomeFoodViewDelegate,LocationChangeDelegate>
+- (instancetype)init;
 
 @property(nonatomic,retain)localView *local;
+@property(nonatomic,retain)UITableView *tableView;
+@property(nonatomic,retain)HomeCategoryView *categoryView;
+@property(nonatomic,retain)RecommendSliderView *businessView;
+@property(nonatomic,retain)RecommendSliderView *travelView;
+@property(nonatomic,retain)RecommendSliderView *productView;
+@property(nonatomic,retain)RecommendSliderView2 *foodView;
 
 @end

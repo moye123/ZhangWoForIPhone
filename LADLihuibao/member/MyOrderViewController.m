@@ -31,13 +31,22 @@
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    
+    UILabel *refreshView = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.bounds.origin.y, SWIDTH, 50)];
+    refreshView.text = @"松开手开始刷新";
+    refreshView.font = [UIFont systemFontOfSize:14.0];
+    refreshView.textColor = [UIColor grayColor];
+    //refreshView.hidden = YES;
+    [self.view addSubview:refreshView];
+    
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.view addSubview:self.tableView];
     
-    _refreshControl = [[LHBRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    //_refreshControl = [[LHBRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     //self.refreshControl = _refreshControl;
+    
     
     _pullUpView = [[LHBPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     self.tableView.tableFooterView = _pullUpView;
@@ -49,7 +58,7 @@
 }
 
 - (void)loadData{
-    [_afmanager GET:[SITEAPI stringByAppendingString:@"&mod=order&ac=showlist"] parameters:@{@"uid":@(self.userStatus.uid),@"username":self.userStatus.username} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=order&ac=showlist&page=%d",_page] parameters:@{@"uid":@(self.userStatus.uid),@"username":self.userStatus.username} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {
             
@@ -217,6 +226,21 @@
     [button setBackgroundImage:[UIImage imageNamed:@"button-buy-selected.png"] forState:UIControlStateHighlighted];
     [button setBackgroundColor:[UIColor whiteColor]];
     return button;
+}
+
+#pragma mark - scrollView delegate
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    CGFloat diffHeight = scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentSize.height;
+    if (diffHeight > 50) {
+        if (_pullUpView.hidden == NO) {
+            [_pullUpView beginLoading];
+            [self loadMore];
+        }
+    }
+    
+    if (scrollView.contentOffset.y < 120) {
+        [self refresh];
+    }
 }
 
 @end

@@ -50,8 +50,6 @@
     
     [tabBarController setViewControllers:@[navHome,navIncome,navCart,navMy]];
     [tabBarController.tabBar setBackgroundColor:[UIColor tabBarColor]];
-    [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]} forState:UIControlStateNormal];
-    
     CLLocationManager *clmanager = [[CLLocationManager alloc] init];
     if ([CLLocationManager locationServicesEnabled]) {
         CLLocation *location = [clmanager location];
@@ -61,7 +59,7 @@
                 CLPlacemark *placeMark = [placemarks firstObject];
                 [[NSUserDefaults standardUserDefaults] setObject:placeMark.locality forKey:@"locality"];
             }else {
-                NSLog(@"%@", error);
+                //NSLog(@"%@", error);
             }
         }];
     }

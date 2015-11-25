@@ -12,6 +12,7 @@
 #import "AboutusViewController.h"
 #import "MyOrderViewController.h"
 #import "MyWalletViewController.h"
+#import "MyProfileViewController.h"
 
 @implementation MyViewController
 @synthesize mainTableView;
@@ -42,6 +43,7 @@
         _buttonSetting = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-95, 50, 50, 30)];
         [_buttonSetting setTitle:@"设置" forState:UIControlStateNormal];
         [_buttonSetting setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_buttonSetting addTarget:self action:@selector(showProfile) forControlEvents:UIControlEventTouchUpInside];
         [_buttonSetting.titleLabel setFont:[UIFont systemFontOfSize:16.0]];
         [headView addSubview:_buttonSetting];
         
@@ -316,6 +318,11 @@
     MyOrderViewController *orderView = [[MyOrderViewController alloc] init];
     orderView.status = sender.tag;
     [self.navigationController pushViewController:orderView animated:YES];
+}
+
+- (void)showProfile{
+    MyProfileViewController *profileView = [[MyProfileViewController alloc] init];
+    [self.navigationController pushViewController:profileView animated:YES];
 }
 
 @end

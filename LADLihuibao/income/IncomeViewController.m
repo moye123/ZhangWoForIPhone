@@ -27,7 +27,7 @@
     [super viewDidLoad];
     [self setTitle:@"我的收益"];
     [self.navigationController.tabBarItem setTitle:@"收益"];
-    [self.view setBackgroundColor:[UIColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1]];
+    [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
     IncomeView *myIncomeView = [[IncomeView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
     [self.scrollView addSubview:myIncomeView];

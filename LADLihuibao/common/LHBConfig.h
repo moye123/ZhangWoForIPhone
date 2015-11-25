@@ -13,3 +13,5 @@
 
 #define ShareAppKey @"bead19631694"
 #define ShareAppSecret @"d60ed5a9a38a04efdf775470eefd5a8f"
+
+#define IOS [[[UIDevice currentDevice] systemVersion] floatValue]

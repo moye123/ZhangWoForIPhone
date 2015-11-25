@@ -29,6 +29,12 @@ typedef NS_ENUM(NSInteger,DSXPopViewStyle){
     DSXPopViewStyleError
 };
 
+UIKIT_EXTERN NSString *const DSXFontStyleThin;
+UIKIT_EXTERN NSString *const DSXFontStyleLight;
+UIKIT_EXTERN NSString *const DSXFontStyleDemilight;
+UIKIT_EXTERN NSString *const DSXFontStyleMedinum;
+UIKIT_EXTERN NSString *const DSXFontStyleBold;
+UIKIT_EXTERN NSString *const DSXFontStyleBlack;
 
 @interface DSXUI : NSObject
 
@@ -36,7 +42,6 @@ typedef NS_ENUM(NSInteger,DSXPopViewStyle){
 
 - (UIBarButtonItem *)barButtonWithImage:(NSString *)imageName target:(id)target action:(SEL)action;
 - (UIBarButtonItem *)barButtonWithStyle:(DSXBarButtonStyle)style target:(id)target action:(SEL)action;
-
 - (void)showPopViewWithStyle:(DSXPopViewStyle)style Message:(NSString *)message;
 - (UIView *)showLoadingViewWithMessage:(NSString *)message;
 - (void)showLoginFromViewController:(UIViewController *)controller;

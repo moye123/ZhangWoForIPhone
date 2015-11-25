@@ -56,5 +56,14 @@
 	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+    <key>UIAppFonts</key>
+    <array>
+        <string>thin.ttf</string>
+        <string>light.ttf</string>
+        <string>demilight.ttf</string>
+        <string>medium.ttf</string>
+        <string>bold.ttf</string>
+        <string>black.ttf</string>
+    </array>
 </dict>
 </plist>
