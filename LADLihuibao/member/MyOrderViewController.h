@@ -21,6 +21,7 @@
 - (instancetype)init;
 
 @property(nonatomic,assign)NSInteger status;
+@property(nonatomic,assign)NSInteger evaluate;
 @property(nonatomic,strong)NSMutableArray *orderList;
 @property(nonatomic,retain)LHBUserStatus *userStatus;
 @property(nonatomic,retain)UITableView *tableView;

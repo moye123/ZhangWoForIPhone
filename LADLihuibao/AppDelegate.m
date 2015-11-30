@@ -38,7 +38,7 @@
     navIncome.tabBarItem = [self tabBarItemWithTitle:@"收益" image:@"icon-income.png" selectedImage:@"icon-incomefill.png"];
     
     CartViewController *cartView = [[CartViewController alloc] init];
-    [cartView setTitle:@"购物车"];
+    [cartView setTitle:@"我的购物车"];
     navCart = [[LHBNavigationController alloc] initWithRootViewController:cartView];
     navCart.tabBarItem = [self tabBarItemWithTitle:@"购物车" image:@"icon-cart.png" selectedImage:@"icon-cartfill.png"];
     
@@ -50,6 +50,8 @@
     
     [tabBarController setViewControllers:@[navHome,navIncome,navCart,navMy]];
     [tabBarController.tabBar setBackgroundColor:[UIColor tabBarColor]];
+    
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 10;
     CLLocationManager *clmanager = [[CLLocationManager alloc] init];
     if ([CLLocationManager locationServicesEnabled]) {
         CLLocation *location = [clmanager location];

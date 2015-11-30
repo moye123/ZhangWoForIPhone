@@ -11,6 +11,7 @@
 #import "DSXUI.h"
 #import "DSXUtil.h"
 #import "DSXSliderView.h"
+#import "DSXPopMenu.h"
 #import "AFNetworking.h"
 #import "LHBUserStatus.h"
 #import "LHBRefreshControl.h"

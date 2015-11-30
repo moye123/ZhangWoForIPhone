@@ -13,6 +13,7 @@
 #import "TravelDetailViewController.h"
 #import "GoodsListViewController.h"
 #import "GoodsDetailViewController.h"
+#import "ChaoshiViewController.h"
 
 @implementation HomeViewController
 @synthesize local;
@@ -45,7 +46,8 @@
     search.textField.enabled = NO;
     self.navigationItem.titleView = search;
     
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMoreWhite target:self action:nil];
+    UIBarButtonItem *moreButton = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMoreWhite target:self action:@selector(showPopMenu)];
+    self.navigationItem.rightBarButtonItem = moreButton;
     CGRect frame = self.view.bounds;
     frame.size.height = frame.size.height - 54;
     _tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
@@ -70,22 +72,22 @@
     [_businessView loadData];
     
     //旅游推荐
-    _travelView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, 100)];
+    _travelView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, 120)];
     _travelView.tapDelegate = self;
     _travelView.groupid = 2;
     _travelView.dataCount = 6;
     _travelView.imgWidth = (SWIDTH-30)/2;
-    _travelView.imgHeight = 100;
+    _travelView.imgHeight = 120;
     _travelView.contentSize = CGSizeMake((SWIDTH-20)*3, 0);
     [_travelView loadData];
     
     //特色产品推荐
-    _productView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, 100)];
+    _productView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, 120)];
     _productView.tapDelegate = self;
     _productView.groupid = 3;
     _productView.dataCount = 6;
     _productView.imgWidth = (SWIDTH-20)/2;
-    _productView.imgHeight = 100;
+    _productView.imgHeight = 120;
     _productView.contentSize = CGSizeMake((SWIDTH-20)*3, 0);
     [_productView loadData];
     
@@ -96,6 +98,15 @@
     _foodView.dataCount = 6;
     _foodView.contentSize = CGSizeMake((SWIDTH-20)*2, 0);
     [_foodView loadData];
+    
+    _popMenu = [[DSXPopMenu alloc] init];
+    _popMenu.frame = CGRectMake(SWIDTH-110, -150, 100, 150);
+    _popMenu.hidden = YES;
+    [self.navigationController.view insertSubview:_popMenu belowSubview:self.navigationController.navigationBar];
+}
+
+- (void)showPopMenu{
+    [_popMenu toggle];
 }
 
 #pragma mark - tableView delegate
@@ -219,10 +230,8 @@
     
     //超市
     if ([tag isEqualToString:@"market"]) {
-        GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
-        goodsListController.catid = 3;
-        goodsListController.title = @"生活超市";
-        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
+        ChaoshiViewController *chaoshiController = [[ChaoshiViewController alloc] init];
+        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:chaoshiController];
         [nav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:nav animated:YES completion:nil];
     }

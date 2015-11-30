@@ -22,12 +22,13 @@
     BOOL _isRefreshing;
     LHBRefreshControl *_refreshControl;
     LHBPullUpView *_pullUpView;
+    AFHTTPRequestOperationManager *_afmanager;
 }
 @property(nonatomic,assign)int catid;
 @property(nonatomic,strong)NSMutableArray *newsArray;
 @property(nonatomic,assign)id<NewsListDelegate>showNewsDelegate;
 
 - (instancetype)initWithFrame:(CGRect)frame;
-- (void)loadData;
+- (void)showTableView;
 
 @end

@@ -7,10 +7,9 @@
 //
 
 #import "NewsListView.h"
-#import "UIImageView+WebCache.h"
 
 @implementation NewsListView
-@synthesize catid;
+@synthesize catid = _catid;
 @synthesize newsArray;
 @synthesize showNewsDelegate;
 
@@ -26,31 +25,33 @@
         _pullUpView = [[LHBPullUpView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
         _pullUpView.hidden = YES;
         self.tableFooterView = _pullUpView;
-        
         self.delegate = self;
         self.dataSource = self;
         self.newsArray = [NSMutableArray array];
         
-        NSString *key = [NSString stringWithFormat:@"newsList_%d",self.catid];
-        [self showTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:key]];
-        [self loadData];
+        _afmanager = [AFHTTPRequestOperationManager manager];
+        _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     }
     return self;
 }
 
+- (void)showTableView{
+    NSString *key = [NSString stringWithFormat:@"newsList_%d", _catid];
+    [self showTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:key]];
+    [self reFreshTableView];
+}
+
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=post&ac=showlist&catid=%d&page=%d",self.catid,_page];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSData *data = (NSData *)responseObject;
-        if ([data length] > 2) {
-            id array = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-            if ([array isKindOfClass:[NSArray class]]) {
-                NSString *key = [NSString stringWithFormat:@"newsList_%d",self.catid];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=post&ac=showlist&catid=%d&page=%d",_catid,_page];
+    [_afmanager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([array isKindOfClass:[NSArray class]]) {
+            if (_isRefreshing && [array count]>0) {
+                NSString *key = [NSString stringWithFormat:@"newsList_%d",_catid];
                 [[NSUserDefaults standardUserDefaults] setObject:array forKey:key];
-                [self performSelectorOnMainThread:@selector(showTableViewWithArray:) withObject:array waitUntilDone:YES];
             }
+            [self showTableViewWithArray:array];
+            
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);
@@ -116,8 +117,8 @@
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 8, SWIDTH-16, 140)];
     imageView.layer.cornerRadius = 3.0;
     imageView.layer.masksToBounds = YES;
-    //imageView.contentMode = UIViewContentModeScaleAspectFill;
     [imageView sd_setImageWithURL:[NSURL URLWithString:[newsItem objectForKey:@"pic"]] placeholderImage:[UIImage imageNamed:@"placeholder.png"]];
+    [imageView setContentMode:UIViewContentModeScaleAspectFill];
     [cell.contentView addSubview:imageView];
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 155, SWIDTH-16, 32)];

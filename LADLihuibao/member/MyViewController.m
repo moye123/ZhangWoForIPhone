@@ -156,31 +156,31 @@
             cell.contentView.layer.masksToBounds = YES;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             UIButton *buttonPay = [self buttonWithTitle:@"待付款" image:@"icon-wating-pay.png"];
-            buttonPay.tag = 0;
+            buttonPay.tag = 101;
             buttonPay.frame = CGRectMake(-1, -1, width+1, 72);
             [buttonPay addTarget:self action:@selector(showOrder:) forControlEvents:UIControlEventTouchUpInside];
             [contentView addSubview:buttonPay];
             
             UIButton *buttonUse = [self buttonWithTitle:@"待使用" image:@"icon-wating-use.png"];
-            buttonUse.tag = 1;
+            buttonUse.tag = 102;
             buttonUse.frame = CGRectMake(width-1, -1, width+1, 72);
             [buttonUse addTarget:self action:@selector(showOrder:) forControlEvents:UIControlEventTouchUpInside];
             [contentView addSubview:buttonUse];
             
             UIButton *buttonReceipt = [self buttonWithTitle:@"待收货" image:@"icon-wating-receipt.png"];
-            buttonReceipt.tag = 2;
+            buttonReceipt.tag = 103;
             buttonReceipt.frame = CGRectMake(width*2-1, -1, width+1, 72);
             [buttonReceipt addTarget:self action:@selector(showOrder:) forControlEvents:UIControlEventTouchUpInside];
             [contentView addSubview:buttonReceipt];
             
-            UIButton *buttonComment = [self buttonWithTitle:@"待收货" image:@"icon-wating-comment.png"];
-            buttonComment.tag = 3;
+            UIButton *buttonComment = [self buttonWithTitle:@"待评价" image:@"icon-wating-comment.png"];
+            buttonComment.tag = 104;
             buttonComment.frame = CGRectMake(width*3-1, -1, width+1, 72);
             [buttonComment addTarget:self action:@selector(showOrder:) forControlEvents:UIControlEventTouchUpInside];
             [contentView addSubview:buttonComment];
             
             UIButton *buttonReturn = [self buttonWithTitle:@"退货" image:@"icon-wating-return.png"];
-            buttonReturn.tag = 4;
+            buttonReturn.tag = 105;
             buttonReturn.frame = CGRectMake(width*4-1, -1, width+1, 72);
             [buttonReturn addTarget:self action:@selector(showOrder:) forControlEvents:UIControlEventTouchUpInside];
             [contentView addSubview:buttonReturn];
@@ -250,6 +250,7 @@
         if (indexPath.row == 0) {
             if (self.userStatus.isLogined) {
                 MyOrderViewController *orderView = [[MyOrderViewController alloc] init];
+                orderView.title = @"我的订单";
                 [self.navigationController pushViewController:orderView animated:YES];
             }else {
                 [self showLogin];
@@ -315,9 +316,37 @@
 }
 
 - (void)showOrder:(UIButton *)sender{
-    MyOrderViewController *orderView = [[MyOrderViewController alloc] init];
-    orderView.status = sender.tag;
-    [self.navigationController pushViewController:orderView animated:YES];
+    if (self.userStatus.isLogined) {
+        MyOrderViewController *orderView = [[MyOrderViewController alloc] init];
+        switch (sender.tag) {
+            case 101:
+                orderView.status = 1;
+                orderView.title = @"待发货";
+                break;
+            case 102:
+                orderView.status = 4;
+                orderView.title = @"待使用";
+                break;
+            case 103:
+                orderView.status = 2;
+                orderView.title = @"待收货";
+                break;
+            case 104:
+                orderView.evaluate = 0;
+                orderView.title = @"待评价";
+                break;
+            case 105:
+                orderView.status = 6;
+                orderView.title = @"申请退款";
+                break;
+            default: orderView.title = @"我的订单";
+                break;
+        }
+        [self.navigationController pushViewController:orderView animated:YES];
+    }else {
+        [self showLogin];
+    }
+    
 }
 
 - (void)showProfile{

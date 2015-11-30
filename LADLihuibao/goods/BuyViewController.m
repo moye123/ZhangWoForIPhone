@@ -15,13 +15,38 @@
 @synthesize contentTableView = _contentTableView;
 @synthesize userStatus;
 
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+        _afmanager = [AFHTTPRequestOperationManager manager];
+        _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    }
+    return self;
+}
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self setTitle:@"购买"];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     self.userStatus = [LHBUserStatus status];
+    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&datatype=json&id=%d",_goodsid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id dictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([dictionary isKindOfClass:[NSDictionary class]]) {
+            _goodsdata = dictionary;
+            [self showTableView];
+        }else {
+            [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"数据加载失败"];
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
+    }];
     
+}
+
+- (void)showTableView{
+    if (!_goodsdata) {
+        _goodsdata = [NSDictionary dictionary];
+    }
     _contentTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _contentTableView.delegate = self;
     _contentTableView.dataSource = self;
@@ -41,7 +66,6 @@
     [_submitButton setBackgroundImage:[UIImage imageNamed:@"button-buy-selected.png"] forState:UIControlStateHighlighted];
     [_submitButton addTarget:self action:@selector(submitOrder) forControlEvents:UIControlEventTouchUpInside];
     [footerView addSubview:_submitButton];
-    
 }
 
 - (void)back{

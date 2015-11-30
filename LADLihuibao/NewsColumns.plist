@@ -4,6 +4,18 @@
 <array>
 	<dict>
 		<key>catid</key>
+		<integer>96</integer>
+		<key>cname</key>
+		<string>国内头条</string>
+	</dict>
+	<dict>
+		<key>catid</key>
+		<integer>97</integer>
+		<key>cname</key>
+		<string>国际热点</string>
+	</dict>
+	<dict>
+		<key>catid</key>
 		<integer>100</integer>
 		<key>cname</key>
 		<string>本地新闻</string>
@@ -19,6 +31,12 @@
 		<integer>102</integer>
 		<key>cname</key>
 		<string>热点关注</string>
+	</dict>
+	<dict>
+		<key>catid</key>
+		<integer>103</integer>
+		<key>cname</key>
+		<string>最美凉都</string>
 	</dict>
 </array>
 </plist>

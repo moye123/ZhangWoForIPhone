@@ -11,12 +11,16 @@
 #import "NewsColumnView.h"
 #import "NewsListView.h"
 
-@interface NewsViewController : UIViewController<NewsListDelegate,UIScrollViewDelegate>
+@interface NewsViewController : UIViewController<NewsListDelegate,UIScrollViewDelegate>{
+    @private
+    DSXPopMenu *_popMenu;
+}
 
 @property(nonatomic,strong)NSArray *columns;
 @property(nonatomic,retain)NewsColumnView *columnView;
-@property(nonatomic,retain)UIScrollView *mainScrollView;
+@property(nonatomic,retain)UIScrollView *scrollView;
 @property(nonatomic,retain)UIToolbar *toolbar;
 @property(nonatomic,strong)NSMutableArray *columnButtons;
+@property(nonatomic,retain)UIScrollView *navView;
 
 @end

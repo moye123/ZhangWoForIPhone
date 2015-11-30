@@ -16,7 +16,10 @@
     UIButton *_useCoupons;
     UILabel *_total;
     UIButton *_submitButton;
+    AFHTTPRequestOperationManager *_afmanager;
 }
+
+- (instancetype)init;
 
 @property(nonatomic,assign)NSInteger goodsid;
 @property(nonatomic,strong)NSDictionary *goodsdata;

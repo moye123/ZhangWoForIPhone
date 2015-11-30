@@ -8,10 +8,19 @@
 
 #import <UIKit/UIKit.h>
 #import "LHBCommon.h"
+#import "AddToCartView.h"
 
-@interface GoodsDetailViewController : UIViewController<UIWebViewDelegate>
+@interface GoodsDetailViewController : UIViewController<UIWebViewDelegate,UIScrollViewDelegate>{
+    @private
+    UIButton *_addToCart;
+    UIButton *_buyNow;
+    UIView *_modalView;
+    UIView *_cartView;
+    AddToCartView *_addCartView;
+}
 
 @property(nonatomic,assign)NSInteger goodsid;
 @property(nonatomic,strong)NSDictionary *goodsdata;
 @property(nonatomic,retain)UIWebView *contentWebView;
+@property(nonatomic,retain)LHBUserStatus *userStatus;
 @end
