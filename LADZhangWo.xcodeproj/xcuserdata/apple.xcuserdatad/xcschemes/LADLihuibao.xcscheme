@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1803A6AB1BDB6472003E0538"
-               BuildableName = "LADLihuibao.app"
-               BlueprintName = "LADLihuibao"
-               ReferencedContainer = "container:LADLihuibao.xcodeproj">
+               BuildableName = "LADZhangWo.app"
+               BlueprintName = "LADZhangWo"
+               ReferencedContainer = "container:LADZhangWo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "1803A6C71BDB6472003E0538"
                BuildableName = "LADLihuibaoTests.xctest"
                BlueprintName = "LADLihuibaoTests"
-               ReferencedContainer = "container:LADLihuibao.xcodeproj">
+               ReferencedContainer = "container:LADZhangWo.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -45,7 +45,7 @@
                BlueprintIdentifier = "1803A6D21BDB6472003E0538"
                BuildableName = "LADLihuibaoUITests.xctest"
                BlueprintName = "LADLihuibaoUITests"
-               ReferencedContainer = "container:LADLihuibao.xcodeproj">
+               ReferencedContainer = "container:LADZhangWo.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -53,9 +53,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1803A6AB1BDB6472003E0538"
-            BuildableName = "LADLihuibao.app"
-            BlueprintName = "LADLihuibao"
-            ReferencedContainer = "container:LADLihuibao.xcodeproj">
+            BuildableName = "LADZhangWo.app"
+            BlueprintName = "LADZhangWo"
+            ReferencedContainer = "container:LADZhangWo.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1803A6AB1BDB6472003E0538"
-            BuildableName = "LADLihuibao.app"
-            BlueprintName = "LADLihuibao"
-            ReferencedContainer = "container:LADLihuibao.xcodeproj">
+            BuildableName = "LADZhangWo.app"
+            BlueprintName = "LADZhangWo"
+            ReferencedContainer = "container:LADZhangWo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -95,9 +95,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1803A6AB1BDB6472003E0538"
-            BuildableName = "LADLihuibao.app"
-            BlueprintName = "LADLihuibao"
-            ReferencedContainer = "container:LADLihuibao.xcodeproj">
+            BuildableName = "LADZhangWo.app"
+            BlueprintName = "LADZhangWo"
+            ReferencedContainer = "container:LADZhangWo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

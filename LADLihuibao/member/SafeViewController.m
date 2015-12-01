@@ -1,16 +1,16 @@
 //
-//  MyProfileViewController.m
-//  LADLihuibao
+//  SafeViewController.m
+//  LADZhangWo
 //
-//  Created by Apple on 15/11/21.
+//  Created by Apple on 15/11/30.
 //  Copyright © 2015年 Apple. All rights reserved.
 //
 
-#import "MyProfileViewController.h"
+#import "SafeViewController.h"
 
-@implementation MyProfileViewController
-@synthesize tableView = _tableView;
+@implementation SafeViewController
 @synthesize userStatus = _userStatus;
+@synthesize tableView = _tableView;
 
 - (instancetype)init{
     self = [super init];
@@ -26,7 +26,7 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    [self setTitle:@"个人资料"];
+    [self setTitle:@"账户安全"];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
 }
@@ -41,7 +41,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 6;
+    return 4;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -60,23 +60,15 @@
         }
         
         if (indexPath.row == 1) {
-            cell.textLabel.text = @"头像";
+            cell.textLabel.text = @"修改手机号";
         }
         
         if (indexPath.row == 2) {
-            cell.textLabel.text = @"生日";
+            cell.textLabel.text = @"修改邮箱";
         }
         
         if (indexPath.row == 3) {
-            cell.textLabel.text = @"性别";
-        }
-        
-        if (indexPath.row == 4) {
-            cell.textLabel.text = @"星座";
-        }
-        
-        if (indexPath.row == 5) {
-            cell.textLabel.text = @"收货地址管理";
+            cell.textLabel.text = @"修改密码";
         }
     }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;

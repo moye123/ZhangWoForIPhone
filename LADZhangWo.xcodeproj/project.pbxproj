@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -110,6 +110,9 @@
 		185551D21BF1DD7F0003B9AA /* icon-arrow-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 185551D11BF1DD7F0003B9AA /* icon-arrow-down.png */; };
 		185551D51BF1DFD50003B9AA /* searchBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 185551D41BF1DFD50003B9AA /* searchBar.m */; };
 		185551D71BF1E0F20003B9AA /* icon-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 185551D61BF1E0F20003B9AA /* icon-search.png */; };
+		18579E8A1C0C2CAA00EE4914 /* SafeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18579E891C0C2CAA00EE4914 /* SafeViewController.m */; };
+		18579E8D1C0C2DD700EE4914 /* FeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18579E8C1C0C2DD700EE4914 /* FeedbackViewController.m */; };
+		18579E901C0C3D2500EE4914 /* MyMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18579E8F1C0C3D2500EE4914 /* MyMessageViewController.m */; };
 		185A97241BDF1CD20027B9B5 /* navbg.png in Resources */ = {isa = PBXBuildFile; fileRef = 185A97231BDF1CD20027B9B5 /* navbg.png */; };
 		185A972B1BDF1E1E0027B9B5 /* LHBNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A972A1BDF1E1E0027B9B5 /* LHBNavigationController.m */; };
 		185A97311BDF1F4B0027B9B5 /* UIColor+color.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A97301BDF1F4B0027B9B5 /* UIColor+color.m */; };
@@ -255,6 +258,7 @@
 		189494E51BFB137E00B51C81 /* icon-error.png in Resources */ = {isa = PBXBuildFile; fileRef = 189494DF1BFB137E00B51C81 /* icon-error.png */; };
 		189494E61BFB137E00B51C81 /* icon-error@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 189494E01BFB137E00B51C81 /* icon-error@2x.png */; };
 		189494E71BFB137E00B51C81 /* icon-error@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 189494E11BFB137E00B51C81 /* icon-error@3x.png */; };
+		189F35001C0C213200E6D97F /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 189F34FF1C0C213200E6D97F /* SettingViewController.m */; };
 		18B585331BE9D2100060F32C /* icon-info.png in Resources */ = {isa = PBXBuildFile; fileRef = 18B585301BE9D2100060F32C /* icon-info.png */; };
 		18B585341BE9D2100060F32C /* icon-info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18B585311BE9D2100060F32C /* icon-info@2x.png */; };
 		18B585351BE9D2100060F32C /* icon-info@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18B585321BE9D2100060F32C /* icon-info@3x.png */; };
@@ -270,7 +274,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1803A6AC1BDB6472003E0538 /* LADLihuibao.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LADLihuibao.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1803A6AC1BDB6472003E0538 /* LADZhangWo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LADZhangWo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1803A6B01BDB6472003E0538 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1803A6B21BDB6472003E0538 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1803A6B31BDB6472003E0538 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -439,6 +443,12 @@
 		185551D31BF1DFD50003B9AA /* searchBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = searchBar.h; sourceTree = "<group>"; };
 		185551D41BF1DFD50003B9AA /* searchBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = searchBar.m; sourceTree = "<group>"; };
 		185551D61BF1E0F20003B9AA /* icon-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-search.png"; sourceTree = "<group>"; };
+		18579E881C0C2CAA00EE4914 /* SafeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SafeViewController.h; sourceTree = "<group>"; };
+		18579E891C0C2CAA00EE4914 /* SafeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SafeViewController.m; sourceTree = "<group>"; };
+		18579E8B1C0C2DD700EE4914 /* FeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbackViewController.h; sourceTree = "<group>"; };
+		18579E8C1C0C2DD700EE4914 /* FeedbackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedbackViewController.m; sourceTree = "<group>"; };
+		18579E8E1C0C3D2500EE4914 /* MyMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyMessageViewController.h; sourceTree = "<group>"; };
+		18579E8F1C0C3D2500EE4914 /* MyMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyMessageViewController.m; sourceTree = "<group>"; };
 		185A97231BDF1CD20027B9B5 /* navbg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbg.png; sourceTree = "<group>"; };
 		185A97271BDF1D9E0027B9B5 /* LHBCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LHBCommon.h; sourceTree = "<group>"; };
 		185A97281BDF1DBA0027B9B5 /* LHBConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LHBConfig.h; sourceTree = "<group>"; };
@@ -620,6 +630,8 @@
 		189494DF1BFB137E00B51C81 /* icon-error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-error.png"; sourceTree = "<group>"; };
 		189494E01BFB137E00B51C81 /* icon-error@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-error@2x.png"; sourceTree = "<group>"; };
 		189494E11BFB137E00B51C81 /* icon-error@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-error@3x.png"; sourceTree = "<group>"; };
+		189F34FE1C0C213200E6D97F /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
+		189F34FF1C0C213200E6D97F /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		18B585301BE9D2100060F32C /* icon-info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-info.png"; sourceTree = "<group>"; };
 		18B585311BE9D2100060F32C /* icon-info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-info@2x.png"; sourceTree = "<group>"; };
 		18B585321BE9D2100060F32C /* icon-info@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-info@3x.png"; sourceTree = "<group>"; };
@@ -694,7 +706,7 @@
 		1803A6AD1BDB6472003E0538 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1803A6AC1BDB6472003E0538 /* LADLihuibao.app */,
+				1803A6AC1BDB6472003E0538 /* LADZhangWo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1080,6 +1092,8 @@
 				180E338F1BF71A8D00E066C3 /* AboutusViewController.m */,
 				186342C21C00145A001375DB /* MyOrderViewController.h */,
 				186342C31C00145A001375DB /* MyOrderViewController.m */,
+				18579E8E1C0C3D2500EE4914 /* MyMessageViewController.h */,
+				18579E8F1C0C3D2500EE4914 /* MyMessageViewController.m */,
 			);
 			path = member;
 			sourceTree = "<group>";
@@ -1132,6 +1146,12 @@
 			children = (
 				186342C71C0015D8001375DB /* MyProfileViewController.h */,
 				186342C81C0015D8001375DB /* MyProfileViewController.m */,
+				189F34FE1C0C213200E6D97F /* SettingViewController.h */,
+				189F34FF1C0C213200E6D97F /* SettingViewController.m */,
+				18579E881C0C2CAA00EE4914 /* SafeViewController.h */,
+				18579E891C0C2CAA00EE4914 /* SafeViewController.m */,
+				18579E8B1C0C2DD700EE4914 /* FeedbackViewController.h */,
+				18579E8C1C0C2DD700EE4914 /* FeedbackViewController.m */,
 			);
 			name = setting;
 			sourceTree = "<group>";
@@ -1450,9 +1470,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1803A6AB1BDB6472003E0538 /* LADLihuibao */ = {
+		1803A6AB1BDB6472003E0538 /* LADZhangWo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1803A6DC1BDB6472003E0538 /* Build configuration list for PBXNativeTarget "LADLihuibao" */;
+			buildConfigurationList = 1803A6DC1BDB6472003E0538 /* Build configuration list for PBXNativeTarget "LADZhangWo" */;
 			buildPhases = (
 				1803A6A81BDB6472003E0538 /* Sources */,
 				1803A6A91BDB6472003E0538 /* Frameworks */,
@@ -1462,9 +1482,9 @@
 			);
 			dependencies = (
 			);
-			name = LADLihuibao;
+			name = LADZhangWo;
 			productName = LADLihuibao;
-			productReference = 1803A6AC1BDB6472003E0538 /* LADLihuibao.app */;
+			productReference = 1803A6AC1BDB6472003E0538 /* LADZhangWo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1482,8 +1502,8 @@
 					};
 				};
 			};
-			buildConfigurationList = 1803A6A71BDB6472003E0538 /* Build configuration list for PBXProject "LADLihuibao" */;
-			compatibilityVersion = "Xcode 3.2";
+			buildConfigurationList = 1803A6A71BDB6472003E0538 /* Build configuration list for PBXProject "LADZhangWo" */;
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1496,7 +1516,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1803A6AB1BDB6472003E0538 /* LADLihuibao */,
+				1803A6AB1BDB6472003E0538 /* LADZhangWo */,
 			);
 		};
 /* End PBXProject section */
@@ -1672,12 +1692,14 @@
 				188D99061BE4736900CDC72A /* GoodsViewController.m in Sources */,
 				1803A7D91BDB68DE003E0538 /* SDWebImageManager.m in Sources */,
 				185B12F11BE84D57002AFBC4 /* RegisterViewController.m in Sources */,
+				18579E901C0C3D2500EE4914 /* MyMessageViewController.m in Sources */,
 				1842993E1C05530500F8DD45 /* MyIncomeViewController.m in Sources */,
 				1803A7D31BDB68DE003E0538 /* NSData+ImageContentType.m in Sources */,
 				1893081D1BE34C5300E58E86 /* NewsColumnView.m in Sources */,
 				1803A7D51BDB68DE003E0538 /* SDWebImageCompat.m in Sources */,
 				1803A7E11BDB68DE003E0538 /* UIView+WebCacheOperation.m in Sources */,
 				189307C31BE306A400E58E86 /* MyHeadView.m in Sources */,
+				18579E8D1C0C2DD700EE4914 /* FeedbackViewController.m in Sources */,
 				183284F11BFD989800C839B3 /* MyAnnotation.m in Sources */,
 				1825B58C1BE5CCB000DFC4CD /* AFHTTPSessionManager.m in Sources */,
 				1871C2971BFC282A0021EC40 /* CommentView.m in Sources */,
@@ -1721,6 +1743,7 @@
 				1803A7981BDB6851003E0538 /* NewsViewController.m in Sources */,
 				18F2B1651C080F71006024D3 /* DSXModalView.m in Sources */,
 				1825B5921BE5CCB000DFC4CD /* AFURLSessionManager.m in Sources */,
+				18579E8A1C0C2CAA00EE4914 /* SafeViewController.m in Sources */,
 				1803A7961BDB6851003E0538 /* HomeViewController.m in Sources */,
 				18F971F11BEB32B300417D86 /* LHBUserStatus.m in Sources */,
 				1825B58A1BE5CCB000DFC4CD /* AFHTTPRequestOperation.m in Sources */,
@@ -1741,6 +1764,7 @@
 				1892FF8F1C06BD8C004BF8BD /* ChaoshiListViewController.m in Sources */,
 				1825B5721BE5BFC600DFC4CD /* TravelDetailViewController.m in Sources */,
 				1803A7D21BDB68DE003E0538 /* MKAnnotationView+WebCache.m in Sources */,
+				189F35001C0C213200E6D97F /* SettingViewController.m in Sources */,
 				183284F61BFF115900C839B3 /* BuyViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1862,8 +1886,8 @@
 					"$(PROJECT_DIR)/LADLihuibao/ShareSDK/Extend/SinaWeiboSDK",
 					"$(PROJECT_DIR)/LADLihuibao/ShareSDK/Extend/WeChatSDK",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lihuibao1688.LADLihuibao;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = cn.zhangwoo.zhangwo;
+				PRODUCT_NAME = LADZhangWo;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -1891,8 +1915,8 @@
 					"$(PROJECT_DIR)/LADLihuibao/ShareSDK/Extend/SinaWeiboSDK",
 					"$(PROJECT_DIR)/LADLihuibao/ShareSDK/Extend/WeChatSDK",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lihuibao1688.LADLihuibao;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = cn.zhangwoo.zhangwo;
+				PRODUCT_NAME = LADZhangWo;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -1901,7 +1925,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1803A6A71BDB6472003E0538 /* Build configuration list for PBXProject "LADLihuibao" */ = {
+		1803A6A71BDB6472003E0538 /* Build configuration list for PBXProject "LADZhangWo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1803A6DA1BDB6472003E0538 /* Debug */,
@@ -1910,7 +1934,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1803A6DC1BDB6472003E0538 /* Build configuration list for PBXNativeTarget "LADLihuibao" */ = {
+		1803A6DC1BDB6472003E0538 /* Build configuration list for PBXNativeTarget "LADZhangWo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1803A6DD1BDB6472003E0538 /* Debug */,

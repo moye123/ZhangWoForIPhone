@@ -44,26 +44,28 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
-    <key>UIAppFonts</key>
-    <array>
-        <string>thin.ttf</string>
-        <string>light.ttf</string>
-        <string>demilight.ttf</string>
-        <string>medium.ttf</string>
-        <string>bold.ttf</string>
-        <string>black.ttf</string>
-    </array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>thin.ttf</string>
+		<string>light.ttf</string>
+		<string>demilight.ttf</string>
+		<string>medium.ttf</string>
+		<string>bold.ttf</string>
+		<string>black.ttf</string>
+	</array>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDefault</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
 </dict>
 </plist>

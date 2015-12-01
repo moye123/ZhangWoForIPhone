@@ -12,7 +12,8 @@
 #import "AboutusViewController.h"
 #import "MyOrderViewController.h"
 #import "MyWalletViewController.h"
-#import "MyProfileViewController.h"
+#import "SettingViewController.h"
+#import "MyMessageViewController.h"
 
 @implementation MyViewController
 @synthesize mainTableView;
@@ -43,12 +44,13 @@
         _buttonSetting = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-95, 50, 50, 30)];
         [_buttonSetting setTitle:@"设置" forState:UIControlStateNormal];
         [_buttonSetting setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_buttonSetting addTarget:self action:@selector(showProfile) forControlEvents:UIControlEventTouchUpInside];
+        [_buttonSetting addTarget:self action:@selector(showSetting) forControlEvents:UIControlEventTouchUpInside];
         [_buttonSetting.titleLabel setFont:[UIFont systemFontOfSize:16.0]];
         [headView addSubview:_buttonSetting];
         
         _buttonMessage = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-40, 54, 22, 22)];
         [_buttonMessage setBackgroundImage:[UIImage imageNamed:@"icon-message-30.png"] forState:UIControlStateNormal];
+        [_buttonMessage addTarget:self action:@selector(showMessage) forControlEvents:UIControlEventTouchUpInside];
         [headView addSubview:_buttonMessage];
         
     }else{
@@ -349,9 +351,23 @@
     
 }
 
-- (void)showProfile{
-    MyProfileViewController *profileView = [[MyProfileViewController alloc] init];
-    [self.navigationController pushViewController:profileView animated:YES];
+- (void)showSetting{
+    if (self.userStatus.isLogined) {
+        SettingViewController *setttingView = [[SettingViewController alloc] init];
+        [self.navigationController pushViewController:setttingView animated:YES];
+    }else {
+        [self showLogin];
+    }
+    
+}
+
+- (void)showMessage{
+    if (self.userStatus.isLogined) {
+        MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
+        [self.navigationController pushViewController:messageView animated:YES];
+    }else {
+        [self showLogin];
+    }
 }
 
 @end

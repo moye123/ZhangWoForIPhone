@@ -1,14 +1,17 @@
 //
-//  MyProfileViewController.m
+//  SettingViewController.m
 //  LADLihuibao
 //
-//  Created by Apple on 15/11/21.
+//  Created by Apple on 15/11/30.
 //  Copyright © 2015年 Apple. All rights reserved.
 //
 
+#import "SettingViewController.h"
 #import "MyProfileViewController.h"
+#import "SafeViewController.h"
+#import "FeedbackViewController.h"
 
-@implementation MyProfileViewController
+@implementation SettingViewController
 @synthesize tableView = _tableView;
 @synthesize userStatus = _userStatus;
 
@@ -26,8 +29,7 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    [self setTitle:@"个人资料"];
-    [self.view setBackgroundColor:[UIColor backColor]];
+    [self setTitle:@"个人设置"];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
 }
 
@@ -35,17 +37,21 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-#pragma mark - tableView delegate
+#pragma mark - tableView delegate;
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 6;
+    return 4;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 45.0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 0.0001;
+    return 0.001;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
@@ -56,27 +62,18 @@
     UITableViewCell *cell = [[UITableViewCell alloc] init];
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            cell.textLabel.text = @"用户名";
+            cell.textLabel.text = @"修改资料";
         }
-        
         if (indexPath.row == 1) {
-            cell.textLabel.text = @"头像";
+            cell.textLabel.text = @"账号安全";
         }
         
         if (indexPath.row == 2) {
-            cell.textLabel.text = @"生日";
+            cell.textLabel.text = @"意见反馈";
         }
         
         if (indexPath.row == 3) {
-            cell.textLabel.text = @"性别";
-        }
-        
-        if (indexPath.row == 4) {
-            cell.textLabel.text = @"星座";
-        }
-        
-        if (indexPath.row == 5) {
-            cell.textLabel.text = @"收货地址管理";
+            cell.textLabel.text = @"使用帮助";
         }
     }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -86,6 +83,23 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
+    
+    if (indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            MyProfileViewController *profileView = [[MyProfileViewController alloc] init];
+            [self.navigationController pushViewController:profileView animated:YES];
+        }
+        
+        if (indexPath.row == 1) {
+            SafeViewController *safeView = [[SafeViewController alloc] init];
+            [self.navigationController pushViewController:safeView animated:YES];
+        }
+        
+        if (indexPath.row == 2) {
+            FeedbackViewController *feedbackView = [[FeedbackViewController alloc] init];
+            [self.navigationController pushViewController:feedbackView animated:YES];
+        }
+    }
 }
 
 @end
