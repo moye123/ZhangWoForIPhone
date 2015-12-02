@@ -22,7 +22,7 @@
     [self.view setBackgroundColor:[UIColor whiteColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
-    _userStatus = [LHBUserStatus status];
+    _userStatus = [ZWUserStatus status];
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     

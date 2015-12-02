@@ -1,16 +1,17 @@
 //
-//  LHBUserStatus.m
+//  ZWUserStatus.m
 //  LADLihuibao
 //
 //  Created by Apple on 15/11/5.
 //  Copyright © 2015年 Apple. All rights reserved.
 //
+//
 
-#import "LHBUserStatus.h"
+#import "ZWUserStatus.h"
 
 NSString *const UserStatusChangedNotification = @"userStatusChanged";
 
-@implementation LHBUserStatus
+@implementation ZWUserStatus
 @synthesize uid;
 @synthesize username;
 @synthesize email;

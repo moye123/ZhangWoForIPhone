@@ -27,7 +27,7 @@
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
     //初始化用户登录状态
-    self.userStatus = [[LHBUserStatus alloc] init];
+    self.userStatus = [[ZWUserStatus alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStatusChanged) name:UserStatusChangedNotification object:nil];
     //初始化网络操作对象
     _afmanager = [AFHTTPRequestOperationManager manager];
@@ -144,7 +144,7 @@
 }
 
 - (void)userStatusChanged{
-    self.userStatus = [LHBUserStatus status];
+    self.userStatus = [ZWUserStatus status];
 }
 
 #pragma mark - webView delegate

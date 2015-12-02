@@ -7,13 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface SafeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
 
 - (instancetype)init;
 
 @property(nonatomic,retain)UITableView *tableView;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @protocol NewsListDelegate <NSObject>
 
@@ -20,8 +20,8 @@
     @private
     int _page;
     BOOL _isRefreshing;
-    LHBRefreshControl *_refreshControl;
-    LHBPullUpView *_pullUpView;
+    ZWRefreshControl *_refreshControl;
+    ZWPullUpView *_pullUpView;
     AFHTTPRequestOperationManager *_afmanager;
 }
 @property(nonatomic,assign)int catid;

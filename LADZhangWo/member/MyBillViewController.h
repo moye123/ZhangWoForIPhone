@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface MyBillViewController : UITableViewController{
     @private
@@ -15,6 +15,6 @@
 }
 
 @property(nonatomic,strong)NSMutableArray *billList;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

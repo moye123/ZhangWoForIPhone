@@ -18,7 +18,7 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        _userStatus = [LHBUserStatus status];
+        _userStatus = [ZWUserStatus status];
         _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
         _tableView.delegate = self;
         _tableView.dataSource = self;

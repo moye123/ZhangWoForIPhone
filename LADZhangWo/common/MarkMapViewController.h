@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 #import "MyAnnotation.h"
 
 @interface MarkMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate>{

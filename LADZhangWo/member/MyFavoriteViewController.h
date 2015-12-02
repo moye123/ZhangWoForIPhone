@@ -7,16 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface MyFavoriteViewController : UITableViewController<UIScrollViewDelegate>{
-    LHBPullUpView *_pullUpView;
-    LHBRefreshControl *_refreshContorl;
+    ZWPullUpView*_pullUpView;
+    ZWRefreshControl *_refreshContorl;
     BOOL _isRefreshing;
     int _page;
 }
 
 @property(nonatomic,strong)NSMutableArray *favoriteList;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)AFHTTPRequestOperationManager *afmanager;
 @end

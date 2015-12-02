@@ -18,7 +18,7 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        self.userStatus = [LHBUserStatus status];
+        self.userStatus = [ZWUserStatus status];
     }
     return self;
 }

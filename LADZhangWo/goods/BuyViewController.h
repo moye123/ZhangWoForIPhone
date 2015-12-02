@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface BuyViewController : UITableViewController<UITableViewDataSource,UITableViewDelegate>{
     @private
@@ -24,6 +24,6 @@
 @property(nonatomic,assign)NSInteger goodsid;
 @property(nonatomic,strong)NSDictionary *goodsdata;
 @property(nonatomic,retain)UITableView *contentTableView;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

@@ -23,7 +23,7 @@
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
-    self.userStatus = [LHBUserStatus status];
+    self.userStatus = [ZWUserStatus status];
     _contentWebView = [[UIWebView alloc] initWithFrame:self.view.frame];
     _contentWebView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
     _contentWebView.delegate = self;

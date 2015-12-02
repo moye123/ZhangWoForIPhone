@@ -21,17 +21,12 @@
 		18BF16231C0E7B7200126918 /* ChaoshiDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14A21C0E7B7200126918 /* ChaoshiDetailViewController.m */; };
 		18BF16241C0E7B7200126918 /* ChaoshiListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14A41C0E7B7200126918 /* ChaoshiListViewController.m */; };
 		18BF16251C0E7B7200126918 /* ChaoshiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14A61C0E7B7200126918 /* ChaoshiViewController.m */; };
-		18BF16261C0E7B7200126918 /* DSXSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14A91C0E7B7200126918 /* DSXSliderView.m */; };
-		18BF16271C0E7B7200126918 /* DSXStarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14AB1C0E7B7200126918 /* DSXStarView.m */; };
-		18BF16281C0E7B7200126918 /* DSXUI.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14AD1C0E7B7200126918 /* DSXUI.m */; };
-		18BF16291C0E7B7200126918 /* DSXUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14AF1C0E7B7200126918 /* DSXUtil.m */; };
-		18BF16301C0E7B7200126918 /* LHBNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14BA1C0E7B7200126918 /* LHBNavigationController.m */; };
-		18BF16311C0E7B7200126918 /* LHBPullUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14BC1C0E7B7200126918 /* LHBPullUpView.m */; };
-		18BF16321C0E7B7200126918 /* LHBRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14BE1C0E7B7200126918 /* LHBRefreshControl.m */; };
-		18BF16331C0E7B7200126918 /* LHBUserStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14C01C0E7B7200126918 /* LHBUserStatus.m */; };
+		18BF16301C0E7B7200126918 /* ZWNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14BA1C0E7B7200126918 /* ZWNavigationController.m */; };
+		18BF16311C0E7B7200126918 /* ZWPullUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14BC1C0E7B7200126918 /* ZWPullUpView.m */; };
+		18BF16321C0E7B7200126918 /* ZWRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14BE1C0E7B7200126918 /* ZWRefreshControl.m */; };
+		18BF16331C0E7B7200126918 /* ZWUserStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14C01C0E7B7200126918 /* ZWUserStatus.m */; };
 		18BF16341C0E7B7200126918 /* MarkMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14C21C0E7B7200126918 /* MarkMapViewController.m */; };
 		18BF16351C0E7B7200126918 /* MyAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14C41C0E7B7200126918 /* MyAnnotation.m */; };
-		18BF16361C0E7B7200126918 /* UIColor+color.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14C61C0E7B7200126918 /* UIColor+color.m */; };
 		18BF16371C0E7B7200126918 /* DSXModalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14C91C0E7B7200126918 /* DSXModalView.m */; };
 		18BF16381C0E7B7200126918 /* DSXPopMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14CB1C0E7B7200126918 /* DSXPopMenu.m */; };
 		18BF16391C0E7B7200126918 /* DSXValidate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14CD1C0E7B7200126918 /* DSXValidate.m */; };
@@ -271,10 +266,14 @@
 		18FC707B1C0E8665004283A6 /* light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18FC70751C0E8665004283A6 /* light.ttf */; };
 		18FC707C1C0E8665004283A6 /* medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18FC70761C0E8665004283A6 /* medium.ttf */; };
 		18FC707D1C0E8665004283A6 /* thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18FC70771C0E8665004283A6 /* thin.ttf */; };
+		18FC708C1C0E8834004283A6 /* DSXSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FC70831C0E8834004283A6 /* DSXSliderView.m */; };
+		18FC708D1C0E8834004283A6 /* DSXStarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FC70851C0E8834004283A6 /* DSXStarView.m */; };
+		18FC708E1C0E8834004283A6 /* UIColor+color.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FC70871C0E8834004283A6 /* UIColor+color.m */; };
+		18FC708F1C0E8834004283A6 /* DSXUI.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FC70891C0E8834004283A6 /* DSXUI.m */; };
+		18FC70901C0E8834004283A6 /* DSXUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FC708B1C0E8834004283A6 /* DSXUtil.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1803A6AC1BDB6472003E0538 /* LADZhangWo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = LADZhangWo.app; path = "/Users/apple/Desktop/LADZhangWo/build/Debug-iphoneos/LADZhangWo.app"; sourceTree = "<absolute>"; };
 		18BF148A1C0E7B7200126918 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		18BF148B1C0E7B7200126918 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		18BF148C1C0E7B7200126918 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -303,30 +302,20 @@
 		18BF14A41C0E7B7200126918 /* ChaoshiListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaoshiListViewController.m; sourceTree = "<group>"; };
 		18BF14A51C0E7B7200126918 /* ChaoshiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaoshiViewController.h; sourceTree = "<group>"; };
 		18BF14A61C0E7B7200126918 /* ChaoshiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaoshiViewController.m; sourceTree = "<group>"; };
-		18BF14A81C0E7B7200126918 /* DSXSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXSliderView.h; sourceTree = "<group>"; };
-		18BF14A91C0E7B7200126918 /* DSXSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXSliderView.m; sourceTree = "<group>"; };
-		18BF14AA1C0E7B7200126918 /* DSXStarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXStarView.h; sourceTree = "<group>"; };
-		18BF14AB1C0E7B7200126918 /* DSXStarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXStarView.m; sourceTree = "<group>"; };
-		18BF14AC1C0E7B7200126918 /* DSXUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXUI.h; sourceTree = "<group>"; };
-		18BF14AD1C0E7B7200126918 /* DSXUI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXUI.m; sourceTree = "<group>"; };
-		18BF14AE1C0E7B7200126918 /* DSXUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXUtil.h; sourceTree = "<group>"; };
-		18BF14AF1C0E7B7200126918 /* DSXUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXUtil.m; sourceTree = "<group>"; };
-		18BF14B71C0E7B7200126918 /* LHBCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHBCommon.h; sourceTree = "<group>"; };
-		18BF14B81C0E7B7200126918 /* LHBConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHBConfig.h; sourceTree = "<group>"; };
-		18BF14B91C0E7B7200126918 /* LHBNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHBNavigationController.h; sourceTree = "<group>"; };
-		18BF14BA1C0E7B7200126918 /* LHBNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHBNavigationController.m; sourceTree = "<group>"; };
-		18BF14BB1C0E7B7200126918 /* LHBPullUpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHBPullUpView.h; sourceTree = "<group>"; };
-		18BF14BC1C0E7B7200126918 /* LHBPullUpView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHBPullUpView.m; sourceTree = "<group>"; };
-		18BF14BD1C0E7B7200126918 /* LHBRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHBRefreshControl.h; sourceTree = "<group>"; };
-		18BF14BE1C0E7B7200126918 /* LHBRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHBRefreshControl.m; sourceTree = "<group>"; };
-		18BF14BF1C0E7B7200126918 /* LHBUserStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHBUserStatus.h; sourceTree = "<group>"; };
-		18BF14C01C0E7B7200126918 /* LHBUserStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHBUserStatus.m; sourceTree = "<group>"; };
+		18BF14B71C0E7B7200126918 /* ZWCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWCommon.h; sourceTree = "<group>"; };
+		18BF14B81C0E7B7200126918 /* ZWConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWConfig.h; sourceTree = "<group>"; };
+		18BF14B91C0E7B7200126918 /* ZWNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWNavigationController.h; sourceTree = "<group>"; };
+		18BF14BA1C0E7B7200126918 /* ZWNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZWNavigationController.m; sourceTree = "<group>"; };
+		18BF14BB1C0E7B7200126918 /* ZWPullUpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWPullUpView.h; sourceTree = "<group>"; };
+		18BF14BC1C0E7B7200126918 /* ZWPullUpView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZWPullUpView.m; sourceTree = "<group>"; };
+		18BF14BD1C0E7B7200126918 /* ZWRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWRefreshControl.h; sourceTree = "<group>"; };
+		18BF14BE1C0E7B7200126918 /* ZWRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZWRefreshControl.m; sourceTree = "<group>"; };
+		18BF14BF1C0E7B7200126918 /* ZWUserStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWUserStatus.h; sourceTree = "<group>"; };
+		18BF14C01C0E7B7200126918 /* ZWUserStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZWUserStatus.m; sourceTree = "<group>"; };
 		18BF14C11C0E7B7200126918 /* MarkMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkMapViewController.h; sourceTree = "<group>"; };
 		18BF14C21C0E7B7200126918 /* MarkMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkMapViewController.m; sourceTree = "<group>"; };
 		18BF14C31C0E7B7200126918 /* MyAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyAnnotation.h; sourceTree = "<group>"; };
 		18BF14C41C0E7B7200126918 /* MyAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyAnnotation.m; sourceTree = "<group>"; };
-		18BF14C51C0E7B7200126918 /* UIColor+color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+color.h"; sourceTree = "<group>"; };
-		18BF14C61C0E7B7200126918 /* UIColor+color.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+color.m"; sourceTree = "<group>"; };
 		18BF14C81C0E7B7200126918 /* DSXModalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXModalView.h; sourceTree = "<group>"; };
 		18BF14C91C0E7B7200126918 /* DSXModalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXModalView.m; sourceTree = "<group>"; };
 		18BF14CA1C0E7B7200126918 /* DSXPopMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXPopMenu.h; sourceTree = "<group>"; };
@@ -654,6 +643,17 @@
 		18FC70761C0E8665004283A6 /* medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = medium.ttf; sourceTree = "<group>"; };
 		18FC70771C0E8665004283A6 /* thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = thin.ttf; sourceTree = "<group>"; };
 		18FC70801C0E8752004283A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		18FC70821C0E8834004283A6 /* DSXSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXSliderView.h; sourceTree = "<group>"; };
+		18FC70831C0E8834004283A6 /* DSXSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXSliderView.m; sourceTree = "<group>"; };
+		18FC70841C0E8834004283A6 /* DSXStarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXStarView.h; sourceTree = "<group>"; };
+		18FC70851C0E8834004283A6 /* DSXStarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXStarView.m; sourceTree = "<group>"; };
+		18FC70861C0E8834004283A6 /* UIColor+color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+color.h"; sourceTree = "<group>"; };
+		18FC70871C0E8834004283A6 /* UIColor+color.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+color.m"; sourceTree = "<group>"; };
+		18FC70881C0E8834004283A6 /* DSXUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXUI.h; sourceTree = "<group>"; };
+		18FC70891C0E8834004283A6 /* DSXUI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXUI.m; sourceTree = "<group>"; };
+		18FC708A1C0E8834004283A6 /* DSXUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXUtil.h; sourceTree = "<group>"; };
+		18FC708B1C0E8834004283A6 /* DSXUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXUtil.m; sourceTree = "<group>"; };
+		18FC70941C0E8F8C004283A6 /* LADZhangWo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = LADZhangWo.app; path = "/Users/apple/Desktop/LADZhangWo/build/Debug-iphoneos/LADZhangWo.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -770,30 +770,20 @@
 		18BF14A71C0E7B7200126918 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				18BF14A81C0E7B7200126918 /* DSXSliderView.h */,
-				18BF14A91C0E7B7200126918 /* DSXSliderView.m */,
-				18BF14AA1C0E7B7200126918 /* DSXStarView.h */,
-				18BF14AB1C0E7B7200126918 /* DSXStarView.m */,
-				18BF14AC1C0E7B7200126918 /* DSXUI.h */,
-				18BF14AD1C0E7B7200126918 /* DSXUI.m */,
-				18BF14AE1C0E7B7200126918 /* DSXUtil.h */,
-				18BF14AF1C0E7B7200126918 /* DSXUtil.m */,
-				18BF14B71C0E7B7200126918 /* LHBCommon.h */,
-				18BF14B81C0E7B7200126918 /* LHBConfig.h */,
-				18BF14B91C0E7B7200126918 /* LHBNavigationController.h */,
-				18BF14BA1C0E7B7200126918 /* LHBNavigationController.m */,
-				18BF14BB1C0E7B7200126918 /* LHBPullUpView.h */,
-				18BF14BC1C0E7B7200126918 /* LHBPullUpView.m */,
-				18BF14BD1C0E7B7200126918 /* LHBRefreshControl.h */,
-				18BF14BE1C0E7B7200126918 /* LHBRefreshControl.m */,
-				18BF14BF1C0E7B7200126918 /* LHBUserStatus.h */,
-				18BF14C01C0E7B7200126918 /* LHBUserStatus.m */,
+				18BF14B71C0E7B7200126918 /* ZWCommon.h */,
+				18BF14B81C0E7B7200126918 /* ZWConfig.h */,
+				18BF14B91C0E7B7200126918 /* ZWNavigationController.h */,
+				18BF14BA1C0E7B7200126918 /* ZWNavigationController.m */,
+				18BF14BB1C0E7B7200126918 /* ZWPullUpView.h */,
+				18BF14BC1C0E7B7200126918 /* ZWPullUpView.m */,
+				18BF14BD1C0E7B7200126918 /* ZWRefreshControl.h */,
+				18BF14BE1C0E7B7200126918 /* ZWRefreshControl.m */,
+				18BF14BF1C0E7B7200126918 /* ZWUserStatus.h */,
+				18BF14C01C0E7B7200126918 /* ZWUserStatus.m */,
 				18BF14C11C0E7B7200126918 /* MarkMapViewController.h */,
 				18BF14C21C0E7B7200126918 /* MarkMapViewController.m */,
 				18BF14C31C0E7B7200126918 /* MyAnnotation.h */,
 				18BF14C41C0E7B7200126918 /* MyAnnotation.m */,
-				18BF14C51C0E7B7200126918 /* UIColor+color.h */,
-				18BF14C61C0E7B7200126918 /* UIColor+color.m */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -801,6 +791,16 @@
 		18BF14C71C0E7B7200126918 /* DSXWorking */ = {
 			isa = PBXGroup;
 			children = (
+				18FC70821C0E8834004283A6 /* DSXSliderView.h */,
+				18FC70831C0E8834004283A6 /* DSXSliderView.m */,
+				18FC70841C0E8834004283A6 /* DSXStarView.h */,
+				18FC70851C0E8834004283A6 /* DSXStarView.m */,
+				18FC70861C0E8834004283A6 /* UIColor+color.h */,
+				18FC70871C0E8834004283A6 /* UIColor+color.m */,
+				18FC70881C0E8834004283A6 /* DSXUI.h */,
+				18FC70891C0E8834004283A6 /* DSXUI.m */,
+				18FC708A1C0E8834004283A6 /* DSXUtil.h */,
+				18FC708B1C0E8834004283A6 /* DSXUtil.m */,
 				18BF14C81C0E7B7200126918 /* DSXModalView.h */,
 				18BF14C91C0E7B7200126918 /* DSXModalView.m */,
 				18BF14CA1C0E7B7200126918 /* DSXPopMenu.h */,
@@ -1337,7 +1337,7 @@
 			);
 			name = LADZhangWo;
 			productName = LADLihuibao;
-			productReference = 1803A6AC1BDB6472003E0538 /* LADZhangWo.app */;
+			productReference = 18FC70941C0E8F8C004283A6 /* LADZhangWo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1532,7 +1532,7 @@
 				18BF164F1C0E7B7200126918 /* CategoryCollectionViewCell.m in Sources */,
 				18BF16411C0E7B7200126918 /* AddToCartView.m in Sources */,
 				18BF167A1C0E7B7200126918 /* MyProfileViewController.m in Sources */,
-				18BF16271C0E7B7200126918 /* DSXStarView.m in Sources */,
+				18FC708C1C0E8834004283A6 /* DSXSliderView.m in Sources */,
 				18BF16201C0E7B7200126918 /* AFURLSessionManager.m in Sources */,
 				18BF16711C0E7B7200126918 /* ModiEmailViewController.m in Sources */,
 				18BF168C1C0E7B7200126918 /* SDImageCache.m in Sources */,
@@ -1540,8 +1540,9 @@
 				18BF16B21C0E7B7200126918 /* TravelDetailViewController.m in Sources */,
 				18BF16781C0E7B7200126918 /* MyMessageViewController.m in Sources */,
 				18BF16451C0E7B7200126918 /* GoodsDetailViewController.m in Sources */,
-				18BF16331C0E7B7200126918 /* LHBUserStatus.m in Sources */,
+				18BF16331C0E7B7200126918 /* ZWUserStatus.m in Sources */,
 				18BF16B41C0E7B7200126918 /* TravelViewController.m in Sources */,
+				18FC708F1C0E8834004283A6 /* DSXUI.m in Sources */,
 				18BF165E1C0E7B7200126918 /* InviteHeadView.m in Sources */,
 				18BF16571C0E7B7200126918 /* RecommendSliderView2.m in Sources */,
 				18BF16751C0E7B7200126918 /* MyFavoriteViewController.m in Sources */,
@@ -1556,22 +1557,20 @@
 				18BF16961C0E7B7200126918 /* UIImage+WebP.m in Sources */,
 				18BF161C1C0E7B7200126918 /* AFSecurityPolicy.m in Sources */,
 				18BF16511C0E7B7200126918 /* HomeCategoryView.m in Sources */,
+				18FC708E1C0E8834004283A6 /* UIColor+color.m in Sources */,
 				18BF16841C0E7B7200126918 /* CommentView.m in Sources */,
 				18BF165B1C0E7B7200126918 /* IncomeView.m in Sources */,
 				18BF16B31C0E7B7200126918 /* TravelListViewController.m in Sources */,
 				18BF16191C0E7B7200126918 /* AFHTTPRequestOperationManager.m in Sources */,
 				18BF16871C0E7B7200126918 /* NewsListView.m in Sources */,
 				18BF16211C0E7B7200126918 /* AppDelegate.m in Sources */,
-				18BF16261C0E7B7200126918 /* DSXSliderView.m in Sources */,
 				18BF161B1C0E7B7200126918 /* AFNetworkReachabilityManager.m in Sources */,
 				18BF16951C0E7B7200126918 /* UIImage+MultiFormat.m in Sources */,
 				18BF16371C0E7B7200126918 /* DSXModalView.m in Sources */,
 				18BF16831C0E7B7200126918 /* SettingViewController.m in Sources */,
 				18BF168E1C0E7B7200126918 /* SDWebImageDecoder.m in Sources */,
-				18BF16361C0E7B7200126918 /* UIColor+color.m in Sources */,
-				18BF16321C0E7B7200126918 /* LHBRefreshControl.m in Sources */,
+				18BF16321C0E7B7200126918 /* ZWRefreshControl.m in Sources */,
 				18BF16AF1C0E7B7200126918 /* ShoppingViewController.m in Sources */,
-				18BF16291C0E7B7200126918 /* DSXUtil.m in Sources */,
 				18BF16881C0E7B7200126918 /* NewsViewController.m in Sources */,
 				18BF161D1C0E7B7200126918 /* AFURLConnectionOperation.m in Sources */,
 				18BF16381C0E7B7200126918 /* DSXPopMenu.m in Sources */,
@@ -1580,6 +1579,7 @@
 				18BF16861C0E7B7200126918 /* NewsDetailViewController.m in Sources */,
 				18BF161E1C0E7B7200126918 /* AFURLRequestSerialization.m in Sources */,
 				18BF165C1C0E7B7200126918 /* IncomeViewController.m in Sources */,
+				18FC70901C0E8834004283A6 /* DSXUtil.m in Sources */,
 				18BF16461C0E7B7200126918 /* GoodsListViewController.m in Sources */,
 				18BF167E1C0E7B7200126918 /* RegisterViewController.m in Sources */,
 				18BF166F1C0E7B7200126918 /* LoginInputView.m in Sources */,
@@ -1592,6 +1592,7 @@
 				18BF164E1C0E7B7200126918 /* PayViewController.m in Sources */,
 				18BF165F1C0E7B7200126918 /* InviteViewController.m in Sources */,
 				18BF16771C0E7B7200126918 /* MyIncomeViewController.m in Sources */,
+				18FC708D1C0E8834004283A6 /* DSXStarView.m in Sources */,
 				18BF16581C0E7B7200126918 /* searchBar.m in Sources */,
 				18BF16251C0E7B7200126918 /* ChaoshiViewController.m in Sources */,
 				18BF16801C0E7B7200126918 /* SafeViewController.m in Sources */,
@@ -1613,14 +1614,13 @@
 				18BF163A1C0E7B7200126918 /* NSString+Encryption.m in Sources */,
 				18BF16441C0E7B7200126918 /* CartViewController.m in Sources */,
 				18BF168A1C0E7B7200126918 /* MKAnnotationView+WebCache.m in Sources */,
-				18BF16311C0E7B7200126918 /* LHBPullUpView.m in Sources */,
+				18BF16311C0E7B7200126918 /* ZWPullUpView.m in Sources */,
 				18BF16351C0E7B7200126918 /* MyAnnotation.m in Sources */,
 				18BF168F1C0E7B7200126918 /* SDWebImageDownloader.m in Sources */,
 				18BF16181C0E7B7200126918 /* AFHTTPRequestOperation.m in Sources */,
 				18BF16931C0E7B7200126918 /* UIButton+WebCache.m in Sources */,
 				18BF16611C0E7B7200126918 /* main.m in Sources */,
-				18BF16301C0E7B7200126918 /* LHBNavigationController.m in Sources */,
-				18BF16281C0E7B7200126918 /* DSXUI.m in Sources */,
+				18BF16301C0E7B7200126918 /* ZWNavigationController.m in Sources */,
 				18BF16741C0E7B7200126918 /* MyBillViewController.m in Sources */,
 				18BF16431C0E7B7200126918 /* BuyViewController.m in Sources */,
 				18BF16521C0E7B7200126918 /* HomeViewController.m in Sources */,

@@ -15,7 +15,7 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        _userStatus  = [LHBUserStatus status];
+        _userStatus  = [ZWUserStatus status];
         _afmanager = [AFHTTPRequestOperationManager manager];
         _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
         self.tableView.delegate = self;

@@ -19,7 +19,7 @@
     _cartList = [NSMutableArray array];
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    _userStatus = [LHBUserStatus status];
+    _userStatus = [ZWUserStatus status];
     
     CGRect frame = self.view.bounds;
     frame.size.height = frame.size.height - 60;
@@ -28,7 +28,7 @@
     _tableView.dataSource = self;
     [self.view addSubview:_tableView];
     
-    _pullUpView = [[LHBPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _pullUpView.hidden = YES;
     _tableView.tableFooterView = _pullUpView;
     [self refresh];

@@ -17,7 +17,7 @@
     [self setTitle:@"反馈建议"];
     [self.view setBackgroundColor:[UIColor backColor]];
     [self.navigationController setNavigationBarHidden:NO];
-    self.userStatus = [LHBUserStatus status];
+    self.userStatus = [ZWUserStatus status];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     UIBarButtonItem *sendButton = [[UIBarButtonItem alloc] initWithTitle:@"发送" style:UIBarButtonItemStylePlain target:self action:@selector(send)];

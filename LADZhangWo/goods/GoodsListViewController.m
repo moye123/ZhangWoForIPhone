@@ -26,11 +26,11 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
-    _refreshControl = [[LHBRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = _refreshControl;
     
-    _pullUpView = [[LHBPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _pullUpView.hidden = YES;
     self.tableView.tableFooterView = _pullUpView;
     

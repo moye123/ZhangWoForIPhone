@@ -7,14 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface TravelListViewController : UITableViewController<UIScrollViewDelegate>{
 @private
     int _page;
     BOOL _isRefreshing;
-    LHBRefreshControl *_refreshControl;
-    LHBPullUpView *_pullUpView;
+    ZWRefreshControl *_refreshControl;
+    ZWPullUpView*_pullUpView;
     UILabel *_tipsLabel;
     AFHTTPRequestOperationManager *_afmanager;
 }

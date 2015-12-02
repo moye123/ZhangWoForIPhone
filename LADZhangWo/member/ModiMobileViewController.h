@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface ModiMobileViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
     AFHTTPRequestOperationManager *_afmanager;
@@ -15,7 +15,7 @@
     NSString *_secCode;
 }
 
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)UITextField *mobileField;
 @property(nonatomic,retain)UITextField *seccodeField;
 @property(nonatomic,retain)UIButton *secButton;

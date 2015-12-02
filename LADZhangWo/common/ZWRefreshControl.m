@@ -1,14 +1,14 @@
 //
-//  LHBRefreshControl.m
+//  ZWRefreshControl.m
 //  LADLihuibao
 //
 //  Created by Apple on 15/11/2.
 //  Copyright © 2015年 Apple. All rights reserved.
 //
 
-#import "LHBRefreshControl.h"
+#import "ZWRefreshControl.h"
 
-@implementation LHBRefreshControl
+@implementation ZWRefreshControl
 
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];

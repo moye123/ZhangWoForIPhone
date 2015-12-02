@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface MyMessageViewController : UITableViewController{
     @private
@@ -16,7 +16,7 @@
 
 - (instancetype)init;
 
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,strong)NSMutableArray *messageList;
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 @protocol CommentViewDelegate<NSObject>
 @optional
 - (void)sendComment;

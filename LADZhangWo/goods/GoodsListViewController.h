@@ -7,15 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 #import "DSXStarView.h"
 
 @interface GoodsListViewController : UITableViewController<UIScrollViewDelegate>{
     @private
     int _page;
     BOOL _isRefreshing;
-    LHBRefreshControl *_refreshControl;
-    LHBPullUpView *_pullUpView;
+    ZWRefreshControl *_refreshControl;
+    ZWPullUpView *_pullUpView;
 }
 
 @property(nonatomic,assign)int catid;

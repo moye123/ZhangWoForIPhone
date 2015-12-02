@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 #import "HomeViewController.h"
 #import "IncomeViewController.h"
 #import "CartViewController.h"
@@ -26,25 +26,25 @@
     self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
     
-    LHBNavigationController *navHome,*navIncome,*navCart,*navMy;
+    ZWNavigationController *navHome,*navIncome,*navCart,*navMy;
     HomeViewController *homeView = [[HomeViewController alloc] init];
     [homeView setTitle:@"主页"];
-    navHome = [[LHBNavigationController alloc] initWithRootViewController:homeView];
+    navHome = [[ZWNavigationController alloc] initWithRootViewController:homeView];
     navHome.tabBarItem = [self tabBarItemWithTitle:@"主页" image:@"icon-home.png" selectedImage:@"icon-homefill.png"];
     
     IncomeViewController *incomeView = [[IncomeViewController alloc] init];
     [incomeView setTitle:@"收益"];
-    navIncome = [[LHBNavigationController alloc] initWithRootViewController:incomeView];
+    navIncome = [[ZWNavigationController alloc] initWithRootViewController:incomeView];
     navIncome.tabBarItem = [self tabBarItemWithTitle:@"收益" image:@"icon-income.png" selectedImage:@"icon-incomefill.png"];
     
     CartViewController *cartView = [[CartViewController alloc] init];
     [cartView setTitle:@"我的购物车"];
-    navCart = [[LHBNavigationController alloc] initWithRootViewController:cartView];
+    navCart = [[ZWNavigationController alloc] initWithRootViewController:cartView];
     navCart.tabBarItem = [self tabBarItemWithTitle:@"购物车" image:@"icon-cart.png" selectedImage:@"icon-cartfill.png"];
     
     MyViewController *myView = [[MyViewController alloc] init];
     [myView setTitle:@"我的"];
-    navMy = [[LHBNavigationController alloc] initWithRootViewController:myView];
+    navMy = [[ZWNavigationController alloc] initWithRootViewController:myView];
     [navMy setNavigationStyle:LHBNavigationStyleGray];
     navMy.tabBarItem = [self tabBarItemWithTitle:@"我的" image:@"icon-my.png" selectedImage:@"icon-myfill.png"];
     

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 @protocol LocationChangeDelegate<NSObject>
 - (void)locationChangeWithName:(NSString *)name;
 @end

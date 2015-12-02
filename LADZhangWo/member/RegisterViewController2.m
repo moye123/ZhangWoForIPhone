@@ -72,7 +72,7 @@
         [params setObject:@"email" forKey:@"type"];
         self.registerButton.enabled = NO;
         UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"注册中..."];
-        [[LHBUserStatus status] register:params success:^(id responseObject) {
+        [[ZWUserStatus status] register:params success:^(id responseObject) {
             [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(registerSucceed:) userInfo:loadingView repeats:NO];
         } failure:^(NSString *errorMsg) {
             self.registerButton.enabled = YES;

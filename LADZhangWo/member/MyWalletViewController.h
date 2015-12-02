@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface MyWalletViewController : UITableViewController{
     @private
@@ -18,6 +18,6 @@
 }
 
 @property(nonatomic,strong)NSDictionary *walletData;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

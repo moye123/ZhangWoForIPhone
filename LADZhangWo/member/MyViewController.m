@@ -23,7 +23,7 @@
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     
-    self.userStatus = [[LHBUserStatus alloc] init];
+    self.userStatus = [[ZWUserStatus alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStatusChanged) name:UserStatusChangedNotification object:nil];
     CGRect frame = self.view.frame;
     frame.origin.y = frame.origin.y - 30;
@@ -308,7 +308,7 @@
 
 #pragma mark -
 - (void)userStatusChanged{
-    self.userStatus = [LHBUserStatus status];
+    self.userStatus = [ZWUserStatus status];
     [self setHeadView];
     [self.mainTableView reloadData];
 }

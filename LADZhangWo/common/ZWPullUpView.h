@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LHBPullUpView : UILabel
+@interface ZWPullUpView : UILabel
 
 - (instancetype)initWithFrame:(CGRect)frame;
 - (void)beginLoading;

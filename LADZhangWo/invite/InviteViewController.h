@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface InviteViewController : UIViewController{
     @private
@@ -16,5 +16,5 @@
 - (void)getInviteCode;
 
 @property(nonatomic,strong)NSString *inviteCode;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 #import "HomeCategoryView.h"
 #import "RecommendSliderView.h"
 #import "RecommendSliderView2.h"

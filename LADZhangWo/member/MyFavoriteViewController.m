@@ -21,14 +21,14 @@
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
     _favoriteList = [NSMutableArray array];
-    self.userStatus = [LHBUserStatus status];
+    self.userStatus = [ZWUserStatus status];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor backColor];
     
-    _refreshContorl = [[LHBRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _refreshContorl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshContorl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    _pullUpView = [[LHBPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _pullUpView.hidden = YES;
     self.refreshControl = _refreshContorl;
     self.tableView.tableFooterView = _pullUpView;

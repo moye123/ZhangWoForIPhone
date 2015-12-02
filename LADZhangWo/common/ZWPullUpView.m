@@ -6,9 +6,9 @@
 //  Copyright © 2015年 Apple. All rights reserved.
 //
 
-#import "LHBPullUpView.h"
+#import "ZWPullUpView.h"
 
-@implementation LHBPullUpView
+@implementation ZWPullUpView
 
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];

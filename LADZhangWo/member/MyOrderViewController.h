@@ -7,13 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface MyOrderViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>{
     @private
     AFHTTPRequestOperationManager *_afmanager;
-    LHBRefreshControl *_refreshControl;
-    LHBPullUpView *_pullUpView;
+    ZWRefreshControl *_refreshControl;
+    ZWPullUpView *_pullUpView;
     BOOL _isRefreshing;
     int _page;
 }
@@ -23,7 +23,7 @@
 @property(nonatomic,assign)NSInteger status;
 @property(nonatomic,assign)NSInteger evaluate;
 @property(nonatomic,strong)NSMutableArray *orderList;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)UITableView *tableView;
 
 @end

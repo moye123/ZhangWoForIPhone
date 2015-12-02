@@ -7,14 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface ModiEmailViewController : UIViewController{
     @private
     AFHTTPRequestOperationManager *_afmanager;
 }
 
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)UITextField *emailField;
 @property(nonatomic,retain)UITextField *passwordField;
 

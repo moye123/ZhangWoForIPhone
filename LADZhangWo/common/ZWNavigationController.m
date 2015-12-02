@@ -6,9 +6,9 @@
 //  Copyright © 2015年 Apple. All rights reserved.
 //
 
-#import "LHBNavigationController.h"
+#import "ZWNavigationController.h"
 
-@implementation LHBNavigationController
+@implementation ZWNavigationController
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController{
     self = [super initWithRootViewController:rootViewController];

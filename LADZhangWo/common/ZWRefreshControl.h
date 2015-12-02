@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LHBRefreshControl : UIRefreshControl
+@interface ZWRefreshControl : UIRefreshControl
 - (instancetype)initWithFrame:(CGRect)frame;
 - (void)beginRefreshing;
 - (void)endRefreshing;

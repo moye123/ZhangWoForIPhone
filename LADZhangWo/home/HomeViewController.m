@@ -215,7 +215,7 @@
     //旅游
     if ([tag isEqualToString:@"travel"]) {
         TravelViewController *travelController = [[TravelViewController alloc] init];
-        LHBNavigationController *travelNav = [[LHBNavigationController alloc] initWithRootViewController:travelController];
+        ZWNavigationController *travelNav = [[ZWNavigationController alloc] initWithRootViewController:travelController];
         [travelNav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:travelNav animated:YES completion:nil];
     }
@@ -223,7 +223,7 @@
     //资讯
     if ([tag isEqualToString:@"news"]) {
         NewsViewController *newsController = [[NewsViewController alloc] init];
-        LHBNavigationController *newsNav = [[LHBNavigationController alloc] initWithRootViewController:newsController];
+        ZWNavigationController *newsNav = [[ZWNavigationController alloc] initWithRootViewController:newsController];
         [newsNav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:newsNav animated:YES completion:nil];
     }
@@ -231,7 +231,7 @@
     //超市
     if ([tag isEqualToString:@"market"]) {
         ChaoshiViewController *chaoshiController = [[ChaoshiViewController alloc] init];
-        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:chaoshiController];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:chaoshiController];
         [nav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -241,7 +241,7 @@
         GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
         goodsListController.catid = 17;
         goodsListController.title = @"名优特产";
-        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
         [nav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -251,7 +251,7 @@
         GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
         goodsListController.catid = 18;
         goodsListController.title = @"特色小吃";
-        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
         [nav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -261,7 +261,7 @@
         GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
         goodsListController.catid = 19;
         goodsListController.title = @"我要外卖";
-        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
         [nav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -270,7 +270,7 @@
         GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
         goodsListController.catid = 1;
         goodsListController.title = @"美食";
-        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
         [nav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -279,7 +279,7 @@
         GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
         goodsListController.catid = 1;
         goodsListController.title = @"本地服务";
-        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsListController];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
         [nav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -294,7 +294,7 @@
     if ([idtype isEqualToString:@"goodsid"]) {
         GoodsDetailViewController *goodsDetailView = [[GoodsDetailViewController alloc] init];
         goodsDetailView.goodsid = ID;
-        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:goodsDetailView];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsDetailView];
         [nav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -302,7 +302,7 @@
     if ([idtype isEqualToString:@"travelid"]) {
         TravelDetailViewController *travelDetailView = [[TravelDetailViewController alloc] init];
         travelDetailView.travelID = ID;
-        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:travelDetailView];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelDetailView];
         [nav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -310,7 +310,7 @@
     if ([idtype isEqualToString:@"aid"]) {
         NewsDetailViewController *newsDetailView = [[NewsDetailViewController alloc] init];
         newsDetailView.newsID = ID;
-        LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:newsDetailView];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsDetailView];
         [nav setNavigationStyle:LHBNavigationStyleGray];
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -328,7 +328,7 @@
 - (void)showDistrict{
     DistrictViewController *districtController = [[DistrictViewController alloc] init];
     districtController.delegate = self;
-    LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:districtController];
+    ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:districtController];
     [nav setNavigationStyle:LHBNavigationStyleGray];
     [self presentViewController:nav animated:YES completion:nil];
 }

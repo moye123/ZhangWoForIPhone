@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface FeedbackViewController : UIViewController<UITextViewDelegate>{
     @private
@@ -15,6 +15,6 @@
 }
 
 @property(nonatomic,retain)UITextView *textView;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

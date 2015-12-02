@@ -1,18 +1,17 @@
 //
-//  LHBUserStatus.h
-//  LADLihuibao
+//  ZWUserStatus.h
+//  songdewei
 //
 //  Created by Apple on 15/11/5.
 //  Copyright © 2015年 Apple. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "LHBConfig.h"
-#import "AFNetworking.h"
+#import "ZWCommon.h"
 
 UIKIT_EXTERN NSString *const UserStatusChangedNotification;
 
-@interface LHBUserStatus : NSObject
+@interface ZWUserStatus : NSObject
 
 - (instancetype)init;
 + (instancetype)status;

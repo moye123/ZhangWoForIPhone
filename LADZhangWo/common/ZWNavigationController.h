@@ -13,7 +13,7 @@ typedef NS_ENUM(NSInteger,LHBNavigationStyle){
     LHBNavigationStyleGray
 };
 
-@interface LHBNavigationController : UINavigationController
+@interface ZWNavigationController : UINavigationController
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController;
 - (void)setNavigationStyle:(LHBNavigationStyle)style;

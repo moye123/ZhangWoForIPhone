@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface MyViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
     @private
@@ -17,6 +17,6 @@
 
 @property(nonatomic,retain)UIView *topView;
 @property(nonatomic,retain)UITableView *mainTableView;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

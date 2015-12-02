@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 #import "RecommendDelegate.h"
 @interface RecommendSliderView2 : UIScrollView{
     @private

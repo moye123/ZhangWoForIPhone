@@ -16,7 +16,7 @@
     [self setTitle:@"修改绑定邮箱"];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    _userStatus = [LHBUserStatus status];
+    _userStatus = [ZWUserStatus status];
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     UIView *emailView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, SWIDTH-20, 40)];

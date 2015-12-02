@@ -19,7 +19,7 @@
     if (self) {
         _afmanager = [AFHTTPRequestOperationManager manager];
         _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        self.userStatus = [LHBUserStatus status];
+        self.userStatus = [ZWUserStatus status];
         _orderList = [NSMutableArray array];
     }
     return self;
@@ -47,7 +47,7 @@
     //self.refreshControl = _refreshControl;
     
     
-    _pullUpView = [[LHBPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     self.tableView.tableFooterView = _pullUpView;
     [self refresh];
 }

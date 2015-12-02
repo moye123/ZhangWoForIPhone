@@ -8,7 +8,7 @@
 
 #import "DSXUI.h"
 #import "LoginViewController.h"
-#import "LHBNavigationController.h"
+#import "ZWNavigationController.h"
 
 NSString *const DSXFontStyleThin = @"Noto-Sans-S-Chinese-Thin";
 NSString *const DSXFontStyleLight = @"Noto-Sans-S-Chinese-Light";
@@ -156,7 +156,7 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
 
 - (void)showLoginFromViewController:(UIViewController *)controller{
     LoginViewController *loginController = [[LoginViewController alloc] init];
-    LHBNavigationController *nav = [[LHBNavigationController alloc] initWithRootViewController:loginController];
+    ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:loginController];
     [controller presentViewController:nav animated:YES completion:nil];
 }
 

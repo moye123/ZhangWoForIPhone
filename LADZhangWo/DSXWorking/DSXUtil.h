@@ -7,8 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "DSXUI.h"
-#import "LHBConfig.h"
+#import "ZWCommon.h"
 
 @interface DSXUtil : NSObject
 

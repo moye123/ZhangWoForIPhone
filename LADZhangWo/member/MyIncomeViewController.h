@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface MyIncomeViewController : UITableViewController{
     @private
@@ -16,6 +16,6 @@
 }
 
 @property(nonatomic,strong)NSMutableArray *incomeList;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

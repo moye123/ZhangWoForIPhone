@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 #import "AddToCartView.h"
 
 @interface GoodsDetailViewController : UIViewController<UIWebViewDelegate,UIScrollViewDelegate>{
@@ -22,5 +22,5 @@
 @property(nonatomic,assign)NSInteger goodsid;
 @property(nonatomic,strong)NSDictionary *goodsdata;
 @property(nonatomic,retain)UIWebView *contentWebView;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 @end

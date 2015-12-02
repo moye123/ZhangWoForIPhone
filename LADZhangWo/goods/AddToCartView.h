@@ -7,14 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 
 @interface AddToCartView : UIView{
 @private
     UIView *_modalView;
     int _buyNum;
     UITextField *_buyNumField;
-    LHBUserStatus *_userStatus;
+    ZWUserStatus *_userStatus;
 }
 
 - (instancetype)init;

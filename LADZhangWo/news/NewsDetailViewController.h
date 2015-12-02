@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LHBCommon.h"
+#import "ZWCommon.h"
 #import "CommentView.h"
 
 @interface NewsDetailViewController : UIViewController<UIScrollViewDelegate,UIWebViewDelegate,CommentViewDelegate>{
@@ -20,7 +20,7 @@
 @property(nonatomic,retain)UIWebView *commentWebView;
 @property(nonatomic,retain)UIScrollView *scrollView;
 @property(nonatomic,retain)AFHTTPRequestOperationManager *afmanager;
-@property(nonatomic,retain)LHBUserStatus *userStatus;
+@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)CommentView *commentView;
 @property(nonatomic,strong)NSDictionary *articleData;
 
