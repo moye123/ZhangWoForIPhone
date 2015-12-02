@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface ModiEmailViewController : UIViewController{
+@interface ModiEmailViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
     @private
     AFHTTPRequestOperationManager *_afmanager;
 }
@@ -17,5 +17,6 @@
 @property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)UITextField *emailField;
 @property(nonatomic,retain)UITextField *passwordField;
+@property(nonatomic,retain)UITableView *tableView;
 
 @end

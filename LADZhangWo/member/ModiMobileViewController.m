@@ -127,15 +127,18 @@
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@(_userStatus.uid) forKey:@"uid"];
-    [params setObject:_userStatus forKey:@"username"];
+    [params setObject:_userStatus.username forKey:@"username"];
     [params setObject:mobile forKey:@"mobile"];
     [params setObject:mobilenew forKey:@"newmobile"];
     [params setObject:secCode forKey:@"seccode"];
     [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=member&ac=modimobile"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        NSLog(@"%@", returns);
         if ([returns isKindOfClass:[NSDictionary class]]) {
             if ([[returns objectForKey:@"status"] isEqualToString:@"success"]) {
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:_userStatus.userInfo];
+                [userInfo setObject:mobilenew forKey:@"mobile"];
+                [_userStatus setUserInfo:userInfo];
+                [_userStatus update];
                 [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"手机修改成功"];
                 [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
             }else {

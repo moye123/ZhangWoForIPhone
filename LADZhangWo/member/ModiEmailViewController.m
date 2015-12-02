@@ -10,6 +10,9 @@
 
 @implementation ModiEmailViewController
 @synthesize userStatus = _userStatus;
+@synthesize emailField = _emailField;
+@synthesize passwordField = _passwordField;
+@synthesize tableView = _tableView;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -19,33 +22,25 @@
     _userStatus = [ZWUserStatus status];
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    UIView *emailView = [[UIView alloc] initWithFrame:CGRectMake(10, 10, SWIDTH-20, 40)];
-    emailView.layer.cornerRadius = 5.0;
-    emailView.layer.masksToBounds = YES;
-    emailView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:emailView];
+    
+    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    _tableView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
+    [self.view addSubview:_tableView];
     
     _emailField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-40, 40)];
     _emailField.placeholder = @"请输入邮箱地址:";
     _emailField.font = [UIFont systemFontOfSize:16.0];
     _emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    [emailView addSubview:_emailField];
-    
-    
-    UIView *passwordView = [[UIView alloc] initWithFrame:CGRectMake(10, 60, SWIDTH-20, 40)];
-    passwordView.layer.cornerRadius = 5.0;
-    passwordView.layer.masksToBounds = YES;
-    passwordView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:passwordView];
     
     _passwordField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-40, 40)];
     _passwordField.placeholder = @"请输入密码:";
     _passwordField.font = [UIFont systemFontOfSize:16.0];
     _passwordField.secureTextEntry = YES;
     _passwordField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    [passwordView addSubview:_passwordField];
     
-    UIButton *submitButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 140, SWIDTH-20, 40)];
+    UIButton *submitButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 50, SWIDTH-20, 40)];
     submitButton.layer.cornerRadius = 20.0;
     submitButton.layer.masksToBounds = YES;
     [submitButton setBackgroundColor:[UIColor whiteColor]];
@@ -54,7 +49,10 @@
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
     [submitButton setBackgroundImage:[UIImage imageNamed:@"button-buy-selected.png"] forState:UIControlStateHighlighted];
     [submitButton addTarget:self action:@selector(submit) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:submitButton];
+    
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 100)];
+    [footerView addSubview:submitButton];
+    _tableView.tableFooterView = footerView;
 }
 
 - (void)back{
@@ -79,10 +77,14 @@
     [params setObject:_userStatus.username forKey:@"username"];
     [params setObject:email forKey:@"email"];
     [params setObject:[password md5] forKey:@"password"];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=member&ac=resetemail"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=member&ac=modiemail"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([returns isKindOfClass:[NSDictionary class]]) {
             if ([[returns objectForKey:@"email"] isEqualToString:email]) {
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:_userStatus.userInfo];
+                [userInfo setObject:email forKey:@"email"];
+                [_userStatus setUserInfo:userInfo];
+                [_userStatus update];
                 [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"邮箱绑定成功"];
                 [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
             }else {
@@ -99,6 +101,27 @@
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);
     }];
+}
+
+#pragma mark - tableView delegate
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return 2;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [[UITableViewCell alloc] init];
+    if (indexPath.row == 0) {
+        [cell addSubview:_emailField];
+    }
+    
+    if (indexPath.row == 1) {
+        [cell addSubview:_passwordField];
+    }
+    return cell;
 }
 
 @end

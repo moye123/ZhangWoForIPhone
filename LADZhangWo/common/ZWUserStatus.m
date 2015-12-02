@@ -19,17 +19,24 @@ NSString *const UserStatusChangedNotification = @"userStatusChanged";
 @synthesize userpic;
 @synthesize userInfo;
 @synthesize isLogined;
+@synthesize imageView = _imageView;
 
 - (instancetype)init{
     self = [super init];
     if (self) {
         [self reloadData];
+        self.imageView = [[UIImageView alloc] init];
     }
     return self;
 }
 
 + (instancetype)status{
     return [[self alloc] init];
+}
+
+- (void)setImageView:(UIImageView *)imageView{
+    _imageView = imageView;
+    [_imageView sd_setImageWithURL:[NSURL URLWithString:self.userpic]];
 }
 
 - (void)reloadData{
@@ -61,7 +68,8 @@ NSString *const UserStatusChangedNotification = @"userStatusChanged";
             NSInteger myuid = [[dictionary objectForKey:@"uid"] integerValue];
             NSString *myusername = [dictionary objectForKey:@"username"];
             if (myuid > 0 && myusername) {
-                [[NSUserDefaults standardUserDefaults] setObject:dictionary forKey:@"userinfo"];
+                self.userInfo = dictionary;
+                [self update];
                 [self reloadData];
                 [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
                 success(dictionary);
@@ -106,7 +114,8 @@ NSString *const UserStatusChangedNotification = @"userStatusChanged";
             NSInteger myuid = [[dictionary objectForKey:@"uid"] integerValue];
             NSString *myusername = [dictionary objectForKey:@"username"];
             if (myuid > 0 && myusername) {
-                [[NSUserDefaults standardUserDefaults] setObject:dictionary forKey:@"userinfo"];
+                self.userInfo = dictionary;
+                [self update];
                 [self reloadData];
                 [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
                 success(dictionary);
@@ -150,6 +159,10 @@ NSString *const UserStatusChangedNotification = @"userStatusChanged";
 - (void)logout{
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"userinfo"];
     [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
+}
+
+- (void)update{
+    [[NSUserDefaults standardUserDefaults] setObject:self.userInfo forKey:@"userinfo"];
 }
 
 @end

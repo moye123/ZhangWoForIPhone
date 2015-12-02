@@ -9,11 +9,17 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface MyProfileViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
+@interface MyProfileViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate>{
+    @private
+    UIDatePicker *_datePicker;
+    DSXModalView *_datePickerView;
+    AFHTTPRequestOperationManager *_afmanager;
+}
 
 - (instancetype)init;
 
 @property(nonatomic,retain)UITableView *tableView;
 @property(nonatomic,retain)ZWUserStatus *userStatus;
+@property(nonatomic,retain)NSMutableDictionary *profile;
 
 @end

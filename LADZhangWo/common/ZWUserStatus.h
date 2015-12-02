@@ -19,6 +19,7 @@ UIKIT_EXTERN NSString *const UserStatusChangedNotification;
 - (void)login:(NSMutableDictionary *)params success:(void(^)(id responseObject))success failure:(void(^)(NSString *errorMsg))failure;
 - (void)register:(NSMutableDictionary *)params success:(void(^)(id responseObject))success failure:(void(^)(NSString *errorMsg))failure;
 - (void)logout;
+- (void)update;
 
 @property(nonatomic,assign)NSInteger uid;
 @property(nonatomic,strong)NSString *username;
@@ -27,5 +28,6 @@ UIKIT_EXTERN NSString *const UserStatusChangedNotification;
 @property(nonatomic,strong)NSString *userpic;
 @property(nonatomic,strong)NSDictionary *userInfo;
 @property(nonatomic,assign)BOOL isLogined;
+@property(nonatomic,retain)UIImageView *imageView;
 
 @end

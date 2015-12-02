@@ -11,7 +11,7 @@
 
 @interface ModiMobileViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
     AFHTTPRequestOperationManager *_afmanager;
-    NSInteger _waitSeconds;
+    int _waitSeconds;
     NSString *_secCode;
 }
 

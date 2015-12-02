@@ -271,6 +271,7 @@
 		18FC708E1C0E8834004283A6 /* UIColor+color.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FC70871C0E8834004283A6 /* UIColor+color.m */; };
 		18FC708F1C0E8834004283A6 /* DSXUI.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FC70891C0E8834004283A6 /* DSXUI.m */; };
 		18FC70901C0E8834004283A6 /* DSXUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FC708B1C0E8834004283A6 /* DSXUtil.m */; };
+		18FC709D1C0ECCD8004283A6 /* MyAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FC709C1C0ECCD8004283A6 /* MyAddressViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -653,7 +654,9 @@
 		18FC70891C0E8834004283A6 /* DSXUI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXUI.m; sourceTree = "<group>"; };
 		18FC708A1C0E8834004283A6 /* DSXUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXUtil.h; sourceTree = "<group>"; };
 		18FC708B1C0E8834004283A6 /* DSXUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXUtil.m; sourceTree = "<group>"; };
-		18FC70941C0E8F8C004283A6 /* LADZhangWo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = LADZhangWo.app; path = "/Users/apple/Desktop/LADZhangWo/build/Debug-iphoneos/LADZhangWo.app"; sourceTree = "<absolute>"; };
+		18FC709A1C0EAACE004283A6 /* LADZhangWo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LADZhangWo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		18FC709B1C0ECCD8004283A6 /* MyAddressViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyAddressViewController.h; sourceTree = "<group>"; };
+		18FC709C1C0ECCD8004283A6 /* MyAddressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyAddressViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -700,6 +703,7 @@
 			isa = PBXGroup;
 			children = (
 				18BF14881C0E7B7200126918 /* LADZhangWo */,
+				18FC709A1C0EAACE004283A6 /* LADZhangWo.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -897,60 +901,19 @@
 		18BF15141C0E7B7200126918 /* member */ = {
 			isa = PBXGroup;
 			children = (
-				18BF15151C0E7B7200126918 /* account.png */,
-				18BF15161C0E7B7200126918 /* button-login-selected.png */,
-				18BF15171C0E7B7200126918 /* button-login.png */,
-				18BF15181C0E7B7200126918 /* button-register-selected.png */,
-				18BF15191C0E7B7200126918 /* button-register.png */,
+				18FC70991C0E9A45004283A6 /* login */,
+				18FC70981C0E99B6004283A6 /* wallet */,
+				18FC70971C0E9905004283A6 /* view */,
+				18FC70961C0E98D8004283A6 /* setting */,
+				18FC70951C0E989D004283A6 /* UI */,
 				18BF151A1C0E7B7200126918 /* FeedbackViewController.h */,
 				18BF151B1C0E7B7200126918 /* FeedbackViewController.m */,
-				18BF151C1C0E7B7200126918 /* icon-message-30.png */,
-				18BF151D1C0E7B7200126918 /* icon-wating-comment.png */,
-				18BF151E1C0E7B7200126918 /* icon-wating-pay.png */,
-				18BF151F1C0E7B7200126918 /* icon-wating-receipt.png */,
-				18BF15201C0E7B7200126918 /* icon-wating-return.png */,
-				18BF15211C0E7B7200126918 /* icon-wating-use.png */,
-				18BF15221C0E7B7200126918 /* LoginButton.h */,
-				18BF15231C0E7B7200126918 /* LoginButton.m */,
-				18BF15241C0E7B7200126918 /* LoginInputView.h */,
-				18BF15251C0E7B7200126918 /* LoginInputView.m */,
-				18BF15261C0E7B7200126918 /* LoginViewController.h */,
-				18BF15271C0E7B7200126918 /* LoginViewController.m */,
-				18BF15281C0E7B7200126918 /* ModiEmailViewController.h */,
-				18BF15291C0E7B7200126918 /* ModiEmailViewController.m */,
-				18BF152A1C0E7B7200126918 /* ModiMobileViewController.h */,
-				18BF152B1C0E7B7200126918 /* ModiMobileViewController.m */,
-				18BF152C1C0E7B7200126918 /* ModiPassViewController.h */,
-				18BF152D1C0E7B7200126918 /* ModiPassViewController.m */,
-				18BF152E1C0E7B7200126918 /* MyBillViewController.h */,
-				18BF152F1C0E7B7200126918 /* MyBillViewController.m */,
 				18BF15301C0E7B7200126918 /* MyFavoriteViewController.h */,
 				18BF15311C0E7B7200126918 /* MyFavoriteViewController.m */,
-				18BF15321C0E7B7200126918 /* MyHeadView.h */,
-				18BF15331C0E7B7200126918 /* MyHeadView.m */,
-				18BF15341C0E7B7200126918 /* MyIncomeViewController.h */,
-				18BF15351C0E7B7200126918 /* MyIncomeViewController.m */,
 				18BF15361C0E7B7200126918 /* MyMessageViewController.h */,
 				18BF15371C0E7B7200126918 /* MyMessageViewController.m */,
-				18BF15381C0E7B7200126918 /* MyOrderViewController.h */,
-				18BF15391C0E7B7200126918 /* MyOrderViewController.m */,
-				18BF153A1C0E7B7200126918 /* MyProfileViewController.h */,
-				18BF153B1C0E7B7200126918 /* MyProfileViewController.m */,
 				18BF153C1C0E7B7200126918 /* MyViewController.h */,
 				18BF153D1C0E7B7200126918 /* MyViewController.m */,
-				18BF153E1C0E7B7200126918 /* MyWalletViewController.h */,
-				18BF153F1C0E7B7200126918 /* MyWalletViewController.m */,
-				18BF15401C0E7B7200126918 /* password.png */,
-				18BF15411C0E7B7200126918 /* RegisterViewController.h */,
-				18BF15421C0E7B7200126918 /* RegisterViewController.m */,
-				18BF15431C0E7B7200126918 /* RegisterViewController2.h */,
-				18BF15441C0E7B7200126918 /* RegisterViewController2.m */,
-				18BF15451C0E7B7200126918 /* SafeViewController.h */,
-				18BF15461C0E7B7200126918 /* SafeViewController.m */,
-				18BF15471C0E7B7200126918 /* seccodebutton.png */,
-				18BF15481C0E7B7200126918 /* seccodebutton2.png */,
-				18BF15491C0E7B7200126918 /* SettingViewController.h */,
-				18BF154A1C0E7B7200126918 /* SettingViewController.m */,
 			);
 			path = member;
 			sourceTree = "<group>";
@@ -1320,6 +1283,89 @@
 			name = navbar;
 			sourceTree = "<group>";
 		};
+		18FC70951C0E989D004283A6 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				18BF15151C0E7B7200126918 /* account.png */,
+				18BF15161C0E7B7200126918 /* button-login-selected.png */,
+				18BF15171C0E7B7200126918 /* button-login.png */,
+				18BF15181C0E7B7200126918 /* button-register-selected.png */,
+				18BF15191C0E7B7200126918 /* button-register.png */,
+				18BF151C1C0E7B7200126918 /* icon-message-30.png */,
+				18BF151D1C0E7B7200126918 /* icon-wating-comment.png */,
+				18BF151E1C0E7B7200126918 /* icon-wating-pay.png */,
+				18BF151F1C0E7B7200126918 /* icon-wating-receipt.png */,
+				18BF15201C0E7B7200126918 /* icon-wating-return.png */,
+				18BF15211C0E7B7200126918 /* icon-wating-use.png */,
+				18BF15401C0E7B7200126918 /* password.png */,
+				18BF15471C0E7B7200126918 /* seccodebutton.png */,
+				18BF15481C0E7B7200126918 /* seccodebutton2.png */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		18FC70961C0E98D8004283A6 /* setting */ = {
+			isa = PBXGroup;
+			children = (
+				18BF15281C0E7B7200126918 /* ModiEmailViewController.h */,
+				18BF15291C0E7B7200126918 /* ModiEmailViewController.m */,
+				18BF152A1C0E7B7200126918 /* ModiMobileViewController.h */,
+				18BF152B1C0E7B7200126918 /* ModiMobileViewController.m */,
+				18BF152C1C0E7B7200126918 /* ModiPassViewController.h */,
+				18BF152D1C0E7B7200126918 /* ModiPassViewController.m */,
+				18BF15451C0E7B7200126918 /* SafeViewController.h */,
+				18BF15461C0E7B7200126918 /* SafeViewController.m */,
+				18BF15491C0E7B7200126918 /* SettingViewController.h */,
+				18BF154A1C0E7B7200126918 /* SettingViewController.m */,
+				18BF153A1C0E7B7200126918 /* MyProfileViewController.h */,
+				18BF153B1C0E7B7200126918 /* MyProfileViewController.m */,
+				18FC709B1C0ECCD8004283A6 /* MyAddressViewController.h */,
+				18FC709C1C0ECCD8004283A6 /* MyAddressViewController.m */,
+			);
+			name = setting;
+			sourceTree = "<group>";
+		};
+		18FC70971C0E9905004283A6 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				18BF15321C0E7B7200126918 /* MyHeadView.h */,
+				18BF15331C0E7B7200126918 /* MyHeadView.m */,
+				18BF15221C0E7B7200126918 /* LoginButton.h */,
+				18BF15231C0E7B7200126918 /* LoginButton.m */,
+				18BF15241C0E7B7200126918 /* LoginInputView.h */,
+				18BF15251C0E7B7200126918 /* LoginInputView.m */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		18FC70981C0E99B6004283A6 /* wallet */ = {
+			isa = PBXGroup;
+			children = (
+				18BF153E1C0E7B7200126918 /* MyWalletViewController.h */,
+				18BF153F1C0E7B7200126918 /* MyWalletViewController.m */,
+				18BF152E1C0E7B7200126918 /* MyBillViewController.h */,
+				18BF152F1C0E7B7200126918 /* MyBillViewController.m */,
+				18BF15341C0E7B7200126918 /* MyIncomeViewController.h */,
+				18BF15351C0E7B7200126918 /* MyIncomeViewController.m */,
+				18BF15381C0E7B7200126918 /* MyOrderViewController.h */,
+				18BF15391C0E7B7200126918 /* MyOrderViewController.m */,
+			);
+			name = wallet;
+			sourceTree = "<group>";
+		};
+		18FC70991C0E9A45004283A6 /* login */ = {
+			isa = PBXGroup;
+			children = (
+				18BF15261C0E7B7200126918 /* LoginViewController.h */,
+				18BF15271C0E7B7200126918 /* LoginViewController.m */,
+				18BF15411C0E7B7200126918 /* RegisterViewController.h */,
+				18BF15421C0E7B7200126918 /* RegisterViewController.m */,
+				18BF15431C0E7B7200126918 /* RegisterViewController2.h */,
+				18BF15441C0E7B7200126918 /* RegisterViewController2.m */,
+			);
+			name = login;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1337,7 +1383,7 @@
 			);
 			name = LADZhangWo;
 			productName = LADLihuibao;
-			productReference = 18FC70941C0E8F8C004283A6 /* LADZhangWo.app */;
+			productReference = 18FC709A1C0EAACE004283A6 /* LADZhangWo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1351,7 +1397,7 @@
 				TargetAttributes = {
 					1803A6AB1BDB6472003E0538 = {
 						CreatedOnToolsVersion = 7.1;
-						DevelopmentTeam = 79BVLY37U9;
+						DevelopmentTeam = A6ZN9D4V62;
 					};
 				};
 			};
@@ -1574,6 +1620,7 @@
 				18BF16881C0E7B7200126918 /* NewsViewController.m in Sources */,
 				18BF161D1C0E7B7200126918 /* AFURLConnectionOperation.m in Sources */,
 				18BF16381C0E7B7200126918 /* DSXPopMenu.m in Sources */,
+				18FC709D1C0ECCD8004283A6 /* MyAddressViewController.m in Sources */,
 				18BF16921C0E7B7200126918 /* SDWebImagePrefetcher.m in Sources */,
 				18BF16941C0E7B7200126918 /* UIImage+GIF.m in Sources */,
 				18BF16861C0E7B7200126918 /* NewsDetailViewController.m in Sources */,
@@ -1744,7 +1791,7 @@
 					"$(PROJECT_DIR)/LADZhangWo/ShareSDK/Extend/SinaWeiboSDK",
 					"$(PROJECT_DIR)/LADZhangWo/ShareSDK/Extend/WeChatSDK",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = cn.zhangwoo.zhangwo;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.zhangwoo.ZhangWo;
 				PRODUCT_NAME = LADZhangWo;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1773,7 +1820,7 @@
 					"$(PROJECT_DIR)/LADZhangWo/ShareSDK/Extend/SinaWeiboSDK",
 					"$(PROJECT_DIR)/LADZhangWo/ShareSDK/Extend/WeChatSDK",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = cn.zhangwoo.zhangwo;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.zhangwoo.ZhangWo;
 				PRODUCT_NAME = LADZhangWo;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
