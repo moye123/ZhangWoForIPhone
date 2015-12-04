@@ -41,9 +41,9 @@
     self.passwordField.delegate = self;
     
     //注册按钮
-    self.registerButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 170, SWIDTH-20, 37)];
-    [self.registerButton setBackgroundImage:[UIImage imageNamed:@"button-register"] forState:UIControlStateNormal];
-    [self.registerButton setBackgroundImage:[UIImage imageNamed:@"button-register-selected.png"] forState:UIControlStateHighlighted];
+    self.registerButton = [[DSXUI sharedUI] longButtonWithTitle:@"注册"];
+    self.registerButton.frame = CGRectMake(10, 170, SWIDTH-20, 40);
+    self.registerButton.layer.cornerRadius = 20.0;
     [self.registerButton addTarget:self action:@selector(checkRegister) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.registerButton];
 }

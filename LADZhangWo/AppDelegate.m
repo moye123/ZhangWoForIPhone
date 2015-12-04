@@ -12,9 +12,10 @@
 #import "IncomeViewController.h"
 #import "CartViewController.h"
 #import "MyViewController.h"
+#import "LoginViewController.h"
 
 @implementation AppDelegate
-
+@synthesize userStatus = _userStatus;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //[NSThread sleepForTimeInterval:3];
@@ -22,37 +23,46 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
     
+    _userStatus = [ZWUserStatus status];
+    
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
     self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
     
     ZWNavigationController *navHome,*navIncome,*navCart,*navMy;
+    UITabBarItem *homeItem, *incomeItem, *cartItem, *myItem;
     HomeViewController *homeView = [[HomeViewController alloc] init];
     [homeView setTitle:@"主页"];
     navHome = [[ZWNavigationController alloc] initWithRootViewController:homeView];
-    navHome.tabBarItem = [self tabBarItemWithTitle:@"主页" image:@"icon-home.png" selectedImage:@"icon-homefill.png"];
+    homeItem = [self tabBarItemWithTitle:@"主页" image:@"icon-home.png" selectedImage:@"icon-homefill.png"];
+    [navHome setTabBarItem:homeItem];
     
     IncomeViewController *incomeView = [[IncomeViewController alloc] init];
     [incomeView setTitle:@"收益"];
     navIncome = [[ZWNavigationController alloc] initWithRootViewController:incomeView];
-    navIncome.tabBarItem = [self tabBarItemWithTitle:@"收益" image:@"icon-income.png" selectedImage:@"icon-incomefill.png"];
+    incomeItem = [self tabBarItemWithTitle:@"收益" image:@"icon-income.png" selectedImage:@"icon-incomefill.png"];
+    [navIncome setTabBarItem:incomeItem];
     
     CartViewController *cartView = [[CartViewController alloc] init];
     [cartView setTitle:@"我的购物车"];
     navCart = [[ZWNavigationController alloc] initWithRootViewController:cartView];
-    navCart.tabBarItem = [self tabBarItemWithTitle:@"购物车" image:@"icon-cart.png" selectedImage:@"icon-cartfill.png"];
+    cartItem = [self tabBarItemWithTitle:@"购物车" image:@"icon-cart.png" selectedImage:@"icon-cartfill.png"];
+    [navCart setTabBarItem:cartItem];
     
     MyViewController *myView = [[MyViewController alloc] init];
     [myView setTitle:@"我的"];
     navMy = [[ZWNavigationController alloc] initWithRootViewController:myView];
     [navMy setNavigationStyle:LHBNavigationStyleGray];
-    navMy.tabBarItem = [self tabBarItemWithTitle:@"我的" image:@"icon-my.png" selectedImage:@"icon-myfill.png"];
+    myItem = [self tabBarItemWithTitle:@"我的" image:@"icon-my.png" selectedImage:@"icon-myfill.png"];
+    [navMy setTabBarItem:myItem];
     
     [tabBarController setViewControllers:@[navHome,navIncome,navCart,navMy]];
     [tabBarController.tabBar setBackgroundColor:[UIColor tabBarColor]];
+    //[tabBarController.tabBar setItems:@[homeItem,incomeItem,cartItem,myItem]];
     
     [UIApplication sharedApplication].applicationIconBadgeNumber = 10;
     CLLocationManager *clmanager = [[CLLocationManager alloc] init];
+    [clmanager requestWhenInUseAuthorization];
     if ([CLLocationManager locationServicesEnabled]) {
         CLLocation *location = [clmanager location];
         CLGeocoder *geocoder = [[CLGeocoder alloc] init];

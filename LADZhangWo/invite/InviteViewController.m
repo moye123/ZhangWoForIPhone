@@ -19,7 +19,7 @@
     [self.navigationController.tabBarItem setTitle:@"邀请"];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     self.userStatus = [ZWUserStatus status];
-    _inviteKey = [NSString stringWithFormat:@"inviteCode_%d",self.userStatus.uid];
+    _inviteKey = [NSString stringWithFormat:@"inviteCode_%ld",(long)self.userStatus.uid];
     self.inviteCode = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:_inviteKey];
     if ([self.inviteCode length] < 8) {
         [self getInviteCode];
@@ -55,7 +55,7 @@
 - (void)getInviteCode{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:[SITEAPI stringByAppendingFormat:@"&mod=invite&ac=getcode&uid=%d",self.userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [manager GET:[SITEAPI stringByAppendingFormat:@"&mod=invite&ac=getcode&uid=%ld",(long)self.userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id dictionay = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([dictionay isKindOfClass:[NSDictionary class]]) {
             self.inviteCode = [dictionay objectForKey:@"invitecode"];

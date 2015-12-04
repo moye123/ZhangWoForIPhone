@@ -30,7 +30,7 @@
     _contentWebView.scrollView.delegate = self;
     [self.view addSubview:_contentWebView];
     
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&id=%d",self.goodsid];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&id=%ld",(long)self.goodsid];
     [_contentWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
     
     _addToCart = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, SWIDTH/2, 44)];

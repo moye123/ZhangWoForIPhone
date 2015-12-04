@@ -16,7 +16,7 @@
 #import "MyMessageViewController.h"
 
 @implementation MyViewController
-@synthesize mainTableView;
+@synthesize tableView = _tableView;
 @synthesize userStatus;
 
 - (void)viewDidLoad{
@@ -28,17 +28,17 @@
     CGRect frame = self.view.frame;
     frame.origin.y = frame.origin.y - 30;
     frame.size.height = frame.size.height + 30;
-    self.mainTableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
-    self.mainTableView.delegate = self;
-    self.mainTableView.dataSource = self;
-    [self.view addSubview:self.mainTableView];
+    _tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    [self.view addSubview:_tableView];
     [self setHeadView];
 }
 
 - (void)setHeadView{
     MyHeadView *headView = [[MyHeadView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
     if (self.userStatus.isLogined) {
-        [headView.imageView sd_setImageWithURL:[NSURL URLWithString:self.userStatus.userpic]];
+        [headView setImageView:self.userStatus.imageView];
         [headView.textLabel setText:self.userStatus.username];
         
         _buttonSetting = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-95, 50, 50, 30)];
@@ -60,7 +60,7 @@
         [headView addGestureRecognizer:tap];
         [headView setUserInteractionEnabled:YES];
     }
-    self.mainTableView.tableHeaderView = headView;
+    _tableView.tableHeaderView = headView;
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -286,7 +286,7 @@
         if (indexPath.row == 3) {
             [[SDImageCache sharedImageCache] clearDisk];
             [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"已成功清除缓存"];
-            [self.mainTableView reloadData];
+            [_tableView reloadData];
         }
     }
     
@@ -310,7 +310,7 @@
 - (void)userStatusChanged{
     self.userStatus = [ZWUserStatus status];
     [self setHeadView];
-    [self.mainTableView reloadData];
+    [_tableView reloadData];
 }
 
 - (void)showLogin{

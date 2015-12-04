@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface MyProfileViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate>{
+@interface MyProfileViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>{
     @private
     UIDatePicker *_datePicker;
     DSXModalView *_datePickerView;

@@ -34,7 +34,7 @@
     _pullUpView.hidden = YES;
     self.tableView.tableFooterView = _pullUpView;
     
-    NSString *key = [NSString stringWithFormat:@"chaoshiList_%d",self.catid];
+    NSString *key = [NSString stringWithFormat:@"chaoshiList_%ld",(long)self.catid];
     [self reloadTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:key]];
     [self refresh];
 }
@@ -58,7 +58,7 @@
     [self loadData];
 }
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=chaoshi&ac=showlist&catid=%d&page=%d",_catid,_page];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=chaoshi&ac=showlist&catid=%ld&page=%d",(long)_catid,_page];
     [_afmanager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         NSData *data = (NSData *)responseObject;
         if ([data length]>2) {
@@ -66,7 +66,7 @@
             if ([array isKindOfClass:[NSArray class]]) {
                 if ([array count] > 0) {
                     if (_isRefreshing) {
-                        NSString *key = [NSString stringWithFormat:@"chaoshi_%d",_catid];
+                        NSString *key = [NSString stringWithFormat:@"chaoshi_%ld",(long)_catid];
                         [[NSUserDefaults standardUserDefaults] setObject:array forKey:key];
                     }
                     [self reloadTableViewWithArray:array];

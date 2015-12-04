@@ -118,7 +118,7 @@
     if (indexPath.section == 0) {
         if (indexPath.row == 1) {
             UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
-            [actionSheet addButtonWithTitle:@"本地相册"];
+            [actionSheet addButtonWithTitle:@"相册"];
             [actionSheet addButtonWithTitle:@"拍照"];
             [actionSheet addButtonWithTitle:@"取消"];
             [actionSheet setCancelButtonIndex:2];
@@ -204,6 +204,21 @@
 
 #pragma mark - actionsheet delegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (actionSheet.tag == 101) {
+        UIImagePickerController *pickController = [[UIImagePickerController alloc] init];
+        pickController.delegate = self;
+        [pickController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor blackColor]}];
+        if (buttonIndex == 0) {
+            pickController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            [self presentViewController:pickController animated:YES completion:nil];
+        }
+        if (buttonIndex == 1) {
+            pickController.sourceType = UIImagePickerControllerSourceTypeCamera;
+            [self presentViewController:pickController animated:YES completion:nil];
+        }
+        
+    }
+    //性别选择
     if (actionSheet.tag == 102) {
         if (buttonIndex == 0) {
             [self setSex:1];
@@ -212,6 +227,91 @@
             [self setSex:0];
         }
     }
+}
+
+#pragma mark - imagepicker delegate
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"正在上传照片.."];
+    UIImage *tmpImage = [self imageCompressForSize:[info objectForKey:UIImagePickerControllerOriginalImage] targetSize:CGSizeMake(1000, 1000)];
+    NSData *imageData = UIImageJPEGRepresentation(tmpImage, 1.0);
+    NSString *filePath = [[DSXSandboxHelper tmpPath] stringByAppendingString:@"/tmp_image.jpg"];
+    NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:filePath];
+    if ([imageData writeToFile:filePath atomically:YES]) {
+        [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=profile&ac=setavatar"] parameters:@{@"uid":@(_userStatus.uid),@"username":_userStatus.username} constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+            [formData appendPartWithFileURL:fileURL name:@"filedata" error:nil];
+        } success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+            [loadingView removeFromSuperview];
+            [_userStatus removeImageCache];
+            [[NSNotificationCenter defaultCenter] postNotificationName:UserImageChangedNotification object:nil];
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            [loadingView removeFromSuperview];
+            [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"上传失败"];
+        }];
+    }
+}
+
+- (UIImage *)scaleToSize:(UIImage *)img size:(CGSize)size{
+    // 创建一个bitmap的context， 并把它设置成为当前正在使用的context
+    UIGraphicsBeginImageContext(size);
+    // 绘制改变大小的图片
+    [img drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    // 从当前context中创建一个改变大小后的图片
+    UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    // 使当前的context出堆栈
+    UIGraphicsEndImageContext();
+    // 返回新的改变大小后的图片
+    return scaledImage;
+    
+}
+
+-(UIImage *) imageCompressForSize:(UIImage *)sourceImage targetSize:(CGSize)size{
+    UIImage *newImage = nil;
+    CGSize imageSize = sourceImage.size;
+    CGFloat width = imageSize.width;
+    CGFloat height = imageSize.height;
+    CGFloat targetWidth = size.width;
+    CGFloat targetHeight = size.height;
+    CGFloat scaleFactor = 0.0;
+    CGFloat scaledWidth = targetWidth;
+    CGFloat scaledHeight = targetHeight;
+    CGPoint thumbnailPoint = CGPointMake(0.0, 0.0);
+    if(CGSizeEqualToSize(imageSize, size) == NO){
+        CGFloat widthFactor = targetWidth / width;
+        CGFloat heightFactor = targetHeight / height;
+        if(widthFactor > heightFactor){
+            scaleFactor = widthFactor;
+        }
+        else{
+            scaleFactor = heightFactor;
+        }
+        scaledWidth = width * scaleFactor;
+        scaledHeight = height * scaleFactor;
+        if(widthFactor > heightFactor){
+            thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
+        }else if(widthFactor < heightFactor){
+            thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
+        }
+    }
+    
+    UIGraphicsBeginImageContext(size);
+    
+    CGRect thumbnailRect = CGRectZero;
+    thumbnailRect.origin = thumbnailPoint;
+    thumbnailRect.size.width = scaledWidth;
+    thumbnailRect.size.height = scaledHeight;
+    [sourceImage drawInRect:thumbnailRect];
+    newImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    if(newImage == nil){
+        NSLog(@"scale image fail");
+    }
+    
+    UIGraphicsEndImageContext();
+    
+    return newImage;
+    
 }
 
 @end

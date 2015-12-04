@@ -23,14 +23,15 @@
 - (void)setNavigationStyle:(LHBNavigationStyle)style{
     switch (style) {
         case LHBNavigationStyleGray:
-            [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbg2.png"] forBarMetrics:UIBarMetricsDefault];
+            [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbg-gray.png"] forBarMetrics:UIBarMetricsDefault];
             [self.navigationBar setBarStyle:UIBarStyleDefault];
+            [self.navigationBar setTintColor:[UIColor blackColor]];
             break;
             
         default:
-            [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"nav-bg.png"] forBarMetrics:UIBarMetricsDefault];
+            [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbg-green.png"] forBarMetrics:UIBarMetricsDefault];
             [self.navigationBar setBarStyle:UIBarStyleBlack];
-            [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]} forState:UIControlStateNormal];
+            [self.navigationBar setTintColor:[UIColor whiteColor]];
             break;
     }
 }

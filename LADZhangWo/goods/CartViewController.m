@@ -46,7 +46,7 @@
 }
 
 - (void)loadData{
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=cart&ac=showlist&uid=%d&page=%d",_userStatus.uid,_page] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=cart&ac=showlist&uid=%ld&page=%d",(long)_userStatus.uid,_page] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {
             [self reloadTableViewWithArray:array];
@@ -161,7 +161,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     NSDictionary *cart = [_cartList objectAtIndex:indexPath.section];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=cart&ac=delete&cartid=%@&uid=%d",[cart objectForKey:@"cartid"],_userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=cart&ac=delete&cartid=%@&uid=%ld",[cart objectForKey:@"cartid"],(long)_userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
             //NSLog(@"%@",returns);
             if ([returns isKindOfClass:[NSDictionary class]]) {

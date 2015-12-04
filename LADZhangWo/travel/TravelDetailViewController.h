@@ -11,7 +11,7 @@
 
 @interface TravelDetailViewController : UIViewController<UIWebViewDelegate>
 
-@property(nonatomic,assign)int travelID;
+@property(nonatomic,assign)NSInteger travelID;
 @property(nonatomic,strong)NSDictionary *travelData;
 @property(nonatomic,retain)UIWebView *contentWebView;
 

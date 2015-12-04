@@ -156,6 +156,7 @@
                     default:
                         break;
                 }
+                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:errMsg];
             }
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {

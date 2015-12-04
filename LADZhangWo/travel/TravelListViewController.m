@@ -53,7 +53,7 @@
 
 #pragma mark
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=travel&ac=showlist&catid=%d&page=%d", self.catid,_page];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=travel&ac=showlist&catid=%ld&page=%d", (long)self.catid,_page];
     [_afmanager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         NSData *data = (NSData *)responseObject;
         if ([data length] > 0) {
@@ -182,7 +182,7 @@
     [cell setSelected:NO animated:YES];
     NSDictionary *travelItem = [self.travelArray objectAtIndex:indexPath.row];
     TravelDetailViewController *detailController = [[TravelDetailViewController alloc] init];
-    detailController.travelID = [[travelItem objectForKey:@"id"] integerValue];
+    detailController.travelID = [[travelItem objectForKey:@"id"] intValue];
     detailController.title = [travelItem objectForKey:@"title"];
     detailController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:detailController animated:YES];

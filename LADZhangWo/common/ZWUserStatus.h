@@ -10,6 +10,7 @@
 #import "ZWCommon.h"
 
 UIKIT_EXTERN NSString *const UserStatusChangedNotification;
+UIKIT_EXTERN NSString *const UserImageChangedNotification;
 
 @interface ZWUserStatus : NSObject
 
@@ -20,6 +21,7 @@ UIKIT_EXTERN NSString *const UserStatusChangedNotification;
 - (void)register:(NSMutableDictionary *)params success:(void(^)(id responseObject))success failure:(void(^)(NSString *errorMsg))failure;
 - (void)logout;
 - (void)update;
+- (void)removeImageCache;
 
 @property(nonatomic,assign)NSInteger uid;
 @property(nonatomic,strong)NSString *username;
@@ -28,6 +30,6 @@ UIKIT_EXTERN NSString *const UserStatusChangedNotification;
 @property(nonatomic,strong)NSString *userpic;
 @property(nonatomic,strong)NSDictionary *userInfo;
 @property(nonatomic,assign)BOOL isLogined;
-@property(nonatomic,retain)UIImageView *imageView;
+@property(nonatomic,readonly,setter=setImageView:)UIImageView *imageView;
 
 @end

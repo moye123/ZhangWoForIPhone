@@ -11,8 +11,6 @@
 
 @interface MyIncomeViewController : UITableViewController{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
-    int _page;
 }
 
 @property(nonatomic,strong)NSMutableArray *incomeList;

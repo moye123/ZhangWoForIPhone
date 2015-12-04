@@ -18,7 +18,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
-    [self setTitle:@"登录利惠宝"];
+    [self setTitle:@"登录"];
     
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBackWhite target:self action:@selector(closeLogin)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"注册" style:UIBarButtonItemStylePlain target:self action:@selector(showRegister)];
@@ -42,9 +42,9 @@
     self.passwordField.delegate = self;
     self.passwordField.returnKeyType = UIReturnKeyDone;
     
-    self.loginButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 170, SWIDTH-20, 37)];
-    [self.loginButton setBackgroundImage:[UIImage imageNamed:@"button-login.png"] forState:UIControlStateNormal];
-    [self.loginButton setBackgroundImage:[UIImage imageNamed:@"button-login-selected.png"] forState:UIControlStateHighlighted];
+    self.loginButton = [[DSXUI sharedUI] longButtonWithTitle:@"登录"];
+    self.loginButton.frame = CGRectMake(10, 170, SWIDTH-20, 40);
+    self.loginButton.layer.cornerRadius = 20.0;
     [self.loginButton addTarget:self action:@selector(login) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.loginButton];
     

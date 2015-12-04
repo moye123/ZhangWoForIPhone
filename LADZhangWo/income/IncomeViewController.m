@@ -35,7 +35,7 @@
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     //下载个人收益数据
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=income&ac=getdata&uid=%d",self.userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=income&ac=getdata&uid=%ld",(long)self.userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id dictionary = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([dictionary isKindOfClass:[NSDictionary class]]) {
             self.income = [dictionary objectForKey:@"income"];

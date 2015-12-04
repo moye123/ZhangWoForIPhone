@@ -29,7 +29,7 @@
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     self.userStatus = [ZWUserStatus status];
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&datatype=json&id=%d",_goodsid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&datatype=json&id=%ld",(long)_goodsid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id dictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([dictionary isKindOfClass:[NSDictionary class]]) {
             _goodsdata = dictionary;
@@ -218,8 +218,8 @@
     if (buynum < 1) {
         buynum = 1;
     }
-    _numField.text = [NSString stringWithFormat:@"%d", buynum];
-    _buyNum.text = [NSString stringWithFormat:@"x%d", buynum];
+    _numField.text = [NSString stringWithFormat:@"%ld", (long)buynum];
+    _buyNum.text = [NSString stringWithFormat:@"x%ld", (long)buynum];
     float total = [[_goodsdata objectForKey:@"price"] floatValue] * buynum;
     _total.text = [NSString stringWithFormat:@"￥%.2f", total];
     [_total sizeToFit];

@@ -16,7 +16,6 @@
 #import "DistrictViewController.h"
 @interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,showCategoryDelegate,RecommendDelegate,LocationChangeDelegate>{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
     DSXPopMenu *_popMenu;
 }
 

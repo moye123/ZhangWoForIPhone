@@ -14,8 +14,6 @@
     @private
     UIButton *_addToCart;
     UIButton *_buyNow;
-    UIView *_modalView;
-    UIView *_cartView;
     AddToCartView *_addCartView;
 }
 

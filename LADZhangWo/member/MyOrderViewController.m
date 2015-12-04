@@ -139,8 +139,8 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     NSDictionary *order = [_orderList objectAtIndex:indexPath.section];
     if (indexPath.row == 0) {
-        cell.textLabel.text = [order objectForKey:@"goods_sn"];
-        //cell.textLabel.text = @"店铺名称";
+        //cell.textLabel.text = [order objectForKey:@"goods_sn"];
+        cell.textLabel.text = @"店铺名称";
         cell.textLabel.textColor = [UIColor colorWithHexString:@"0x999999"];
         cell.textLabel.font = [UIFont systemFontOfSize:17.0];
         

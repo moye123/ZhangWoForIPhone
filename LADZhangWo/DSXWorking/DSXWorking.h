@@ -19,4 +19,5 @@
 #import "DSXModalView.h"
 #import "DSXSliderView.h"
 #import "DSXStarView.h"
+#import "DSXSandboxHelper.h"
 #import "NSString+Encryption.h"

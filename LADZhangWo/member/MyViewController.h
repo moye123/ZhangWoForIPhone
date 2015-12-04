@@ -16,7 +16,7 @@
 }
 
 @property(nonatomic,retain)UIView *topView;
-@property(nonatomic,retain)UITableView *mainTableView;
+@property(nonatomic,retain)UITableView *tableView;
 @property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

@@ -31,13 +31,13 @@
 }
 
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=homepage&ac=showlist&groupid=%d&num=%d",_groupid,_dataCount];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=homepage&ac=showlist&groupid=%ld&num=%ld",(long)_groupid,(long)_dataCount];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {
-            [[NSUserDefaults standardUserDefaults] setObject:array forKey:[NSString stringWithFormat:@"recommendSlider%d",_groupid]];
+            [[NSUserDefaults standardUserDefaults] setObject:array forKey:[NSString stringWithFormat:@"recommendSlider%ld",(long)_groupid]];
             [self showImageWithArray:array];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
@@ -76,7 +76,7 @@
 - (void)imageClick:(UITapGestureRecognizer *)tap{
     NSInteger dataid = tap.view.tag;
     if ([self.tapDelegate respondsToSelector:@selector(showDetailWithID:andIdType:)]) {
-        NSString *idtype = [_idTypes objectForKey:[NSString stringWithFormat:@"%d",dataid]];
+        NSString *idtype = [_idTypes objectForKey:[NSString stringWithFormat:@"%ld",(long)dataid]];
         [self.tapDelegate showDetailWithID:dataid andIdType:idtype];
     }
 }

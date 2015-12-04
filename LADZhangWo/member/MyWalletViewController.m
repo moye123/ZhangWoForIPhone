@@ -47,7 +47,7 @@
     rechageButton.layer.masksToBounds = YES;
     [rechageButton setTitle:@"账户充值" forState:UIControlStateNormal];
     [rechageButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [rechageButton setBackgroundImage:[UIImage imageNamed:@"button-buy-selected.png"] forState:UIControlStateHighlighted];
+    [rechageButton setBackgroundImage:[UIImage imageNamed:@"button-selected.png"] forState:UIControlStateHighlighted];
     [rechageButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
     [_footerView addSubview:rechageButton];
     

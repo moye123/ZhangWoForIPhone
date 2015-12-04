@@ -10,6 +10,7 @@
 #import "ZWUserStatus.h"
 
 NSString *const UserStatusChangedNotification = @"userStatusChanged";
+NSString *const UserImageChangedNotification = @"userImageChanged";
 
 @implementation ZWUserStatus
 @synthesize uid;
@@ -36,7 +37,23 @@ NSString *const UserStatusChangedNotification = @"userStatusChanged";
 
 - (void)setImageView:(UIImageView *)imageView{
     _imageView = imageView;
-    [_imageView sd_setImageWithURL:[NSURL URLWithString:self.userpic]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setImage) name:UserImageChangedNotification object:nil];
+    [self setImage];
+}
+
+- (void)setImage{
+    NSString *cacheKey = [NSString stringWithFormat:@"%ld",(long)self.uid];
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:cacheKey];
+    if (image == nil) {
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.userpic] options:SDWebImageDownloaderLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+            
+        } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+            [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey];
+            [_imageView setImage:image];
+        }];
+    }else {
+        [_imageView setImage:image];
+    }
 }
 
 - (void)reloadData{
@@ -65,6 +82,7 @@ NSString *const UserStatusChangedNotification = @"userStatusChanged";
         id dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
         
         if ([dictionary isKindOfClass:[NSDictionary class]]) {
+            //NSLog(@"%@",dictionary);
             NSInteger myuid = [[dictionary objectForKey:@"uid"] integerValue];
             NSString *myusername = [dictionary objectForKey:@"username"];
             if (myuid > 0 && myusername) {
@@ -74,7 +92,7 @@ NSString *const UserStatusChangedNotification = @"userStatusChanged";
                 [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
                 success(dictionary);
             }else {
-                int errorCode = [[dictionary objectForKey:@"errorno"] intValue];
+                NSInteger errorCode = [[dictionary objectForKey:@"errno"] integerValue];
                 NSString *errorMsg = nil;
                 switch (errorCode) {
                     case -1 :
@@ -120,7 +138,7 @@ NSString *const UserStatusChangedNotification = @"userStatusChanged";
                 [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
                 success(dictionary);
             }else {
-                int errorCode = [[dictionary objectForKey:@"errorno"] intValue];
+                int errorCode = [[dictionary objectForKey:@"errno"] intValue];
                 NSString *errorMsg = nil;
                 switch (errorCode) {
                     case -1 :
@@ -163,6 +181,11 @@ NSString *const UserStatusChangedNotification = @"userStatusChanged";
 
 - (void)update{
     [[NSUserDefaults standardUserDefaults] setObject:self.userInfo forKey:@"userinfo"];
+}
+
+- (void)removeImageCache{
+    NSString *cacheKey = [NSString stringWithFormat:@"%ld",(long)self.uid];
+    [[SDImageCache sharedImageCache] removeImageForKey:cacheKey];
 }
 
 @end
