@@ -8,11 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
+#import "MyHeadView.h"
 
 @interface MyViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
     @private
     UIButton *_buttonMessage;
     UIButton *_buttonSetting;
+    MyHeadView *_headerView;
 }
 
 @property(nonatomic,retain)UIView *topView;

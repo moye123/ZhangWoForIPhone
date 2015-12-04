@@ -15,9 +15,9 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
+        self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"top-bg.png"]];
         self.imageView = [[UIImageView alloc] init];
         self.textLabel = [[UILabel alloc] init];
-        self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"top-bg.png"]];
     }
     return self;
 }
@@ -42,6 +42,7 @@
         _textLabel.frame = CGRectMake(0, center.y+50, self.frame.size.width, 30);
         _textLabel.textAlignment = NSTextAlignmentCenter;
         _textLabel.font = [UIFont systemFontOfSize:18.0];
+        _textLabel.text = @"点此登录";
         [self addSubview:_textLabel];
     }
 }

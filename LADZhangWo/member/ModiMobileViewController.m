@@ -22,7 +22,7 @@
     [self.view setBackgroundColor:[UIColor whiteColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
-    _userStatus = [ZWUserStatus status];
+    _userStatus = [ZWUserStatus sharedStatus];
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
@@ -55,7 +55,7 @@
     [submitButton setTitle:@"提交" forState:UIControlStateNormal];
     [submitButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    [submitButton setBackgroundImage:[UIImage imageNamed:@"button-buy-selected.png"] forState:UIControlStateHighlighted];
+    [submitButton setBackgroundImage:[UIImage imageNamed:@"button-selected.png"] forState:UIControlStateHighlighted];
     [submitButton addTarget:self action:@selector(submit) forControlEvents:UIControlEventTouchUpInside];
     [footerView addSubview:submitButton];
     _tableView.tableFooterView = footerView;
@@ -137,7 +137,7 @@
             if ([[returns objectForKey:@"status"] isEqualToString:@"success"]) {
                 NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:_userStatus.userInfo];
                 [userInfo setObject:mobilenew forKey:@"mobile"];
-                [_userStatus setUserInfo:userInfo];
+                //[_userStatus setUserInfo:userInfo];
                 [_userStatus update];
                 [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"手机修改成功"];
                 [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];

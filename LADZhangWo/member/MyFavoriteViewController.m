@@ -21,7 +21,7 @@
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
     _favoriteList = [NSMutableArray array];
-    self.userStatus = [ZWUserStatus status];
+    self.userStatus = [ZWUserStatus sharedStatus];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor backColor];

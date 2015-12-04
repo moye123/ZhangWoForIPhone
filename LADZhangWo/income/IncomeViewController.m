@@ -9,25 +9,24 @@
 #import "IncomeViewController.h"
 #import "IncomeView.h"
 #import "ContactusViewController.h"
+#import "LoginViewController.h"
 
 @implementation IncomeViewController
 @synthesize afmanager = _afmanager;
-@synthesize userStatus;
+@synthesize userStatus = _userStatus;
 @synthesize scrollView;
-
-- (instancetype)init{
-    self = [super init];
-    if (self) {
-        self.userStatus = [ZWUserStatus status];
-    }
-    return self;
-}
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self setTitle:@"我的收益"];
     [self.navigationController.tabBarItem setTitle:@"收益"];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStatusChanged) name:UserStatusChangedNotification object:nil];
+    _userStatus = [ZWUserStatus sharedStatus];
+    if (!_userStatus.isLogined) {
+        LoginViewController *loginView = [[LoginViewController alloc] init];
+        [self.navigationController pushViewController:loginView animated:YES];
+    }
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
     IncomeView *myIncomeView = [[IncomeView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
     [self.scrollView addSubview:myIncomeView];
@@ -87,6 +86,10 @@
     
     self.scrollView.contentSize = CGSizeMake(0, 460);
     [self.view addSubview:self.scrollView];
+}
+
+- (void)userStatusChanged{
+    _userStatus = [[ZWUserStatus alloc] init];
 }
 
 - (void)showContactus{

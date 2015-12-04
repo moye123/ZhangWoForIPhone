@@ -18,7 +18,7 @@
     [self setTitle:@"邀请好友"];
     [self.navigationController.tabBarItem setTitle:@"邀请"];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
-    self.userStatus = [ZWUserStatus status];
+    self.userStatus = [ZWUserStatus sharedStatus];
     _inviteKey = [NSString stringWithFormat:@"inviteCode_%ld",(long)self.userStatus.uid];
     self.inviteCode = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:_inviteKey];
     if ([self.inviteCode length] < 8) {

@@ -33,7 +33,7 @@
         UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
         [window addSubview:self];
         _buyNum = 1;
-        _userStatus = [ZWUserStatus status];
+        _userStatus = [ZWUserStatus sharedStatus];
     }
     return self;
 }

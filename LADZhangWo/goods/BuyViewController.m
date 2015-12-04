@@ -28,7 +28,7 @@
     [self setTitle:@"购买"];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
-    self.userStatus = [ZWUserStatus status];
+    self.userStatus = [ZWUserStatus sharedStatus];
     [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&datatype=json&id=%ld",(long)_goodsid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id dictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([dictionary isKindOfClass:[NSDictionary class]]) {

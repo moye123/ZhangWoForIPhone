@@ -7,11 +7,13 @@
 //
 
 #import "MyOrderViewController.h"
+#import "GoodsDetailViewController.h"
+#import "PayViewController.h"
 
 @implementation MyOrderViewController
-@synthesize status;
+@synthesize status = _status;
 @synthesize orderList = _orderList;
-@synthesize userStatus;
+@synthesize userStatus = _userStatus;
 @synthesize tableView = _tableView;
 
 - (instancetype)init{
@@ -19,7 +21,7 @@
     if (self) {
         _afmanager = [AFHTTPRequestOperationManager manager];
         _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        self.userStatus = [ZWUserStatus status];
+        self.userStatus = [ZWUserStatus sharedStatus];
         _orderList = [NSMutableArray array];
     }
     return self;
@@ -38,7 +40,9 @@
     //refreshView.hidden = YES;
     [self.view addSubview:refreshView];
     
-    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    CGRect tableFrame = self.view.bounds;
+    tableFrame.size.height = tableFrame.size.height - 50;
+    self.tableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.view addSubview:self.tableView];
@@ -56,11 +60,18 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+//从服务器加载数据
 - (void)loadData{
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=order&ac=showlist&page=%d",_page] parameters:@{@"uid":@(self.userStatus.uid),@"username":self.userStatus.username} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@(_userStatus.uid) forKey:@"uid"];
+    [params setObject:_userStatus.username forKey:@"username"];
+    if (_status) {
+        [params setObject:@(_status) forKey:@"status"];
+    }
+    
+    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=order&ac=showlist&page=%d",_page] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {
-            
             [self reloadTableViewWithArray:array];
         }else {
             NSLog(@"订单获取失败");
@@ -70,6 +81,7 @@
     }];
 }
 
+//刷新表视图
 - (void)reloadTableViewWithArray:(NSArray *)array{
     
     if ([array count] > 0) {
@@ -95,12 +107,14 @@
     }
 }
 
+//刷新
 - (void)refresh{
     _page = 1;
     _isRefreshing = YES;
     [self loadData];
 }
 
+//加载更多
 - (void)loadMore{
     _page++;
     _isRefreshing = NO;
@@ -135,25 +149,57 @@
         }
     }
      */
-    UITableViewCell *cell = [[UITableViewCell alloc] init];
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"orderCell"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     NSDictionary *order = [_orderList objectAtIndex:indexPath.section];
+    NSInteger orderStatus = [[order objectForKey:@"status"] integerValue];
     if (indexPath.row == 0) {
-        //cell.textLabel.text = [order objectForKey:@"goods_sn"];
-        cell.textLabel.text = @"店铺名称";
+        if ([[order objectForKey:@"shopname"] length] > 0) {
+            cell.textLabel.text = [order objectForKey:@"shopname"];
+        }else {
+            cell.textLabel.text = @"店铺名称";
+        }
         cell.textLabel.textColor = [UIColor colorWithHexString:@"0x999999"];
-        cell.textLabel.font = [UIFont systemFontOfSize:17.0];
+        cell.textLabel.font = [UIFont systemFontOfSize:16.0];
         
-        UILabel *statusLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        statusLabel.text = @"交易成功";
-        statusLabel.textColor = [UIColor colorWithHexString:@"0x666666"];
-        statusLabel.font = [UIFont systemFontOfSize:15.0];
-        [statusLabel sizeToFit];
-        cell.accessoryView = statusLabel;
+        cell.detailTextLabel.font = [UIFont systemFontOfSize:14.0];
+        cell.detailTextLabel.textColor = [UIColor redColor];
+        switch (orderStatus) {
+            case 0:
+                cell.detailTextLabel.text = @"交易成功";
+                break;
+            case 1:
+                cell.detailTextLabel.text = @"等待买家付款";
+                break;
+            case 2:
+                cell.detailTextLabel.text = @"等待卖家发货";
+                break;
+            case 3:
+                cell.detailTextLabel.text = @"卖家已发货";
+                break;
+            case 4:
+                cell.detailTextLabel.text = @"等待买家收货";
+                break;
+            case 5:
+                cell.detailTextLabel.text = @"等待买家确认";
+                break;
+            case 6:
+                cell.detailTextLabel.text = @"退款进行中";
+                break;
+            case 7:
+                cell.detailTextLabel.text = @"等待卖家退款";
+                break;
+            case 8:
+                cell.detailTextLabel.text = @"退款成功";
+                break;
+            default:
+                break;
+        }
     }
     
     if (indexPath.row == 1) {
         cell.backgroundColor = [UIColor colorWithHexString:@"f8f8f8"];
+        cell.selectionStyle  = UITableViewCellSelectionStyleGray;
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 80, 80)];
         [imageView sd_setImageWithURL:[order objectForKey:@"goods_pic"]];
         [cell.contentView addSubview:imageView];
@@ -179,20 +225,43 @@
     if (indexPath.row == 2) {
         cell.textLabel.text = [NSString stringWithFormat:@"时间:%@",[order objectForKey:@"ordertime"]];
         cell.textLabel.font = [UIFont systemFontOfSize:16.0];
-        UILabel *orderTotal = [[UILabel alloc] initWithFrame:CGRectZero];
-        orderTotal.text = [NSString stringWithFormat:@"总计:%.2f",[[order objectForKey:@"total"] floatValue]];
-        orderTotal.font = [UIFont systemFontOfSize:16.0];
-        [orderTotal sizeToFit];
-        cell.accessoryView = orderTotal;
+        
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"总计:%.2f",[[order objectForKey:@"total"] floatValue]];
+        cell.detailTextLabel.textColor = [UIColor blackColor];
+        cell.detailTextLabel.font = [UIFont systemFontOfSize:16.0];
     }
     if (indexPath.row == 3) {
-        UIButton *cancelButton = [self buttonWithTitle:@"取消订单"];
-        [cancelButton setFrame:CGRectMake(SWIDTH-150, 10, 80, 30)];
-        [cell.contentView addSubview:cancelButton];
+        if (orderStatus == 0) {
+            UIButton *evalButton = [self buttonWithTitle:@"评价"];
+            evalButton.tag = [[order objectForKey:@"orderid"] integerValue];
+            [evalButton setFrame:CGRectMake(SWIDTH-70, 10, 60, 30)];
+            [evalButton addTarget:self action:@selector(evaluationOrder:) forControlEvents:UIControlEventTouchUpInside];
+            [cell addSubview:evalButton];
+            
+            UIButton *refundButton = [self buttonWithTitle:@"申请退货"];
+            refundButton.tag = indexPath.section + 1000;
+            [refundButton setFrame:CGRectMake(SWIDTH-160, 10, 80, 30)];
+            [cell addSubview:refundButton];
+            
+        }else if (orderStatus == 1){
+            UIButton *cancelButton = [self buttonWithTitle:@"取消订单"];
+            cancelButton.tag = indexPath.section+100;
+            [cancelButton setFrame:CGRectMake(SWIDTH-160, 10, 80, 30)];
+            [cancelButton addTarget:self action:@selector(cancelOrder:) forControlEvents:UIControlEventTouchUpInside];
+            [cell addSubview:cancelButton];
+            
+            UIButton *payButton = [self buttonWithTitle:@"付款"];
+            payButton.tag = [[order objectForKey:@"orderid"] integerValue];
+            [payButton setFrame:CGRectMake(SWIDTH-70, 10, 60, 30)];
+            [payButton addTarget:self action:@selector(pay:) forControlEvents:UIControlEventTouchUpInside];
+            [cell addSubview:payButton];
+        }else {
+            UIButton *doneButton = [self buttonWithTitle:@"确认收货"];
+            doneButton.tag = [[order objectForKey:@"orderid"] integerValue];
+            [doneButton setFrame:CGRectMake(SWIDTH-90, 10, 80, 30)];
+            [cell addSubview:doneButton];
+        }
         
-        UIButton *payButton = [self buttonWithTitle:@"付款"];
-        [payButton setFrame:CGRectMake(SWIDTH-60, 10, 50, 30)];
-        [cell.contentView addSubview:payButton];
     }
     
     return cell;
@@ -201,6 +270,14 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
+    
+    if (indexPath.row == 1) {
+        NSInteger goodsid = [[[_orderList objectAtIndex:indexPath.section] objectForKey:@"goods_id"] integerValue];
+        GoodsDetailViewController *detailView = [[GoodsDetailViewController alloc] init];
+        detailView.goodsid = goodsid;
+        detailView.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:detailView animated:YES];
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -209,6 +286,31 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 10;
+}
+
+- (void)cancelOrder:(UIButton *)button{
+    NSInteger section = button.tag - 100;
+    NSInteger orderid = [[_orderList[section] objectForKey:@"orderid"] integerValue];
+    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=order&ac=delete"] parameters:@{@"uid":@(_userStatus.uid),@"username":_userStatus.username,@"orderid":@(orderid)} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([returns isKindOfClass:[NSDictionary class]]) {
+            [_orderList removeObjectAtIndex:section];
+            [_tableView deleteSections:[NSIndexSet indexSetWithIndex:section] withRowAnimation:UITableViewRowAnimationFade];
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
+}
+
+- (void)pay:(UIButton *)button{
+    NSInteger orderid = button.tag;
+    PayViewController *payView = [[PayViewController alloc] init];
+    payView.orderid = orderid;
+    [self.navigationController pushViewController:payView animated:YES];
+}
+
+- (void)evaluationOrder:(UIButton *)button{
+    
 }
 
 #pragma mark - button
@@ -222,7 +324,7 @@
     [button setTitle:title forState:UIControlStateNormal];
     [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    [button setBackgroundImage:[UIImage imageNamed:@"button-buy-selected.png"] forState:UIControlStateHighlighted];
+    [button setBackgroundImage:[UIImage imageNamed:@"button-selected.png"] forState:UIControlStateHighlighted];
     [button setBackgroundColor:[UIColor whiteColor]];
     return button;
 }

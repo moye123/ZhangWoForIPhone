@@ -23,12 +23,10 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
     
-    _userStatus = [ZWUserStatus status];
-    
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
     self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
-    
+
     ZWNavigationController *navHome,*navIncome,*navCart,*navMy;
     UITabBarItem *homeItem, *incomeItem, *cartItem, *myItem;
     HomeViewController *homeView = [[HomeViewController alloc] init];
@@ -59,10 +57,7 @@
     [tabBarController setViewControllers:@[navHome,navIncome,navCart,navMy]];
     [tabBarController.tabBar setBackgroundColor:[UIColor tabBarColor]];
     //[tabBarController.tabBar setItems:@[homeItem,incomeItem,cartItem,myItem]];
-    
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 10;
     CLLocationManager *clmanager = [[CLLocationManager alloc] init];
-    [clmanager requestWhenInUseAuthorization];
     if ([CLLocationManager locationServicesEnabled]) {
         CLLocation *location = [clmanager location];
         CLGeocoder *geocoder = [[CLGeocoder alloc] init];

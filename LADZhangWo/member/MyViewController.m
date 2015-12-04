@@ -7,7 +7,6 @@
 //
 
 #import "MyViewController.h"
-#import "MyHeadView.h"
 #import "MyFavoriteViewController.h"
 #import "AboutusViewController.h"
 #import "MyOrderViewController.h"
@@ -17,14 +16,15 @@
 
 @implementation MyViewController
 @synthesize tableView = _tableView;
-@synthesize userStatus;
+@synthesize userStatus = _userStatus;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     
-    self.userStatus = [[ZWUserStatus alloc] init];
+    _userStatus = [ZWUserStatus sharedStatus];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStatusChanged) name:UserStatusChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setHeadView) name:UserImageChangedNotification object:nil];
     CGRect frame = self.view.frame;
     frame.origin.y = frame.origin.y - 30;
     frame.size.height = frame.size.height + 30;
@@ -36,31 +36,31 @@
 }
 
 - (void)setHeadView{
-    MyHeadView *headView = [[MyHeadView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
-    if (self.userStatus.isLogined) {
-        [headView setImageView:self.userStatus.imageView];
-        [headView.textLabel setText:self.userStatus.username];
+    _headerView = [[MyHeadView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
+    _tableView.tableHeaderView = _headerView;
+    if (_userStatus.isLogined) {
+        [_headerView.imageView sd_setImageWithURL:[NSURL URLWithString:_userStatus.userpic]];
+        [_headerView.textLabel setText:_userStatus.username];
         
         _buttonSetting = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-95, 50, 50, 30)];
         [_buttonSetting setTitle:@"设置" forState:UIControlStateNormal];
         [_buttonSetting setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_buttonSetting addTarget:self action:@selector(showSetting) forControlEvents:UIControlEventTouchUpInside];
         [_buttonSetting.titleLabel setFont:[UIFont systemFontOfSize:16.0]];
-        [headView addSubview:_buttonSetting];
+        [_headerView addSubview:_buttonSetting];
         
         _buttonMessage = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-40, 54, 22, 22)];
         [_buttonMessage setBackgroundImage:[UIImage imageNamed:@"icon-message-30.png"] forState:UIControlStateNormal];
         [_buttonMessage addTarget:self action:@selector(showMessage) forControlEvents:UIControlEventTouchUpInside];
-        [headView addSubview:_buttonMessage];
+        [_headerView addSubview:_buttonMessage];
         
     }else{
-        [headView.imageView setImage:[UIImage imageNamed:@"avatar.png"]];
-        [headView.textLabel setText:@"点此登录"];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showLogin)];
-        [headView addGestureRecognizer:tap];
-        [headView setUserInteractionEnabled:YES];
+        UIImageView *avatar = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"avatar.png"]];
+        [_headerView setImageView:avatar];
+        [_headerView addGestureRecognizer:tap];
+        [_headerView setUserInteractionEnabled:YES];
     }
-    _tableView.tableHeaderView = headView;
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -308,9 +308,9 @@
 
 #pragma mark -
 - (void)userStatusChanged{
-    self.userStatus = [ZWUserStatus status];
-    [self setHeadView];
-    [_tableView reloadData];
+    [[ZWUserStatus sharedStatus] reloadData];
+    //[self setHeadView];
+    [self viewDidLoad];
 }
 
 - (void)showLogin{

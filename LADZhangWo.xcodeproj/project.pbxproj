@@ -236,6 +236,7 @@
 		18BF17181C0E7B7200126918 /* top-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 18BF16151C0E7B7200126918 /* top-bg.png */; };
 		18BF17191C0E7B7200126918 /* top-bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18BF16161C0E7B7200126918 /* top-bg@2x.png */; };
 		18BF171A1C0E7B7200126918 /* top-bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18BF16171C0E7B7200126918 /* top-bg@3x.png */; };
+		18EFFAD21C11265C00D422A7 /* button-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 18EFFAD11C11265C00D422A7 /* button-selected.png */; };
 		18FC70511C0E811B004283A6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FC70501C0E811B004283A6 /* SystemConfiguration.framework */; };
 		18FC70531C0E812C004283A6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FC70521C0E812C004283A6 /* QuartzCore.framework */; };
 		18FC70551C0E8136004283A6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FC70541C0E8136004283A6 /* CoreTelephony.framework */; };
@@ -606,6 +607,7 @@
 		18BF16151C0E7B7200126918 /* top-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bg.png"; sourceTree = "<group>"; };
 		18BF16161C0E7B7200126918 /* top-bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bg@2x.png"; sourceTree = "<group>"; };
 		18BF16171C0E7B7200126918 /* top-bg@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bg@3x.png"; sourceTree = "<group>"; };
+		18EFFAD11C11265C00D422A7 /* button-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-selected.png"; sourceTree = "<group>"; };
 		18FC70501C0E811B004283A6 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		18FC70521C0E812C004283A6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		18FC70541C0E8136004283A6 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -1175,6 +1177,7 @@
 		18FC70701C0E85E8004283A6 /* button */ = {
 			isa = PBXGroup;
 			children = (
+				18EFFAD11C11265C00D422A7 /* button-selected.png */,
 				185CB27A1C0EF60B007B6F24 /* button-bg.png */,
 				185CB27B1C0EF60B007B6F24 /* button-bg@2x.png */,
 				185CB27C1C0EF60B007B6F24 /* button-bg@3x.png */,
@@ -1413,6 +1416,7 @@
 				18BF16F41C0E7B7200126918 /* icon-more-white@3x.png in Resources */,
 				18BF166B1C0E7B7200126918 /* icon-wating-receipt.png in Resources */,
 				18BF16E31C0E7B7200126918 /* icon-income.png in Resources */,
+				18EFFAD21C11265C00D422A7 /* button-selected.png in Resources */,
 				18BF16CB1C0E7B7200126918 /* icon-cart@3x.png in Resources */,
 				18BF17121C0E7B7200126918 /* pop-bg.png in Resources */,
 				18BF170C1C0E7B7200126918 /* navbg-green@3x.png in Resources */,

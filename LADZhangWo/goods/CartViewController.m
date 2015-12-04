@@ -7,6 +7,8 @@
 //
 
 #import "CartViewController.h"
+#import "LoginViewController.h"
+#import "GoodsDetailViewController.h"
 
 @implementation CartViewController
 @synthesize cartList = _cartList;
@@ -15,11 +17,14 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-
+    _userStatus = [ZWUserStatus sharedStatus];
+    if (!_userStatus.isLogined) {
+        LoginViewController *loginView = [[LoginViewController alloc] init];
+        [self.navigationController pushViewController:loginView animated:YES];
+    }
     _cartList = [NSMutableArray array];
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    _userStatus = [ZWUserStatus status];
     
     CGRect frame = self.view.bounds;
     frame.size.height = frame.size.height - 60;
@@ -32,6 +37,10 @@
     _pullUpView.hidden = YES;
     _tableView.tableFooterView = _pullUpView;
     [self refresh];
+}
+
+- (void)userStatusChanged{
+    _userStatus = [[ZWUserStatus alloc] init];
 }
 
 - (void)refresh{
@@ -130,11 +139,11 @@
         numLabel.font = [UIFont systemFontOfSize:14.0];
         [cell addSubview:numLabel];
         
-        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(260, 20, 0.8, 60)];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(SWIDTH-60, 20, 0.8, 60)];
         lineView.backgroundColor = [UIColor colorWithHexString:@"0xE3E3E5"];
         [cell addSubview:lineView];
         
-        UIButton *editButton = [[UIButton alloc] initWithFrame:CGRectMake(270, 35, 20, 20)];
+        UIButton *editButton = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-40, 35, 20, 20)];
         [editButton setBackgroundImage:[UIImage imageNamed:@"icon-edit-cart.png"] forState:UIControlStateNormal];
         [cell addSubview:editButton];
         
@@ -150,6 +159,17 @@
     return 10.0;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.row == 1) {
+        NSInteger goodsid = [[[_cartList objectAtIndex:indexPath.section] objectForKey:@"goods_id"] integerValue];
+        GoodsDetailViewController *detailView = [[GoodsDetailViewController alloc] init];
+        detailView.goodsid = goodsid;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:detailView];
+        [nav setNavigationStyle:LHBNavigationStyleGray];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+}
+
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row == 1) {
         return YES;
@@ -163,11 +183,10 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=cart&ac=delete&cartid=%@&uid=%ld",[cart objectForKey:@"cartid"],(long)_userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            //NSLog(@"%@",returns);
             if ([returns isKindOfClass:[NSDictionary class]]) {
                 if ([[returns objectForKey:@"affects"] integerValue] > 0) {
                     [_cartList removeObjectAtIndex:indexPath.section];
-                    [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationFade];
                 }
             }
             

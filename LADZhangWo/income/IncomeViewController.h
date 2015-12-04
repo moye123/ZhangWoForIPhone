@@ -11,8 +11,6 @@
 
 @interface IncomeViewController : UIViewController
 
-- (instancetype)init;
-
 @property(nonatomic,strong)NSString *income;
 @property(nonatomic,retain)AFHTTPRequestOperationManager *afmanager;
 @property(nonatomic,retain)ZWUserStatus *userStatus;

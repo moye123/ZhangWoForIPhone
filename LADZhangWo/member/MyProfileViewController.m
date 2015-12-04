@@ -17,7 +17,7 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        _userStatus = [ZWUserStatus status];
+        _userStatus = [ZWUserStatus sharedStatus];
         _afmanager = [[AFHTTPRequestOperationManager alloc] init];
         _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
         _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
@@ -82,12 +82,13 @@
         }
         
         if (indexPath.row == 1) {
-            _userStatus.imageView.frame = CGRectMake(0, -5, 30, 30);
-            _userStatus.imageView.layer.cornerRadius = 15.0;
-            _userStatus.imageView.layer.masksToBounds = YES;
             cell.textLabel.text = @"头像";
             cell.detailTextLabel.text = @"       ";
-            [cell.detailTextLabel addSubview:_userStatus.imageView];
+            UIImageView *avatar = [[UIImageView alloc] initWithFrame:CGRectMake(0, -5, 30, 30)];
+            [avatar sd_setImageWithURL:[NSURL URLWithString:_userStatus.userpic]];
+            avatar.layer.cornerRadius = 15.0;
+            avatar.layer.masksToBounds = YES;
+            [cell.detailTextLabel addSubview:avatar];
         }
         
         if (indexPath.row == 2) {
@@ -241,10 +242,15 @@
         [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=profile&ac=setavatar"] parameters:@{@"uid":@(_userStatus.uid),@"username":_userStatus.username} constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
             [formData appendPartWithFileURL:fileURL name:@"filedata" error:nil];
         } success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
             [loadingView removeFromSuperview];
-            [_userStatus removeImageCache];
-            [[NSNotificationCenter defaultCenter] postNotificationName:UserImageChangedNotification object:nil];
+            [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+            id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+            if ([returns isKindOfClass:[NSDictionary class]]) {
+                [_userStatus setUserpic:[_userStatus.userpic stringByAppendingFormat:@"?%d",rand()]];
+                [_userStatus update];
+                [_tableView reloadData];
+                [[NSNotificationCenter defaultCenter] postNotificationName:UserImageChangedNotification object:nil];
+            }
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
             [loadingView removeFromSuperview];
             [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"上传失败"];

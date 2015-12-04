@@ -19,7 +19,7 @@
     [self setTitle:@"修改绑定邮箱"];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    _userStatus = [ZWUserStatus status];
+    _userStatus = [ZWUserStatus sharedStatus];
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
@@ -47,7 +47,7 @@
     [submitButton setTitle:@"提交" forState:UIControlStateNormal];
     [submitButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    [submitButton setBackgroundImage:[UIImage imageNamed:@"button-buy-selected.png"] forState:UIControlStateHighlighted];
+    [submitButton setBackgroundImage:[UIImage imageNamed:@"button-selected.png"] forState:UIControlStateHighlighted];
     [submitButton addTarget:self action:@selector(submit) forControlEvents:UIControlEventTouchUpInside];
     
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 100)];
@@ -83,7 +83,7 @@
             if ([[returns objectForKey:@"email"] isEqualToString:email]) {
                 NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:_userStatus.userInfo];
                 [userInfo setObject:email forKey:@"email"];
-                [_userStatus setUserInfo:userInfo];
+                //[_userStatus setUserInfo:userInfo];
                 [_userStatus update];
                 [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"邮箱绑定成功"];
                 [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];

@@ -13,86 +13,120 @@ NSString *const UserStatusChangedNotification = @"userStatusChanged";
 NSString *const UserImageChangedNotification = @"userImageChanged";
 
 @implementation ZWUserStatus
-@synthesize uid;
-@synthesize username;
-@synthesize email;
-@synthesize mobile;
-@synthesize userpic;
-@synthesize userInfo;
-@synthesize isLogined;
-@synthesize imageView = _imageView;
+@synthesize uid = _uid;
+@synthesize username = _username;
+@synthesize email = _email;
+@synthesize mobile = _mobile;
+@synthesize userpic = _userpic;
+@synthesize userip = _userip;
+@synthesize userInfo = _userInfo;
+@synthesize isLogined = _isLogined;
+@synthesize image = _image;
 
 - (instancetype)init{
     self = [super init];
     if (self) {
         [self reloadData];
-        self.imageView = [[UIImageView alloc] init];
     }
     return self;
 }
 
-+ (instancetype)status{
-    return [[self alloc] init];
++ (instancetype)sharedStatus{
+    static id instance;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        instance = [self new];
+    });
+    return instance;
 }
 
-- (void)setImageView:(UIImageView *)imageView{
-    _imageView = imageView;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setImage) name:UserImageChangedNotification object:nil];
-    [self setImage];
+- (void)setUid:(NSInteger)uid{
+    _uid = uid;
 }
 
-- (void)setImage{
-    NSString *cacheKey = [NSString stringWithFormat:@"%ld",(long)self.uid];
-    UIImage *image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:cacheKey];
-    if (image == nil) {
-        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.userpic] options:SDWebImageDownloaderLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+- (void)setUsername:(NSString *)username{
+    _username = username;
+}
+
+- (void)setUserpic:(NSString *)userpic{
+    _userpic = userpic;
+    [self removeImageCache];
+}
+
+- (NSDictionary *)userInfo{
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+    if (_isLogined) {
+        [userInfo setObject:@(_uid) forKey:@"uid"];
+        [userInfo setObject:_username forKey:@"username"];
+        [userInfo setObject:_email forKey:@"email"];
+        [userInfo setObject:_mobile forKey:@"mobile"];
+        [userInfo setObject:_userpic forKey:@"userpic"];
+        [userInfo setObject:_userip forKey:@"userip"];
+    }
+    return userInfo;
+}
+
+- (UIImage *)image{
+    UIImage *cacheImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:@"avatar"];
+    if (cacheImage == nil) {
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:_userpic] options:SDWebImageDownloaderLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
             
         } completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-            [[SDImageCache sharedImageCache] storeImage:image forKey:cacheKey];
-            [_imageView setImage:image];
+            [[SDImageCache sharedImageCache] storeImage:image forKey:@"avatar" toDisk:YES];
         }];
-    }else {
-        [_imageView setImage:image];
     }
+    return cacheImage;
+}
+
+- (void)removeImageCache{
+    [[SDImageCache sharedImageCache] removeImageForKey:_userpic fromDisk:YES];
+    [[SDImageCache sharedImageCache] removeImageForKey:@"avatar" fromDisk:YES];
 }
 
 - (void)reloadData{
-    self.userInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"userinfo"];
-    self.uid = [[self.userInfo objectForKey:@"uid"] integerValue];
-    self.username = [self.userInfo objectForKey:@"username"];
-    if (self.uid && self.username) {
-        self.isLogined = YES;
-        self.email = [self.userInfo objectForKey:@"email"];
-        self.mobile = [self.userInfo objectForKey:@"mobile"];
-        self.userpic = [self.userInfo objectForKey:@"userpic"];
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"userinfo"];
+    [self setUid:[[dict objectForKey:@"uid"] integerValue]];
+    [self setUsername:[dict objectForKey:@"username"]];
+    if (_uid > 0 && [_username length] > 0) {
+        _isLogined = YES;
+        _email = [dict objectForKey:@"email"];
+        _mobile = [dict objectForKey:@"mobile"];
+        _userpic = [dict objectForKey:@"userpic"];
+        _userip = [dict objectForKey:@"userip"];
     }else {
-        self.isLogined = NO;
-        self.email = nil;
-        self.mobile = nil;
-        self.userpic = nil;
-        self.userInfo = [NSDictionary dictionary];
+        _isLogined = NO;
+        _email = @"";
+        _mobile = @"";
+        _userpic = @"";
+        _userip = @"";
     }
+    [self removeImageCache];
+}
+
+- (void)saveData:(NSDictionary *)userInfo{
+    [[NSUserDefaults standardUserDefaults] setObject:userInfo forKey:@"userinfo"];
+}
+
+- (void)update{
+    [self removeImageCache];
+    [self saveData:[self userInfo]];
 }
 
 - (void)login:(NSMutableDictionary *)params success:(void (^)(id responseObject))success failure:(void (^)(NSString *errorMsg))failure{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     [manager POST:[SITEAPI stringByAppendingString:@"&mod=member&ac=login"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSData *data = (NSData *)responseObject;
-        id dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-        
-        if ([dictionary isKindOfClass:[NSDictionary class]]) {
-            //NSLog(@"%@",dictionary);
-            NSInteger myuid = [[dictionary objectForKey:@"uid"] integerValue];
-            NSString *myusername = [dictionary objectForKey:@"username"];
-            if (myuid > 0 && myusername) {
-                self.userInfo = dictionary;
-                [self update];
+        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([returns isKindOfClass:[NSDictionary class]]) {
+            [self setUid:[[returns objectForKey:@"uid"] integerValue]];
+            [self setUsername:[returns objectForKey:@"username"]];
+            if (_uid > 0 && [_username length] > 0) {
+                [self saveData:returns];
                 [self reloadData];
                 [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
-                success(dictionary);
+                success(returns);
             }else {
-                NSInteger errorCode = [[dictionary objectForKey:@"errno"] integerValue];
+                NSInteger errorCode = [[returns objectForKey:@"errno"] integerValue];
                 NSString *errorMsg = nil;
                 switch (errorCode) {
                     case -1 :
@@ -125,20 +159,17 @@ NSString *const UserImageChangedNotification = @"userImageChanged";
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     [manager POST:[SITEAPI stringByAppendingString:@"&mod=member&ac=register"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSData *data = (NSData *)responseObject;
-        id dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-        if([dictionary isKindOfClass:[NSDictionary class]]){
-            
-            NSInteger myuid = [[dictionary objectForKey:@"uid"] integerValue];
-            NSString *myusername = [dictionary objectForKey:@"username"];
-            if (myuid > 0 && myusername) {
-                self.userInfo = dictionary;
-                [self update];
-                [self reloadData];
+        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if([returns isKindOfClass:[NSDictionary class]]){
+            [self setUid:[[returns objectForKey:@"uid"] integerValue]];
+            [self setUsername:[returns objectForKey:@"username"]];
+            if (_uid > 0 && [_username length] > 0) {
+                [self saveData:returns];
+                [[ZWUserStatus sharedStatus] reloadData];
                 [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
-                success(dictionary);
+                success(returns);
             }else {
-                int errorCode = [[dictionary objectForKey:@"errno"] intValue];
+                int errorCode = [[returns objectForKey:@"errno"] intValue];
                 NSString *errorMsg = nil;
                 switch (errorCode) {
                     case -1 :
@@ -176,16 +207,9 @@ NSString *const UserImageChangedNotification = @"userImageChanged";
 
 - (void)logout{
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"userinfo"];
+    [self removeImageCache];
+    [[ZWUserStatus sharedStatus] reloadData];
     [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
-}
-
-- (void)update{
-    [[NSUserDefaults standardUserDefaults] setObject:self.userInfo forKey:@"userinfo"];
-}
-
-- (void)removeImageCache{
-    NSString *cacheKey = [NSString stringWithFormat:@"%ld",(long)self.uid];
-    [[SDImageCache sharedImageCache] removeImageForKey:cacheKey];
 }
 
 @end

@@ -144,7 +144,7 @@
 }
 
 - (void)userStatusChanged{
-    self.userStatus = [ZWUserStatus status];
+    self.userStatus = [ZWUserStatus sharedStatus];
 }
 
 #pragma mark - webView delegate
