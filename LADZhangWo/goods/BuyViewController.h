@@ -23,7 +23,6 @@
 
 @property(nonatomic,assign)NSInteger goodsid;
 @property(nonatomic,strong)NSDictionary *goodsdata;
-@property(nonatomic,retain)UITableView *contentTableView;
-@property(nonatomic,retain)ZWUserStatus *userStatus;
+@property(nonatomic,retain)UITableView *tableView;
 
 @end

@@ -17,6 +17,8 @@
 @interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,showCategoryDelegate,RecommendDelegate,LocationChangeDelegate>{
     @private
     DSXPopMenu *_popMenu;
+    AFHTTPRequestOperationManager *_afmanager;
+    DSXSliderView *_slideView;
 }
 
 - (instancetype)init;

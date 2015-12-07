@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "ZWCommon.h"
 #import "HomeViewController.h"
 #import "IncomeViewController.h"
 #import "CartViewController.h"
@@ -15,7 +14,6 @@
 #import "LoginViewController.h"
 
 @implementation AppDelegate
-@synthesize userStatus = _userStatus;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //[NSThread sleepForTimeInterval:3];
@@ -24,39 +22,34 @@
     self.window.backgroundColor = [UIColor whiteColor];
     
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
+    tabBarController.delegate = self;
     self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
 
     ZWNavigationController *navHome,*navIncome,*navCart,*navMy;
-    UITabBarItem *homeItem, *incomeItem, *cartItem, *myItem;
     HomeViewController *homeView = [[HomeViewController alloc] init];
-    [homeView setTitle:@"主页"];
+    homeView.title = @"主页";
     navHome = [[ZWNavigationController alloc] initWithRootViewController:homeView];
-    homeItem = [self tabBarItemWithTitle:@"主页" image:@"icon-home.png" selectedImage:@"icon-homefill.png"];
-    [navHome setTabBarItem:homeItem];
+    navHome.tabBarItem = [self tabBarItemWithTitle:@"主页" image:@"icon-home.png" selectedImage:@"icon-homefill.png"];
     
     IncomeViewController *incomeView = [[IncomeViewController alloc] init];
-    [incomeView setTitle:@"收益"];
+    incomeView.title = @"收益";
     navIncome = [[ZWNavigationController alloc] initWithRootViewController:incomeView];
-    incomeItem = [self tabBarItemWithTitle:@"收益" image:@"icon-income.png" selectedImage:@"icon-incomefill.png"];
-    [navIncome setTabBarItem:incomeItem];
+    navIncome.tabBarItem = [self tabBarItemWithTitle:@"收益" image:@"icon-income.png" selectedImage:@"icon-incomefill.png"];
     
     CartViewController *cartView = [[CartViewController alloc] init];
     [cartView setTitle:@"我的购物车"];
     navCart = [[ZWNavigationController alloc] initWithRootViewController:cartView];
-    cartItem = [self tabBarItemWithTitle:@"购物车" image:@"icon-cart.png" selectedImage:@"icon-cartfill.png"];
-    [navCart setTabBarItem:cartItem];
+    navCart.tabBarItem = [self tabBarItemWithTitle:@"购物车" image:@"icon-cart.png" selectedImage:@"icon-cartfill.png"];
     
     MyViewController *myView = [[MyViewController alloc] init];
     [myView setTitle:@"我的"];
     navMy = [[ZWNavigationController alloc] initWithRootViewController:myView];
-    [navMy setNavigationStyle:LHBNavigationStyleGray];
-    myItem = [self tabBarItemWithTitle:@"我的" image:@"icon-my.png" selectedImage:@"icon-myfill.png"];
-    [navMy setTabBarItem:myItem];
+    navMy.style = ZWNavigationStyleGray;
+    navMy.tabBarItem = [self tabBarItemWithTitle:@"我的" image:@"icon-my.png" selectedImage:@"icon-myfill.png"];
     
     [tabBarController setViewControllers:@[navHome,navIncome,navCart,navMy]];
     [tabBarController.tabBar setBackgroundColor:[UIColor tabBarColor]];
-    //[tabBarController.tabBar setItems:@[homeItem,incomeItem,cartItem,myItem]];
     CLLocationManager *clmanager = [[CLLocationManager alloc] init];
     if ([CLLocationManager locationServicesEnabled]) {
         CLLocation *location = [clmanager location];
@@ -80,6 +73,21 @@
     UITabBarItem *tabBarItem = [[UITabBarItem alloc] initWithTitle:title image:image selectedImage:selectedImage];
     [tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:0 green:0.36 blue:0.16 alpha:1]} forState:UIControlStateSelected];
     return tabBarItem;
+}
+
+#pragma mark - tabbarcontroller delegate
+- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController{
+    if (![[ZWUserStatus sharedStatus] isLogined]) {
+        if ([viewController isEqual:tabBarController.viewControllers[1]] || [viewController isEqual:tabBarController.viewControllers[2]]) {
+            [[DSXUI sharedUI] showLoginFromViewController:tabBarController];
+            return NO;
+            
+        }else {
+            return true;
+        }
+    }else{
+        return YES;
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

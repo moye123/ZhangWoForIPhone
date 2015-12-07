@@ -12,8 +12,7 @@
 @implementation BuyViewController
 @synthesize goodsid = _goodsid;
 @synthesize goodsdata = _goodsdata;
-@synthesize contentTableView = _contentTableView;
-@synthesize userStatus;
+@synthesize tableView = _tableView;
 
 - (instancetype)init{
     self = [super init];
@@ -28,7 +27,7 @@
     [self setTitle:@"购买"];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
-    self.userStatus = [ZWUserStatus sharedStatus];
+
     [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&datatype=json&id=%ld",(long)_goodsid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id dictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([dictionary isKindOfClass:[NSDictionary class]]) {
@@ -47,15 +46,15 @@
     if (!_goodsdata) {
         _goodsdata = [NSDictionary dictionary];
     }
-    _contentTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
-    _contentTableView.delegate = self;
-    _contentTableView.dataSource = self;
-    [self.view addSubview:_contentTableView];
+    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    [self.view addSubview:_tableView];
     
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 90)];
-    _contentTableView.tableFooterView = footerView;
+    _tableView.tableFooterView = footerView;
     
-    _submitButton = [[UIButton alloc] initWithFrame:CGRectMake(20, 50, SWIDTH-40, 40)];
+    _submitButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 50, SWIDTH-20, 40)];
     _submitButton.layer.cornerRadius = 20.0;
     _submitButton.layer.masksToBounds = YES;
     _submitButton.titleLabel.font = [UIFont systemFontOfSize:16.0];
@@ -63,7 +62,7 @@
     [_submitButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [_submitButton setBackgroundColor:[UIColor whiteColor]];
     [_submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    [_submitButton setBackgroundImage:[UIImage imageNamed:@"button-buy-selected.png"] forState:UIControlStateHighlighted];
+    [_submitButton setBackgroundImage:[UIImage imageNamed:@"button-selected.png"] forState:UIControlStateHighlighted];
     [_submitButton addTarget:self action:@selector(submitOrder) forControlEvents:UIControlEventTouchUpInside];
     [footerView addSubview:_submitButton];
 }
@@ -227,8 +226,8 @@
 
 - (void)submitOrder{
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:@(self.userStatus.uid) forKey:@"uid"];
-    [params setObject:self.userStatus.username forKey:@"username"];
+    [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
+    [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
     [params setObject:[_goodsdata objectForKey:@"id"] forKey:@"goods_id"];
     [params setObject:[_goodsdata objectForKey:@"price"] forKey:@"goods_price"];
     [params setObject:_numField.text forKey:@"buynum"];

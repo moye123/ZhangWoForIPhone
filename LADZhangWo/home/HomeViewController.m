@@ -57,37 +57,61 @@
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:_tableView];
     
+    //轮播广告
+    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, 200)];
+    _tableView.tableHeaderView = _slideView;
+    _afmanager = [AFHTTPRequestOperationManager manager];
+    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [_afmanager GET:[SITEAPI stringByAppendingString:@"&mod=travel&ac=showlist&pagesize=3"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([array isKindOfClass:[NSArray class]]) {
+            NSMutableArray *imageViews = [[NSMutableArray alloc] init];
+            for (NSDictionary *dict in array) {
+                UIImageView *imageView = [[UIImageView alloc] init];
+                [imageView sd_setImageWithURL:[dict objectForKey:@"pic"] placeholderImage:[UIImage imageNamed:@"placeholder600x300.png"]];
+                [imageView setContentMode:UIViewContentModeScaleAspectFill];
+                [imageViews addObject:imageView];
+            }
+            _slideView.imageViews = imageViews;
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
+    }];
+    
     //分类列表
     _categoryView = [[HomeCategoryView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
     _categoryView.categoryDelegate = self;
     
     //推荐商家
-    _businessView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, 80)];
+    CGFloat height = (SWIDTH - 50)/3;
+    _businessView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, height)];
     _businessView.tapDelegate = self;
     _businessView.groupid = 1;
     _businessView.dataCount = 9;
     _businessView.imgWidth = (SWIDTH-40)/3;
-    _businessView.imgHeight = 80;
+    _businessView.imgHeight = height;
     _businessView.contentSize = CGSizeMake((SWIDTH-20)*3, 0);
     [_businessView loadData];
     
     //旅游推荐
-    _travelView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, 120)];
+    height = (SWIDTH - 30)/2;
+    _travelView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, height)];
     _travelView.tapDelegate = self;
     _travelView.groupid = 2;
     _travelView.dataCount = 6;
     _travelView.imgWidth = (SWIDTH-30)/2;
-    _travelView.imgHeight = 120;
+    _travelView.imgHeight = height;
     _travelView.contentSize = CGSizeMake((SWIDTH-20)*3, 0);
     [_travelView loadData];
     
     //特色产品推荐
-    _productView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, 120)];
+    height = (SWIDTH - 30)/3;
+    _productView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, height)];
     _productView.tapDelegate = self;
     _productView.groupid = 3;
     _productView.dataCount = 6;
     _productView.imgWidth = (SWIDTH-20)/2;
-    _productView.imgHeight = 120;
+    _productView.imgHeight = height;
     _productView.contentSize = CGSizeMake((SWIDTH-20)*3, 0);
     [_productView loadData];
     
@@ -129,25 +153,25 @@
         if (indexPath.row == 0) {
             return 45;
         }else {
-            return 100;
+            return (SWIDTH - 50)/3 + 10;
         }
     }else if (indexPath.section == 2){
         if (indexPath.row == 0) {
             return 45;
         }else {
-            return 110;
+            return (SWIDTH-30)/2+10;
         }
     }else if (indexPath.section == 3){
         if (indexPath.row == 0) {
             return 45;
         }else {
-            return 110;
+            return ((SWIDTH - 30)/3) + 10;
         }
     }else {
         if (indexPath.row == 0) {
             return 45;
         }else {
-            return 150;
+            return (SWIDTH-30)/2;
         }
     }
 }
@@ -216,7 +240,7 @@
     if ([tag isEqualToString:@"travel"]) {
         TravelViewController *travelController = [[TravelViewController alloc] init];
         ZWNavigationController *travelNav = [[ZWNavigationController alloc] initWithRootViewController:travelController];
-        [travelNav setNavigationStyle:LHBNavigationStyleGray];
+        travelNav.style = ZWNavigationStyleGray;
         [self presentViewController:travelNav animated:YES completion:nil];
     }
     
@@ -224,7 +248,7 @@
     if ([tag isEqualToString:@"news"]) {
         NewsViewController *newsController = [[NewsViewController alloc] init];
         ZWNavigationController *newsNav = [[ZWNavigationController alloc] initWithRootViewController:newsController];
-        [newsNav setNavigationStyle:LHBNavigationStyleGray];
+        newsNav.style = ZWNavigationStyleGray;
         [self presentViewController:newsNav animated:YES completion:nil];
     }
     
@@ -232,7 +256,7 @@
     if ([tag isEqualToString:@"market"]) {
         ChaoshiViewController *chaoshiController = [[ChaoshiViewController alloc] init];
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:chaoshiController];
-        [nav setNavigationStyle:LHBNavigationStyleGray];
+        nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }
     
@@ -242,7 +266,7 @@
         goodsListController.catid = 17;
         goodsListController.title = @"名优特产";
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
-        [nav setNavigationStyle:LHBNavigationStyleGray];
+        nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }
     
@@ -252,7 +276,7 @@
         goodsListController.catid = 18;
         goodsListController.title = @"特色小吃";
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
-        [nav setNavigationStyle:LHBNavigationStyleGray];
+        nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }
     
@@ -262,7 +286,7 @@
         goodsListController.catid = 19;
         goodsListController.title = @"我要外卖";
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
-        [nav setNavigationStyle:LHBNavigationStyleGray];
+        nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }
     
@@ -271,7 +295,7 @@
         goodsListController.catid = 1;
         goodsListController.title = @"美食";
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
-        [nav setNavigationStyle:LHBNavigationStyleGray];
+        nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }
     
@@ -280,7 +304,7 @@
         goodsListController.catid = 1;
         goodsListController.title = @"本地服务";
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
-        [nav setNavigationStyle:LHBNavigationStyleGray];
+        nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }
 }
@@ -295,7 +319,7 @@
         GoodsDetailViewController *goodsDetailView = [[GoodsDetailViewController alloc] init];
         goodsDetailView.goodsid = ID;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsDetailView];
-        [nav setNavigationStyle:LHBNavigationStyleGray];
+        nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }
     
@@ -303,7 +327,7 @@
         TravelDetailViewController *travelDetailView = [[TravelDetailViewController alloc] init];
         travelDetailView.travelID = ID;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelDetailView];
-        [nav setNavigationStyle:LHBNavigationStyleGray];
+        nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }
     
@@ -311,7 +335,7 @@
         NewsDetailViewController *newsDetailView = [[NewsDetailViewController alloc] init];
         newsDetailView.newsID = ID;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsDetailView];
-        [nav setNavigationStyle:LHBNavigationStyleGray];
+        nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }
 }
@@ -329,7 +353,7 @@
     DistrictViewController *districtController = [[DistrictViewController alloc] init];
     districtController.delegate = self;
     ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:districtController];
-    [nav setNavigationStyle:LHBNavigationStyleGray];
+    nav.style = ZWNavigationStyleGray;
     [self presentViewController:nav animated:YES completion:nil];
 }
 

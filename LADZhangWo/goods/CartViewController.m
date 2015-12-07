@@ -20,7 +20,8 @@
     _userStatus = [ZWUserStatus sharedStatus];
     if (!_userStatus.isLogined) {
         LoginViewController *loginView = [[LoginViewController alloc] init];
-        [self.navigationController pushViewController:loginView animated:YES];
+        [self presentViewController:loginView animated:YES completion:nil];
+        return;
     }
     _cartList = [NSMutableArray array];
     _afmanager = [AFHTTPRequestOperationManager manager];
@@ -165,7 +166,7 @@
         GoodsDetailViewController *detailView = [[GoodsDetailViewController alloc] init];
         detailView.goodsid = goodsid;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:detailView];
-        [nav setNavigationStyle:LHBNavigationStyleGray];
+        nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }
 }

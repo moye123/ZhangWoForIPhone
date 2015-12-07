@@ -8,14 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSInteger,LHBNavigationStyle){
-    LHBNavigationStyleDefault,
-    LHBNavigationStyleGray
+typedef NS_ENUM(NSInteger,ZWNavigationStyle){
+    ZWNavigationStyleDefault,
+    ZWNavigationStyleGray
 };
 
 @interface ZWNavigationController : UINavigationController
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController;
-- (void)setNavigationStyle:(LHBNavigationStyle)style;
+
+@property(nonatomic,assign)ZWNavigationStyle style;
 
 @end

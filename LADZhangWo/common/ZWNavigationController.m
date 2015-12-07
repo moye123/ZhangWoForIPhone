@@ -9,20 +9,22 @@
 #import "ZWNavigationController.h"
 
 @implementation ZWNavigationController
+@synthesize style = _style;
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController{
     self = [super initWithRootViewController:rootViewController];
     if (self) {
         [self.navigationBar setHidden:NO];
-        [self setNavigationStyle:LHBNavigationStyleDefault];
+        [self setStyle:ZWNavigationStyleDefault];
         [self.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18.0]}];
     }
     return self;
 }
 
-- (void)setNavigationStyle:(LHBNavigationStyle)style{
+- (void)setStyle:(ZWNavigationStyle)style{
+    _style = style;
     switch (style) {
-        case LHBNavigationStyleGray:
+        case ZWNavigationStyleGray:
             [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbg-gray.png"] forBarMetrics:UIBarMetricsDefault];
             [self.navigationBar setBarStyle:UIBarStyleDefault];
             [self.navigationBar setTintColor:[UIColor blackColor]];

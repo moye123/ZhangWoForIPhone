@@ -16,18 +16,15 @@
 
 @implementation MyViewController
 @synthesize tableView = _tableView;
-@synthesize userStatus = _userStatus;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
-    
-    _userStatus = [ZWUserStatus sharedStatus];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStatusChanged) name:UserStatusChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setHeadView) name:UserImageChangedNotification object:nil];
     CGRect frame = self.view.frame;
     frame.origin.y = frame.origin.y - 30;
-    frame.size.height = frame.size.height + 30;
+    frame.size.height+= 30;
     _tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -38,9 +35,9 @@
 - (void)setHeadView{
     _headerView = [[MyHeadView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
     _tableView.tableHeaderView = _headerView;
-    if (_userStatus.isLogined) {
-        [_headerView.imageView sd_setImageWithURL:[NSURL URLWithString:_userStatus.userpic]];
-        [_headerView.textLabel setText:_userStatus.username];
+    if ([[ZWUserStatus sharedStatus] isLogined]) {
+        [_headerView.imageView sd_setImageWithURL:[NSURL URLWithString:[[ZWUserStatus sharedStatus] userpic]]];
+        [_headerView.textLabel setText:[[ZWUserStatus sharedStatus] username]];
         
         _buttonSetting = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-95, 50, 50, 30)];
         [_buttonSetting setTitle:@"设置" forState:UIControlStateNormal];
@@ -217,7 +214,7 @@
     
     if (indexPath.section == 3) {
         if (indexPath.row == 0) {
-            if (self.userStatus.isLogined) {
+            if ([[ZWUserStatus sharedStatus] isLogined]) {
                 cell.textLabel.text = @"退出登录";
                 cell.textLabel.textColor = [UIColor redColor];
             }else {
@@ -238,7 +235,7 @@
     
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            if (self.userStatus.isLogined) {
+            if ([[ZWUserStatus sharedStatus] isLogined]) {
                 MyWalletViewController *walletView = [[MyWalletViewController alloc] init];
                 [self.navigationController pushViewController:walletView animated:YES];
             }else {
@@ -250,7 +247,7 @@
     if (indexPath.section == 1) {
         //我的订单
         if (indexPath.row == 0) {
-            if (self.userStatus.isLogined) {
+            if ([[ZWUserStatus sharedStatus] isLogined]) {
                 MyOrderViewController *orderView = [[MyOrderViewController alloc] init];
                 orderView.title = @"我的订单";
                 [self.navigationController pushViewController:orderView animated:YES];
@@ -263,7 +260,7 @@
     if (indexPath.section == 2) {
         //我的收藏
         if (indexPath.row == 0) {
-            if (self.userStatus.isLogined) {
+            if ([[ZWUserStatus sharedStatus] isLogined]) {
                 MyFavoriteViewController *favorView = [[MyFavoriteViewController alloc] init];
                 [self.navigationController pushViewController:favorView animated:YES];
             }else{
@@ -291,8 +288,8 @@
     }
     
     if (indexPath.section == 3) {
-        if (self.userStatus.isLogined) {
-            [self.userStatus logout];
+        if ([[ZWUserStatus sharedStatus] isLogined]) {
+            [[ZWUserStatus sharedStatus] logout];
         }
         [self showLogin];
     }
@@ -309,8 +306,8 @@
 #pragma mark -
 - (void)userStatusChanged{
     [[ZWUserStatus sharedStatus] reloadData];
-    //[self setHeadView];
-    [self viewDidLoad];
+    [self setHeadView];
+    [_tableView reloadData];
 }
 
 - (void)showLogin{
@@ -318,7 +315,7 @@
 }
 
 - (void)showOrder:(UIButton *)sender{
-    if (self.userStatus.isLogined) {
+    if ([[ZWUserStatus sharedStatus] isLogined]) {
         MyOrderViewController *orderView = [[MyOrderViewController alloc] init];
         switch (sender.tag) {
             case 101:
@@ -352,7 +349,7 @@
 }
 
 - (void)showSetting{
-    if (self.userStatus.isLogined) {
+    if ([[ZWUserStatus sharedStatus] isLogined]) {
         SettingViewController *setttingView = [[SettingViewController alloc] init];
         [self.navigationController pushViewController:setttingView animated:YES];
     }else {
@@ -362,7 +359,7 @@
 }
 
 - (void)showMessage{
-    if (self.userStatus.isLogined) {
+    if ([[ZWUserStatus sharedStatus] isLogined]) {
         MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
         [self.navigationController pushViewController:messageView animated:YES];
     }else {

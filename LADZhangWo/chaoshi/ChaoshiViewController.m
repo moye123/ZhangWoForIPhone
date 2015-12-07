@@ -114,7 +114,12 @@
         for (UIView *subview in reuseableView.subviews) {
             [subview removeFromSuperview];
         }
-        UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, SWIDTH, 45)];
+        NSString *pic = [[_categoryList objectAtIndex:indexPath.section] objectForKey:@"pic"];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 12, 20, 20)];
+        [imageView sd_setImageWithURL:[NSURL URLWithString:pic]];
+        [reuseableView addSubview:imageView];
+        
+        UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SWIDTH, 45)];
         headerLabel.text = [[_categoryList objectAtIndex:indexPath.section] objectForKey:@"cname"];
         headerLabel.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
         [reuseableView addSubview:headerLabel];

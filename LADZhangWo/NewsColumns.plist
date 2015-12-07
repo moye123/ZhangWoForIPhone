@@ -6,13 +6,7 @@
 		<key>catid</key>
 		<integer>96</integer>
 		<key>cname</key>
-		<string>国内头条</string>
-	</dict>
-	<dict>
-		<key>catid</key>
-		<integer>97</integer>
-		<key>cname</key>
-		<string>国际热点</string>
+		<string>今日头条</string>
 	</dict>
 	<dict>
 		<key>catid</key>
@@ -22,21 +16,21 @@
 	</dict>
 	<dict>
 		<key>catid</key>
-		<integer>101</integer>
+		<integer>104</integer>
 		<key>cname</key>
-		<string>政府信息</string>
-	</dict>
-	<dict>
-		<key>catid</key>
-		<integer>102</integer>
-		<key>cname</key>
-		<string>热点关注</string>
+		<string>我在现场</string>
 	</dict>
 	<dict>
 		<key>catid</key>
 		<integer>103</integer>
 		<key>cname</key>
-		<string>最美凉都</string>
+		<string>&quot;醉&quot;美凉都</string>
+	</dict>
+	<dict>
+		<key>catid</key>
+		<integer>105</integer>
+		<key>cname</key>
+		<string>娱乐八卦</string>
 	</dict>
 </array>
 </plist>

@@ -9,16 +9,17 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 #import "AddToCartView.h"
+#import "GoodsBottomView.h"
 
 @interface GoodsDetailViewController : UIViewController<UIWebViewDelegate,UIScrollViewDelegate>{
     @private
     UIButton *_addToCart;
     UIButton *_buyNow;
     AddToCartView *_addCartView;
+    GoodsBottomView *_bottomView;
 }
 
 @property(nonatomic,assign)NSInteger goodsid;
 @property(nonatomic,strong)NSDictionary *goodsdata;
-@property(nonatomic,retain)UIWebView *contentWebView;
-@property(nonatomic,retain)ZWUserStatus *userStatus;
+@property(nonatomic,retain)UIWebView *webView;
 @end
