@@ -6,10 +6,11 @@
 //  Copyright © 2015年 Apple. All rights reserved.
 //
 
-#import "ChaoshiViewController.h"
+#import "ChaoshiCatViewController.h"
 #import "ChaoshiListViewController.h"
 
-@implementation ChaoshiViewController
+@implementation ChaoshiCatViewController
+@synthesize shopid = _shopid;
 @synthesize categoryList = _categoryList;
 
 - (instancetype)init{
@@ -132,6 +133,7 @@
     ChaoshiListViewController *listView = [[ChaoshiListViewController alloc] init];
     listView.catid = [[category objectForKey:@"catid"] integerValue];
     listView.title = [category objectForKey:@"cname"];
+    listView.shopid = _shopid;
     [self.navigationController pushViewController:listView animated:YES];
 }
 

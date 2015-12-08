@@ -10,16 +10,22 @@
 #import "ZWCommon.h"
 #import "DSXStarView.h"
 
-@interface ChaoshiListViewController : UITableViewController<UIScrollViewDelegate>{
+@interface ChaoshiListViewController : UICollectionViewController<UIScrollViewDelegate,UICollectionViewDelegateFlowLayout>{
 @private
     int _page;
     BOOL _isRefreshing;
     ZWRefreshControl *_refreshControl;
     ZWPullUpView *_pullUpView;
     AFHTTPRequestOperationManager *_afmanager;
+    CGFloat _cellWith;
+    CGFloat _cellHeight;
+    UILabel *_tipsView;
 }
 
+- (instancetype)init;
+
 @property(nonatomic,assign)NSInteger catid;
-@property(nonatomic,strong)NSMutableArray *goodsArray;
+@property(nonatomic,assign)NSInteger shopid;
+@property(nonatomic,strong)NSMutableArray *goodsList;
 
 @end

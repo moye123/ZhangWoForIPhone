@@ -13,7 +13,8 @@
 #import "TravelDetailViewController.h"
 #import "GoodsListViewController.h"
 #import "GoodsDetailViewController.h"
-#import "ChaoshiViewController.h"
+#import "ChaoshiIndexViewController.h"
+#import "ServiceViewController.h"
 
 @implementation HomeViewController
 @synthesize local;
@@ -58,7 +59,7 @@
     [self.view addSubview:_tableView];
     
     //轮播广告
-    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, 200)];
+    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, 150)];
     _tableView.tableHeaderView = _slideView;
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
@@ -254,7 +255,7 @@
     
     //超市
     if ([tag isEqualToString:@"market"]) {
-        ChaoshiViewController *chaoshiController = [[ChaoshiViewController alloc] init];
+        ChaoshiIndexViewController *chaoshiController = [[ChaoshiIndexViewController alloc] init];
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:chaoshiController];
         nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
@@ -300,10 +301,8 @@
     }
     
     if ([tag isEqualToString:@"service"]) {
-        GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
-        goodsListController.catid = 1;
-        goodsListController.title = @"本地服务";
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
+        ServiceViewController *serviceView = [[ServiceViewController alloc] init];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:serviceView];
         nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }

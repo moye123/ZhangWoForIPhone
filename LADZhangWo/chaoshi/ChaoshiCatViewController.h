@@ -9,14 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface ChaoshiViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout>{
+@interface ChaoshiCatViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout>{
     @private
     AFHTTPRequestOperationManager *_afmanager;
     CGFloat _itemWith;
 }
 
 - (instancetype)init;
-
+@property(nonatomic,assign)NSInteger shopid;
 @property(nonatomic,strong)NSMutableArray *categoryList;
 
 @end

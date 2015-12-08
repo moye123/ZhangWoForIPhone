@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		180CC3BC1C166D0400F70B33 /* ChaoshiIndexViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CC3BB1C166D0400F70B33 /* ChaoshiIndexViewController.m */; };
+		180CC3C01C16B8B800F70B33 /* ServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CC3BF1C16B8B800F70B33 /* ServiceViewController.m */; };
 		185CB27D1C0EF60B007B6F24 /* button-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 185CB27A1C0EF60B007B6F24 /* button-bg.png */; };
 		185CB27E1C0EF60B007B6F24 /* button-bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 185CB27B1C0EF60B007B6F24 /* button-bg@2x.png */; };
 		185CB27F1C0EF60B007B6F24 /* button-bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 185CB27C1C0EF60B007B6F24 /* button-bg@3x.png */; };
@@ -25,7 +27,7 @@
 		18BF16221C0E7B7200126918 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18BF149F1C0E7B7200126918 /* Assets.xcassets */; };
 		18BF16231C0E7B7200126918 /* ChaoshiDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14A21C0E7B7200126918 /* ChaoshiDetailViewController.m */; };
 		18BF16241C0E7B7200126918 /* ChaoshiListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14A41C0E7B7200126918 /* ChaoshiListViewController.m */; };
-		18BF16251C0E7B7200126918 /* ChaoshiViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14A61C0E7B7200126918 /* ChaoshiViewController.m */; };
+		18BF16251C0E7B7200126918 /* ChaoshiCatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14A61C0E7B7200126918 /* ChaoshiCatViewController.m */; };
 		18BF16301C0E7B7200126918 /* ZWNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14BA1C0E7B7200126918 /* ZWNavigationController.m */; };
 		18BF16311C0E7B7200126918 /* ZWPullUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14BC1C0E7B7200126918 /* ZWPullUpView.m */; };
 		18BF16321C0E7B7200126918 /* ZWRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF14BE1C0E7B7200126918 /* ZWRefreshControl.m */; };
@@ -63,8 +65,6 @@
 		18BF165A1C0E7B7200126918 /* ContactusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF15061C0E7B7200126918 /* ContactusViewController.m */; };
 		18BF165B1C0E7B7200126918 /* IncomeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF15081C0E7B7200126918 /* IncomeView.m */; };
 		18BF165C1C0E7B7200126918 /* IncomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF150A1C0E7B7200126918 /* IncomeViewController.m */; };
-		18BF165E1C0E7B7200126918 /* InviteHeadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF150E1C0E7B7200126918 /* InviteHeadView.m */; };
-		18BF165F1C0E7B7200126918 /* InviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF15101C0E7B7200126918 /* InviteViewController.m */; };
 		18BF16611C0E7B7200126918 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF15131C0E7B7200126918 /* main.m */; };
 		18BF16621C0E7B7200126918 /* account.png in Resources */ = {isa = PBXBuildFile; fileRef = 18BF15151C0E7B7200126918 /* account.png */; };
 		18BF16671C0E7B7200126918 /* FeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF151B1C0E7B7200126918 /* FeedbackViewController.m */; };
@@ -267,6 +267,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		180CC3BA1C166D0400F70B33 /* ChaoshiIndexViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaoshiIndexViewController.h; sourceTree = "<group>"; };
+		180CC3BB1C166D0400F70B33 /* ChaoshiIndexViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaoshiIndexViewController.m; sourceTree = "<group>"; };
+		180CC3BE1C16B8B800F70B33 /* ServiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceViewController.h; sourceTree = "<group>"; };
+		180CC3BF1C16B8B800F70B33 /* ServiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceViewController.m; sourceTree = "<group>"; };
 		185CB2771C0EE7D7007B6F24 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		185CB2791C0EEB6E007B6F24 /* LADZhangWo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LADZhangWo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		185CB27A1C0EF60B007B6F24 /* button-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-bg.png"; sourceTree = "<group>"; };
@@ -302,8 +306,8 @@
 		18BF14A21C0E7B7200126918 /* ChaoshiDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaoshiDetailViewController.m; sourceTree = "<group>"; };
 		18BF14A31C0E7B7200126918 /* ChaoshiListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaoshiListViewController.h; sourceTree = "<group>"; };
 		18BF14A41C0E7B7200126918 /* ChaoshiListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaoshiListViewController.m; sourceTree = "<group>"; };
-		18BF14A51C0E7B7200126918 /* ChaoshiViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaoshiViewController.h; sourceTree = "<group>"; };
-		18BF14A61C0E7B7200126918 /* ChaoshiViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaoshiViewController.m; sourceTree = "<group>"; };
+		18BF14A51C0E7B7200126918 /* ChaoshiCatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaoshiCatViewController.h; sourceTree = "<group>"; };
+		18BF14A61C0E7B7200126918 /* ChaoshiCatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaoshiCatViewController.m; sourceTree = "<group>"; };
 		18BF14B71C0E7B7200126918 /* ZWCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWCommon.h; sourceTree = "<group>"; };
 		18BF14B81C0E7B7200126918 /* ZWConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWConfig.h; sourceTree = "<group>"; };
 		18BF14B91C0E7B7200126918 /* ZWNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZWNavigationController.h; sourceTree = "<group>"; };
@@ -374,10 +378,6 @@
 		18BF15081C0E7B7200126918 /* IncomeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IncomeView.m; sourceTree = "<group>"; };
 		18BF15091C0E7B7200126918 /* IncomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IncomeViewController.h; sourceTree = "<group>"; };
 		18BF150A1C0E7B7200126918 /* IncomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IncomeViewController.m; sourceTree = "<group>"; };
-		18BF150D1C0E7B7200126918 /* InviteHeadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteHeadView.h; sourceTree = "<group>"; };
-		18BF150E1C0E7B7200126918 /* InviteHeadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteHeadView.m; sourceTree = "<group>"; };
-		18BF150F1C0E7B7200126918 /* InviteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteViewController.h; sourceTree = "<group>"; };
-		18BF15101C0E7B7200126918 /* InviteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteViewController.m; sourceTree = "<group>"; };
 		18BF15131C0E7B7200126918 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		18BF15151C0E7B7200126918 /* account.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = account.png; sourceTree = "<group>"; };
 		18BF151A1C0E7B7200126918 /* FeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbackViewController.h; sourceTree = "<group>"; };
@@ -694,6 +694,15 @@
 			);
 			sourceTree = "<group>";
 		};
+		180CC3BD1C16B88900F70B33 /* service */ = {
+			isa = PBXGroup;
+			children = (
+				180CC3BE1C16B8B800F70B33 /* ServiceViewController.h */,
+				180CC3BF1C16B8B800F70B33 /* ServiceViewController.m */,
+			);
+			path = service;
+			sourceTree = "<group>";
+		};
 		185CB2801C0FD518007B6F24 /* ui */ = {
 			isa = PBXGroup;
 			children = (
@@ -719,6 +728,8 @@
 				18BF14F81C0E7B7200126918 /* icon-search.png */,
 				18BF14F91C0E7B7200126918 /* localView.h */,
 				18BF14FA1C0E7B7200126918 /* localView.m */,
+				18BF15001C0E7B7200126918 /* searchBar.h */,
+				18BF15011C0E7B7200126918 /* searchBar.m */,
 				18BF14FB1C0E7B7200126918 /* RecommendDelegate.h */,
 				18BF14FC1C0E7B7200126918 /* RecommendSliderView.h */,
 				18BF14FD1C0E7B7200126918 /* RecommendSliderView.m */,
@@ -731,6 +742,7 @@
 		18BF14881C0E7B7200126918 /* LADZhangWo */ = {
 			isa = PBXGroup;
 			children = (
+				180CC3BD1C16B88900F70B33 /* service */,
 				18BF14C71C0E7B7200126918 /* DSXWorking */,
 				18FC704F1C0E8071004283A6 /* Frameworks */,
 				18BF149D1C0E7B7200126918 /* AppDelegate.h */,
@@ -740,7 +752,6 @@
 				18BF14D81C0E7B7200126918 /* goods */,
 				18BF14EE1C0E7B7200126918 /* home */,
 				18BF15021C0E7B7200126918 /* income */,
-				18BF150C1C0E7B7200126918 /* invite */,
 				18BF15131C0E7B7200126918 /* main.m */,
 				18BF15141C0E7B7200126918 /* member */,
 				18BF154B1C0E7B7200126918 /* news */,
@@ -785,8 +796,10 @@
 				18BF14A21C0E7B7200126918 /* ChaoshiDetailViewController.m */,
 				18BF14A31C0E7B7200126918 /* ChaoshiListViewController.h */,
 				18BF14A41C0E7B7200126918 /* ChaoshiListViewController.m */,
-				18BF14A51C0E7B7200126918 /* ChaoshiViewController.h */,
-				18BF14A61C0E7B7200126918 /* ChaoshiViewController.m */,
+				18BF14A51C0E7B7200126918 /* ChaoshiCatViewController.h */,
+				18BF14A61C0E7B7200126918 /* ChaoshiCatViewController.m */,
+				180CC3BA1C166D0400F70B33 /* ChaoshiIndexViewController.h */,
+				180CC3BB1C166D0400F70B33 /* ChaoshiIndexViewController.m */,
 			);
 			path = chaoshi;
 			sourceTree = "<group>";
@@ -869,8 +882,6 @@
 				18BF14F21C0E7B7200126918 /* DistrictViewController.m */,
 				18BF14F51C0E7B7200126918 /* HomeViewController.h */,
 				18BF14F61C0E7B7200126918 /* HomeViewController.m */,
-				18BF15001C0E7B7200126918 /* searchBar.h */,
-				18BF15011C0E7B7200126918 /* searchBar.m */,
 			);
 			path = home;
 			sourceTree = "<group>";
@@ -887,17 +898,6 @@
 				18BF150A1C0E7B7200126918 /* IncomeViewController.m */,
 			);
 			path = income;
-			sourceTree = "<group>";
-		};
-		18BF150C1C0E7B7200126918 /* invite */ = {
-			isa = PBXGroup;
-			children = (
-				18BF150D1C0E7B7200126918 /* InviteHeadView.h */,
-				18BF150E1C0E7B7200126918 /* InviteHeadView.m */,
-				18BF150F1C0E7B7200126918 /* InviteViewController.h */,
-				18BF15101C0E7B7200126918 /* InviteViewController.m */,
-			);
-			path = invite;
 			sourceTree = "<group>";
 		};
 		18BF15141C0E7B7200126918 /* member */ = {
@@ -1593,7 +1593,6 @@
 				18BF16331C0E7B7200126918 /* ZWUserStatus.m in Sources */,
 				18BF16B41C0E7B7200126918 /* TravelViewController.m in Sources */,
 				18FC708F1C0E8834004283A6 /* DSXUI.m in Sources */,
-				18BF165E1C0E7B7200126918 /* InviteHeadView.m in Sources */,
 				18BF16571C0E7B7200126918 /* RecommendSliderView2.m in Sources */,
 				18BF16751C0E7B7200126918 /* MyFavoriteViewController.m in Sources */,
 				18BF16701C0E7B7200126918 /* LoginViewController.m in Sources */,
@@ -1617,6 +1616,7 @@
 				18BF161B1C0E7B7200126918 /* AFNetworkReachabilityManager.m in Sources */,
 				18BF16951C0E7B7200126918 /* UIImage+MultiFormat.m in Sources */,
 				18BF16371C0E7B7200126918 /* DSXModalView.m in Sources */,
+				180CC3BC1C166D0400F70B33 /* ChaoshiIndexViewController.m in Sources */,
 				18BF16831C0E7B7200126918 /* SettingViewController.m in Sources */,
 				18BF168E1C0E7B7200126918 /* SDWebImageDecoder.m in Sources */,
 				18BF16321C0E7B7200126918 /* ZWRefreshControl.m in Sources */,
@@ -1635,6 +1635,7 @@
 				18BF167E1C0E7B7200126918 /* RegisterViewController.m in Sources */,
 				18BF166F1C0E7B7200126918 /* LoginInputView.m in Sources */,
 				18BF16241C0E7B7200126918 /* ChaoshiListViewController.m in Sources */,
+				180CC3C01C16B8B800F70B33 /* ServiceViewController.m in Sources */,
 				18BF16B11C0E7B7200126918 /* RefreshHeadView.m in Sources */,
 				18BF16981C0E7B7200126918 /* UIImageView+WebCache.m in Sources */,
 				18F595C31C12B18200A34429 /* GoodsBottomView.m in Sources */,
@@ -1643,11 +1644,10 @@
 				18BF16501C0E7B7200126918 /* DistrictViewController.m in Sources */,
 				18BF164E1C0E7B7200126918 /* PayViewController.m in Sources */,
 				185CB2861C103A98007B6F24 /* AddAddressViewController.m in Sources */,
-				18BF165F1C0E7B7200126918 /* InviteViewController.m in Sources */,
 				18BF16771C0E7B7200126918 /* MyIncomeViewController.m in Sources */,
 				18FC708D1C0E8834004283A6 /* DSXStarView.m in Sources */,
 				18BF16581C0E7B7200126918 /* searchBar.m in Sources */,
-				18BF16251C0E7B7200126918 /* ChaoshiViewController.m in Sources */,
+				18BF16251C0E7B7200126918 /* ChaoshiCatViewController.m in Sources */,
 				185CB2831C0FFDE0007B6F24 /* DSXSandboxHelper.m in Sources */,
 				18BF16801C0E7B7200126918 /* SafeViewController.m in Sources */,
 				18BF16911C0E7B7200126918 /* SDWebImageManager.m in Sources */,

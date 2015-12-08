@@ -11,161 +11,178 @@
 
 @implementation ChaoshiListViewController
 @synthesize catid = _catid;
-@synthesize goodsArray = _goodsArray;
+@synthesize shopid = _shopid;
+@synthesize goodsList = _goodsList;
 
-- (void)viewDidLoad {
+- (instancetype)init{
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    self = [super initWithCollectionViewLayout:layout];
+    if (self) {
+        _afmanager = [AFHTTPRequestOperationManager manager];
+        _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        _goodsList = [NSMutableArray array];
+        _page = 1;
+        _cellWith = (SWIDTH-10)/2 - 0.01;
+        _cellHeight = 210;
+    }
+    return self;
+}
+
+- (void)viewDidLoad{
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    self.goodsArray = [NSMutableArray array];
-    self.tableView = [[UITableView alloc] initWithFrame:self.view.frame];
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
+    self.collectionView.delegate = self;
+    self.collectionView.dataSource = self;
+    self.collectionView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
+    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"goodsCell"];
+    [self downloadData];
     
-    _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    self.refreshControl = _refreshControl;
-    
+    _refreshControl = [[ZWRefreshControl alloc] init];
     _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _pullUpView.hidden = YES;
-    self.tableView.tableFooterView = _pullUpView;
     
-    NSString *key = [NSString stringWithFormat:@"chaoshiList_%ld",(long)self.catid];
-    [self reloadTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:key]];
-    [self refresh];
+    _tipsView = [[UILabel alloc] init];
+    _tipsView.text = @"该类目下还没有商品";
+    _tipsView.textColor = [UIColor grayColor];
+    _tipsView.font = [UIFont systemFontOfSize:16.0];
+    _tipsView.hidden = YES;
+    [_tipsView sizeToFit];
+    [_tipsView setCenter:CGPointMake(self.view.center.x, 150)];
+    [self.view addSubview:_tipsView];
 }
 
 - (void)back{
-    if (![self.navigationController popViewControllerAnimated:YES]) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
-#pragma mark -
+- (void)downloadData{
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    if (_catid) {
+        [params setObject:@(_catid) forKey:@"catid"];
+    }
+    if (_shopid) {
+        [params setObject:@(_shopid) forKey:@"shopid"];
+    }
+    if (_page) {
+        [params setObject:@(_page) forKey:@"page"];
+    }
+    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=chaoshi&ac=showlist"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([array isKindOfClass:[NSArray class]]) {
+            [self reloadCollectionViewWithArray:array];
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
+}
+
+- (void)reloadCollectionViewWithArray:(NSArray *)array{
+    if ([array count] > 0) {
+        if (_isRefreshing) {
+            [_goodsList removeAllObjects];
+            [self.collectionView reloadData];
+        }
+        for (NSDictionary *goods in array) {
+            [_goodsList addObject:goods];
+        }
+        [self.collectionView reloadData];
+        if ([_refreshControl isRefreshing]) {
+            [_refreshControl endRefreshing];
+        }
+    }
+    if ([_goodsList count] == 0) {
+        _tipsView.hidden = NO;
+    }else {
+        _tipsView.hidden = YES;
+    }
+    if ([array count] < 20) {
+        _pullUpView.hidden = YES;
+    }else {
+        _pullUpView.hidden = NO;
+    }
+    [_pullUpView endLoading];
+}
+
 - (void)refresh{
     _page = 1;
     _isRefreshing = YES;
-    [self loadData];
+    [self downloadData];
 }
 
 - (void)loadMore{
     _page++;
     _isRefreshing = NO;
-    [self loadData];
-}
-- (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=chaoshi&ac=showlist&catid=%ld&page=%d",(long)_catid,_page];
-    [_afmanager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSData *data = (NSData *)responseObject;
-        if ([data length]>2) {
-            id array = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-            if ([array isKindOfClass:[NSArray class]]) {
-                if ([array count] > 0) {
-                    if (_isRefreshing) {
-                        NSString *key = [NSString stringWithFormat:@"chaoshi_%ld",(long)_catid];
-                        [[NSUserDefaults standardUserDefaults] setObject:array forKey:key];
-                    }
-                    [self reloadTableViewWithArray:array];
-                }else{
-                    
-                }
-                
-            }
-        }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
-    }];
+    [self downloadData];
 }
 
-- (void)reloadTableViewWithArray:(NSArray *)array{
-    if ([array count] > 0) {
-        if (_isRefreshing) {
-            [self.goodsArray removeAllObjects];
-            [self.tableView reloadData];
-        }
-        
-        for (NSDictionary *dict in array) {
-            [self.goodsArray addObject:dict];
-        }
-        [self.tableView reloadData];
-    }
-    if ([_refreshControl isRefreshing]) {
-        [_refreshControl endRefreshing];
-    }
-    [_pullUpView endLoading];
-    if ([array count] >= 20) {
-        _pullUpView.hidden = NO;
-    }else {
-        _pullUpView.hidden = YES;
-    }
-}
-
-#pragma mark - tableView delegate
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+#pragma mark - collectionView delegate
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [self.goodsArray count];
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    return [_goodsList count];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 100;
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section{
+    return 0.0001;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell"];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"goodsCell"];
-    }else {
-        for (UIView *subview in cell.contentView.subviews) {
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section{
+    return 10.0;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+    return CGSizeMake(_cellWith, _cellHeight);
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"goodsCell" forIndexPath:indexPath];
+    if (cell) {
+        for (UIView *subview in cell.subviews) {
             [subview removeFromSuperview];
         }
+        NSDictionary *goods = [_goodsList objectAtIndex:indexPath.row];
+        UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _cellWith, _cellHeight)];
+        contentView.backgroundColor = [UIColor backColor];
+        [cell addSubview:contentView];
+        
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, _cellWith, 130)];
+        [imageView sd_setImageWithURL:[NSURL URLWithString:[goods objectForKey:@"pic"]]];
+        [contentView addSubview:imageView];
+        
+        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 130, _cellWith, 0.8)];
+        line.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
+        [contentView addSubview:line];
+        
+        UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 140, _cellWith-20, 40)];
+        nameLabel.text = [goods objectForKey:@"name"];
+        nameLabel.font = [UIFont systemFontOfSize:16.0];
+        nameLabel.numberOfLines = 2;
+        //[nameLabel sizeThatFits:CGSizeMake(_cellWith-20, 40)];
+        [nameLabel sizeToFit];
+        [contentView addSubview:nameLabel];
+        
+        UILabel *priceLabel = [[UILabel alloc] init];
+        priceLabel.text = [NSString stringWithFormat:@"￥%@",[goods objectForKey:@"price"]];
+        priceLabel.font = [UIFont systemFontOfSize:18.0];
+        priceLabel.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
+        [priceLabel sizeToFit];
+        [priceLabel setFrame:CGRectMake(_cellWith-priceLabel.frame.size.width-10, _cellHeight-priceLabel.frame.size.height-10, priceLabel.frame.size.width, priceLabel.frame.size.height)];
+        [contentView addSubview:priceLabel];
     }
-    
-    NSDictionary *goods = [self.goodsArray objectAtIndex:indexPath.row];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 100, 80)];
-    imageView.layer.cornerRadius = 3.0;
-    imageView.layer.masksToBounds = YES;
-    [imageView sd_setImageWithURL:[NSURL URLWithString:[goods objectForKey:@"pic"]]];
-    [cell.contentView addSubview:imageView];
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 10, SWIDTH-130, 20)];
-    titleLabel.text = [goods objectForKey:@"name"];
-    titleLabel.font = [UIFont systemFontOfSize:16.0];
-    [titleLabel sizeToFit];
-    [cell.contentView addSubview:titleLabel];
-    
-    NSInteger starnum = [[goods objectForKey:@"score"] integerValue];
-    DSXStarView *starView = [[DSXStarView alloc] initWithStar:starnum];
-    starView.frame = CGRectMake(120, 35, starView.frame.size.width, starView.frame.size.height);
-    [cell.contentView addSubview:starView];
-    
-    //价格
-    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 73, 80, 18)];
-    priceLabel.text = [NSString stringWithFormat:@"￥%@",[goods objectForKey:@"price"]];
-    priceLabel.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
-    priceLabel.font = [UIFont systemFontOfSize:18.0];
-    
-    cell.tag = [[goods objectForKey:@"id"] integerValue];
-    [cell.contentView addSubview:priceLabel];
-    
-    cell.selectionStyle = UITableViewCellSelectionStyleGray;
-    cell.contentView.backgroundColor = [UIColor whiteColor];
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    [cell setSelected:NO animated:YES];
-    
-    NSDictionary *goods = [self.goodsArray objectAtIndex:indexPath.row];
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    NSDictionary *goods = [_goodsList objectAtIndex:indexPath.row];
     ChaoshiDetailViewController *detailView = [[ChaoshiDetailViewController alloc] init];
+    detailView.title = [goods objectForKey:@"name"];
     detailView.goodsid = [[goods objectForKey:@"id"] integerValue];
+    detailView.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:detailView animated:YES];
 }
 
@@ -177,6 +194,10 @@
             [_pullUpView beginLoading];
             [self loadMore];
         }
+    }
+    
+    if (scrollView.contentOffset.y < -120) {
+        [self refresh];
     }
 }
 
