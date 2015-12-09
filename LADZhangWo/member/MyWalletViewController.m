@@ -9,10 +9,11 @@
 #import "MyWalletViewController.h"
 #import "MyBillViewController.h"
 #import "MyIncomeViewController.h"
+#import "RechargeViewController.h"
 
 @implementation MyWalletViewController
 @synthesize walletData = _walletData;
-@synthesize userStatus;
+
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self setTitle:@"我的钱包"];
@@ -22,9 +23,13 @@
     [rightBarButton setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor blackColor]} forState:UIControlStateNormal];
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
+    _afmanager = [AFHTTPRequestOperationManager manager];
+    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    
     _headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 120)];
     _headerView.backgroundColor = [UIColor colorWithHexString:@"0xDB7E7D"];
     self.tableView.tableHeaderView = _headerView;
+    
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, 200, 20)];
     textLabel.text = @"账户总余额";
     textLabel.textColor = [UIColor whiteColor];
@@ -39,7 +44,7 @@
     [_totalLabel setCenter:_headerView.center];
     [_headerView addSubview:_totalLabel];
     
-    _footerView = [[UIView alloc] initWithFrame:CGRectZero];
+    _footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 100)];
     self.tableView.tableFooterView = _footerView;
     UIButton *rechageButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 50, SWIDTH-30, 40)];
     rechageButton.backgroundColor = [UIColor whiteColor];
@@ -49,14 +54,24 @@
     [rechageButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [rechageButton setBackgroundImage:[UIImage imageNamed:@"button-selected.png"] forState:UIControlStateHighlighted];
     [rechageButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    [rechageButton addTarget:self action:@selector(recharge) forControlEvents:UIControlEventTouchUpInside];
     [_footerView addSubview:rechageButton];
     
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=wallet&ac=showdetail"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
+    [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
+    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=wallet&ac=showdetail"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([returns isKindOfClass:[NSDictionary class]]) {
+            _walletData = returns;
+            _totalLabel.text = [NSString stringWithFormat:@"￥%.2f",[[_walletData objectForKey:@"balance"] floatValue]];
+            [self.tableView reloadData];
+        }else {
+            [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"数据加载失败"];
+            [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
+        }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        
+        NSLog(@"%@", error);
     }];
 }
 
@@ -67,6 +82,11 @@
 - (void)showBill{
     MyBillViewController *billView = [[MyBillViewController alloc] init];
     [self.navigationController pushViewController:billView animated:YES];
+}
+
+- (void)recharge{
+    RechargeViewController *rechargeView = [[RechargeViewController alloc] init];
+    [self.navigationController pushViewController:rechargeView animated:YES];
 }
 
 #pragma mark - tableView delegate
@@ -83,15 +103,16 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [[UITableViewCell alloc] init];
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"walletCell"];
     if (indexPath.row == 0) {
         cell.textLabel.text = @"我的收益";
-        UILabel *totalIncome = [[UILabel alloc] init];
-        totalIncome.text = @"￥0.00";
-        totalIncome.font = [UIFont systemFontOfSize:16.0];
-        totalIncome.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
-        [totalIncome sizeToFit];
-        cell.accessoryView = totalIncome;
+        if (_walletData) {
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"￥%.2f",[[_walletData objectForKey:@"total_income"] floatValue]];
+        }else {
+            cell.detailTextLabel.text = @"￥0.00";
+        }
+        cell.detailTextLabel.font = [UIFont systemFontOfSize:16.0];
+        cell.detailTextLabel.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
     }
     return cell;
 }

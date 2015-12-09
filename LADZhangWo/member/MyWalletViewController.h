@@ -18,6 +18,5 @@
 }
 
 @property(nonatomic,strong)NSDictionary *walletData;
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

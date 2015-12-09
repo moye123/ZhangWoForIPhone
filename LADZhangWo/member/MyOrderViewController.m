@@ -13,7 +13,6 @@
 @implementation MyOrderViewController
 @synthesize status = _status;
 @synthesize orderList = _orderList;
-@synthesize userStatus = _userStatus;
 @synthesize tableView = _tableView;
 
 - (instancetype)init{
@@ -21,7 +20,6 @@
     if (self) {
         _afmanager = [AFHTTPRequestOperationManager manager];
         _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        self.userStatus = [ZWUserStatus sharedStatus];
         _orderList = [NSMutableArray array];
     }
     return self;
@@ -33,13 +31,6 @@
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
-    UILabel *refreshView = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.bounds.origin.y, SWIDTH, 50)];
-    refreshView.text = @"松开手开始刷新";
-    refreshView.font = [UIFont systemFontOfSize:14.0];
-    refreshView.textColor = [UIColor grayColor];
-    //refreshView.hidden = YES;
-    [self.view addSubview:refreshView];
-    
     CGRect tableFrame = self.view.bounds;
     tableFrame.size.height = tableFrame.size.height - 50;
     self.tableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStyleGrouped];
@@ -47,13 +38,25 @@
     self.tableView.dataSource = self;
     [self.view addSubview:self.tableView];
     
-    //_refreshControl = [[LHBRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    //self.refreshControl = _refreshControl;
-    
+    _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    UITableViewController *tableViewController = [[UITableViewController alloc] init];
+    tableViewController.refreshControl = _refreshControl;
+    tableViewController.tableView = _tableView;
     
     _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    self.tableView.tableFooterView = _pullUpView;
+    _pullUpView.hidden = YES;
+    _tableView.tableFooterView = _pullUpView;
     [self refresh];
+    
+    _tipsView = [[UILabel alloc] init];
+    _tipsView.text = @"订单空空也";
+    _tipsView.textColor = [UIColor grayColor];
+    _tipsView.font = [UIFont systemFontOfSize:16.0];
+    _tipsView.hidden = YES;
+    [_tipsView sizeToFit];
+    [_tipsView setCenter:CGPointMake(self.view.center.x, 200)];
+    [self.view addSubview:_tipsView];
 }
 
 - (void)back{
@@ -63,18 +66,16 @@
 //从服务器加载数据
 - (void)loadData{
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:@(_userStatus.uid) forKey:@"uid"];
-    [params setObject:_userStatus.username forKey:@"username"];
+    [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
+    [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
     if (_status) {
         [params setObject:@(_status) forKey:@"status"];
     }
     
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=order&ac=showlist&page=%d",_page] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager POST:[SITEAPI stringByAppendingFormat:@"&mod=order&ac=showlist&page=%d",_page] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {
             [self reloadTableViewWithArray:array];
-        }else {
-            NSLog(@"订单获取失败");
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);
@@ -83,17 +84,16 @@
 
 //刷新表视图
 - (void)reloadTableViewWithArray:(NSArray *)array{
-    
     if ([array count] > 0) {
         if (_isRefreshing) {
             _isRefreshing = NO;
             [_orderList removeAllObjects];
-            [self.tableView reloadData];
+            [_tableView reloadData];
         }
         for (NSDictionary *order in array) {
             [_orderList addObject:order];
         }
-        [self.tableView reloadData];
+        [_tableView reloadData];
     }
     
     if ([array count] < 20) {
@@ -104,6 +104,11 @@
     [_pullUpView endLoading];
     if ([_refreshControl isRefreshing]) {
         [_refreshControl endRefreshing];
+    }
+    if ([_orderList count] == 0) {
+        _tipsView.hidden = NO;
+    }else {
+        _tipsView.hidden = YES;
     }
 }
 
@@ -290,8 +295,11 @@
 
 - (void)cancelOrder:(UIButton *)button{
     NSInteger section = button.tag - 100;
-    NSInteger orderid = [[_orderList[section] objectForKey:@"orderid"] integerValue];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=order&ac=delete"] parameters:@{@"uid":@(_userStatus.uid),@"username":_userStatus.username,@"orderid":@(orderid)} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
+    [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
+    [params setObject:[_orderList[section] objectForKey:@"orderid"] forKey:@"orderid"];
+    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=order&ac=delete"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([returns isKindOfClass:[NSDictionary class]]) {
             [_orderList removeObjectAtIndex:section];

@@ -9,13 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface TravelViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout>{
-    AFHTTPRequestOperationManager *_afmanager;
+@interface TravelViewController : UIViewController<UIWebViewDelegate>{
+
 }
 
-- (instancetype)init;
-
-@property(nonatomic,strong)NSArray *categoryList;
-@property(nonatomic,retain)DSXSliderView *slideView;
+@property(nonatomic,retain)UIWebView *webView;
 
 @end

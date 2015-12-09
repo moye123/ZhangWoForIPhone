@@ -16,6 +16,7 @@
     ZWPullUpView *_pullUpView;
     BOOL _isRefreshing;
     int _page;
+    UILabel *_tipsView;
 }
 
 - (instancetype)init;
@@ -23,7 +24,6 @@
 @property(nonatomic,assign)NSInteger status;
 @property(nonatomic,assign)NSInteger evaluate;
 @property(nonatomic,strong)NSMutableArray *orderList;
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)UITableView *tableView;
 
 @end

@@ -83,6 +83,17 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
     return button;
 }
 
+- (UIButton *)whiteButtonWithTitle:(NSString *)title{
+    UIButton *button = [[UIButton alloc] init];
+    [button.layer setMasksToBounds:YES];
+    [button setBackgroundColor:[UIColor whiteColor]];
+    [button setTitle:title forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    [button setBackgroundImage:[UIImage imageNamed:@"button-selected.png"] forState:UIControlStateHighlighted];
+    return button;
+}
+
 - (void)showPopViewWithStyle:(DSXPopViewStyle)style Message:(NSString *)message{
     NSString *imageName;
     switch (style) {

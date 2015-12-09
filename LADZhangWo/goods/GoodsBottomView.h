@@ -10,8 +10,6 @@
 #import "ZWCommon.h"
 
 @interface GoodsBottomView : UIView{
-    @private
-    AFHTTPRequestOperationManager *_afmanager;
 }
 - (instancetype)initWithFrame:(CGRect)frame;
 

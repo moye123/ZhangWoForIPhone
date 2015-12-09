@@ -43,6 +43,7 @@ UIKIT_EXTERN NSString *const DSXFontStyleBlack;
 - (UIBarButtonItem *)barButtonWithImage:(NSString *)imageName target:(id)target action:(SEL)action;
 - (UIBarButtonItem *)barButtonWithStyle:(DSXBarButtonStyle)style target:(id)target action:(SEL)action;
 - (UIButton *)longButtonWithTitle:(NSString *)title;
+- (UIButton *)whiteButtonWithTitle:(NSString *)title;
 - (void)showPopViewWithStyle:(DSXPopViewStyle)style Message:(NSString *)message;
 - (UIView *)showLoadingViewWithMessage:(NSString *)message;
 - (void)showLoginFromViewController:(UIViewController *)controller;

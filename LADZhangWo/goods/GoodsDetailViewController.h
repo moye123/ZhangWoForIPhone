@@ -13,8 +13,6 @@
 
 @interface GoodsDetailViewController : UIViewController<UIWebViewDelegate,UIScrollViewDelegate>{
     @private
-    UIButton *_addToCart;
-    UIButton *_buyNow;
     AddToCartView *_addCartView;
     GoodsBottomView *_bottomView;
 }
