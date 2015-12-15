@@ -13,6 +13,6 @@
 
 @property(nonatomic,assign)NSInteger travelID;
 @property(nonatomic,strong)NSDictionary *travelData;
-@property(nonatomic,retain)UIWebView *contentWebView;
+@property(nonatomic,retain)UIWebView *webView;
 
 @end

@@ -39,6 +39,10 @@
         [_headerView.imageView sd_setImageWithURL:[NSURL URLWithString:[[ZWUserStatus sharedStatus] userpic]]];
         [_headerView.textLabel setText:[[ZWUserStatus sharedStatus] username]];
         
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showSetting)];
+        [_headerView.imageView addGestureRecognizer:tap];
+        [_headerView.imageView setUserInteractionEnabled:YES];
+        
         _buttonSetting = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-95, 50, 50, 30)];
         [_buttonSetting setTitle:@"设置" forState:UIControlStateNormal];
         [_buttonSetting setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

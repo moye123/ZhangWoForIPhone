@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface IncomeViewController : UIViewController
+@interface IncomeViewController : UIViewController<DSXSliderViewDelegate>{
+    @private
+    DSXSliderView *_slideView;
+}
 
 @property(nonatomic,strong)NSString *income;
 @property(nonatomic,retain)AFHTTPRequestOperationManager *afmanager;

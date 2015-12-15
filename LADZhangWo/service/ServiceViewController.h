@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface ServiceViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout>{
+@interface ServiceViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout,DSXSliderViewDelegate>{
     @private
     AFHTTPRequestOperationManager *_afmanager;
     CGFloat _cellWidth;

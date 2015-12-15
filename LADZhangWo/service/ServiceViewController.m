@@ -7,6 +7,10 @@
 //
 
 #import "ServiceViewController.h"
+#import "NewsDetailViewController.h"
+#import "TravelDetailViewController.h"
+#import "ShopDetailViewController.h"
+#import "GoodsDetailViewController.h"
 
 @implementation ServiceViewController
 @synthesize serviceList = _serviceList;
@@ -47,22 +51,11 @@
     }];
     
     //轮播广告
-    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 160)];
-    [_afmanager GET:[SITEAPI stringByAppendingString:@"&mod=travel&ac=showlist&pagesize=3"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            NSMutableArray *imageViews = [[NSMutableArray alloc] init];
-            for (NSDictionary *dict in array) {
-                UIImageView *imageView = [[UIImageView alloc] init];
-                [imageView sd_setImageWithURL:[dict objectForKey:@"pic"] placeholderImage:[UIImage imageNamed:@"placeholder600x300.png"]];
-                [imageView setContentMode:UIViewContentModeScaleAspectFill];
-                [imageViews addObject:imageView];
-            }
-            _slideView.imageViews = imageViews;
-        }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
-    }];
+    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 180)];
+    _slideView.groupid = 9;
+    _slideView.num = 3;
+    _slideView.delegate = self;
+    [_slideView loaddata];
 }
 
 - (void)back{
@@ -104,7 +97,7 @@
         contentView.backgroundColor = [UIColor whiteColor];
         [cell addSubview:contentView];
         
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake((_cellWidth-60)/2, 10, 60, 60)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake((_cellWidth-35)/2, 15, 35, 35)];
         [imageView sd_setImageWithURL:[NSURL URLWithString:[service objectForKey:@"pic"]]];
         [cell addSubview:imageView];
         
@@ -118,7 +111,7 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
-    return CGSizeMake(SWIDTH, 160);
+    return CGSizeMake(SWIDTH, 180);
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
@@ -131,6 +124,33 @@
         [reuseableView addSubview:_slideView];
     }
     return reuseableView;
+}
+
+#pragma mark - dsxslideview delegate
+- (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
+    if ([idType isEqualToString:@"goodsid"]) {
+        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
+        goodsView.goodsid = dataID;
+        [self.navigationController pushViewController:goodsView animated:YES];
+    }
+    
+    if ([idType isEqualToString:@"aid"]) {
+        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
+        newsView.newsID = dataID;
+        [self.navigationController pushViewController:newsView animated:YES];
+    }
+    
+    if ([idType isEqualToString:@"shopid"]) {
+        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+        shopView.shopid = dataID;
+        [self.navigationController pushViewController:shopView animated:YES];
+    }
+    
+    if ([idType isEqualToString:@"travelid"]) {
+        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
+        travelView.travelID = dataID;
+        [self.navigationController pushViewController:travelView animated:YES];
+    }
 }
 
 @end

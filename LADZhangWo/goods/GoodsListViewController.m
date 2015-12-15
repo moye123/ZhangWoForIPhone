@@ -116,7 +116,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 100;
+    return 137;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -130,13 +130,13 @@
     }
     
     NSDictionary *goods = [self.goodsArray objectAtIndex:indexPath.row];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 100, 80)];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 15, 107, 107)];
     imageView.layer.cornerRadius = 3.0;
     imageView.layer.masksToBounds = YES;
     [imageView sd_setImageWithURL:[NSURL URLWithString:[goods objectForKey:@"pic"]]];
     [cell.contentView addSubview:imageView];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 10, SWIDTH-130, 20)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(130, 15, SWIDTH-130, 20)];
     titleLabel.text = [goods objectForKey:@"name"];
     titleLabel.font = [UIFont systemFontOfSize:16.0];
     [titleLabel sizeToFit];
@@ -144,11 +144,11 @@
     
     NSInteger starnum = [[goods objectForKey:@"score"] integerValue];
     DSXStarView *starView = [[DSXStarView alloc] initWithStar:starnum];
-    starView.frame = CGRectMake(120, 35, starView.frame.size.width, starView.frame.size.height);
+    starView.frame = CGRectMake(130, 35, starView.frame.size.width, starView.frame.size.height);
     [cell.contentView addSubview:starView];
     
     //价格
-    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 73, 80, 18)];
+    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(130, 73, 80, 18)];
     priceLabel.text = [NSString stringWithFormat:@"￥%@",[goods objectForKey:@"price"]];
     priceLabel.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
     priceLabel.font = [UIFont systemFontOfSize:18.0];

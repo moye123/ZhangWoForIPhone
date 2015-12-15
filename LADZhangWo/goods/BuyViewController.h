@@ -17,6 +17,7 @@
     UILabel *_total;
     UIButton *_submitButton;
     AFHTTPRequestOperationManager *_afmanager;
+    float _totalValue;
 }
 
 - (instancetype)init;
@@ -24,5 +25,6 @@
 @property(nonatomic,assign)NSInteger goodsid;
 @property(nonatomic,strong)NSDictionary *goodsdata;
 @property(nonatomic,retain)UITableView *tableView;
+@property(nonatomic,strong)NSString *from;
 
 @end

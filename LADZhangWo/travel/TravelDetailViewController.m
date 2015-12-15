@@ -12,7 +12,7 @@
 @implementation TravelDetailViewController
 @synthesize travelID;
 @synthesize travelData;
-@synthesize contentWebView = _contentWebView;
+@synthesize webView = _webView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -22,14 +22,11 @@
     
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=travel&ac=showdetail&id=%ld",(long)self.travelID];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
-    _contentWebView = [[UIWebView alloc] initWithFrame:self.view.frame];
-    _contentWebView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
-    _contentWebView.delegate = self;
-    [_contentWebView loadRequest:request];
-    [self.view addSubview:_contentWebView];
-    
-    
-    
+    _webView = [[UIWebView alloc] initWithFrame:self.view.frame];
+    _webView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
+    _webView.delegate = self;
+    [_webView loadRequest:request];
+    [self.view addSubview:_webView];
 }
 
 - (void)back{
@@ -39,6 +36,9 @@
 }
 
 #pragma mark - webView delegate
+- (void)webViewDidFinishLoad:(UIWebView *)webView{
+    self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+}
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
     NSURL *url = [request URL];
     NSDictionary *params = [[DSXUtil sharedUtil] parseQueryString:[url query]];

@@ -347,7 +347,7 @@
         }
     }
     
-    if (scrollView.contentOffset.y < 120) {
+    if (scrollView.contentOffset.y < -120) {
         [self refresh];
     }
 }

@@ -14,7 +14,10 @@
 #import "GoodsListViewController.h"
 #import "GoodsDetailViewController.h"
 #import "ChaoshiIndexViewController.h"
+#import "ChaoshiCatViewController.h"
 #import "ServiceViewController.h"
+#import "ShopDetailViewController.h"
+#import "WebViewController.h"
 
 @implementation HomeViewController
 @synthesize local;
@@ -60,24 +63,11 @@
     
     //轮播广告
     _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, 150)];
-    _tableView.tableHeaderView = _slideView;
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [_afmanager GET:[SITEAPI stringByAppendingString:@"&mod=travel&ac=showlist&pagesize=3"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            NSMutableArray *imageViews = [[NSMutableArray alloc] init];
-            for (NSDictionary *dict in array) {
-                UIImageView *imageView = [[UIImageView alloc] init];
-                [imageView sd_setImageWithURL:[dict objectForKey:@"pic"] placeholderImage:[UIImage imageNamed:@"placeholder600x300.png"]];
-                [imageView setContentMode:UIViewContentModeScaleAspectFill];
-                [imageViews addObject:imageView];
-            }
-            _slideView.imageViews = imageViews;
-        }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
-    }];
+    _slideView.groupid = 5;
+    _slideView.num = 3;
+    _slideView.delegate = self;
+    [_slideView loaddata];
+    [_tableView setTableHeaderView:_slideView];
     
     //分类列表
     _categoryView = [[HomeCategoryView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
@@ -132,6 +122,37 @@
 
 - (void)showPopMenu{
     [_popMenu toggle];
+}
+
+- (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
+    if ([idType isEqualToString:@"goodsid"]) {
+        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
+        goodsView.goodsid = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
+        nav.style = ZWNavigationStyleGray;
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"aid"]) {
+        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
+        newsView.newsID = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"shopid"]) {
+        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+        shopView.shopid = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"travelid"]) {
+        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
+        travelView.travelID = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
 }
 
 #pragma mark - tableView delegate
@@ -255,8 +276,9 @@
     
     //超市
     if ([tag isEqualToString:@"market"]) {
-        ChaoshiIndexViewController *chaoshiController = [[ChaoshiIndexViewController alloc] init];
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:chaoshiController];
+        //ChaoshiIndexViewController *chaoshiController = [[ChaoshiIndexViewController alloc] init];
+        ChaoshiCatViewController *chaoshiView = [[ChaoshiCatViewController alloc] init];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:chaoshiView];
         nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }
@@ -311,7 +333,11 @@
 #pragma mark - recommend delegate
 - (void)showDetailWithID:(NSInteger)ID andIdType:(NSString *)idtype{
     if ([idtype isEqualToString:@"shopid"]) {
-        
+        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+        shopView.shopid = ID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
+        nav.style = ZWNavigationStyleGray;
+        [self presentViewController:nav animated:YES completion:nil];
     }
     
     if ([idtype isEqualToString:@"goodsid"]) {
@@ -334,6 +360,13 @@
         NewsDetailViewController *newsDetailView = [[NewsDetailViewController alloc] init];
         newsDetailView.newsID = ID;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsDetailView];
+        nav.style = ZWNavigationStyleGray;
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idtype isEqualToString:@"url"]) {
+        WebViewController *webViewController = [[WebViewController alloc] init];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:webViewController];
         nav.style = ZWNavigationStyleGray;
         [self presentViewController:nav animated:YES completion:nil];
     }

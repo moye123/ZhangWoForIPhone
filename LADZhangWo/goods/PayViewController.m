@@ -9,10 +9,10 @@
 #import "PayViewController.h"
 
 @implementation PayViewController
-@synthesize orderid;
-@synthesize orderno;
-@synthesize orderTitle;
-@synthesize total;
+@synthesize orderid = _orderid;
+@synthesize orderno = _orderno;
+@synthesize orderTitle = _orderTitle;
+@synthesize total = _total;
 @synthesize tableView = _tableView;
 
 - (void)viewDidLoad{
@@ -20,6 +20,24 @@
     [self setTitle:@"付款"];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
+    
+    /*
+    _afmanager = [[AFHTTPRequestOperationManager alloc] init];
+    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
+    [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
+    [params setObject:@(self.orderid) forKey:@"orderid"];
+    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=order&ac=getdata"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([returns isKindOfClass:[NSDictionary class]]) {
+            
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        
+    }];
+     */
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -27,7 +45,13 @@
 }
 
 - (void)back{
-    [self.navigationController popViewControllerAnimated:YES];
+    if (![self.navigationController popViewControllerAnimated:YES]) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+- (void)cancel{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - tableView delegate
@@ -58,11 +82,11 @@
         cell.textLabel.textColor = [UIColor colorWithHexString:@"0x666666"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (indexPath.row == 0) {
-            cell.textLabel.text = [NSString stringWithFormat:@"订单名称:%@",self.orderTitle];
+            cell.textLabel.text = [NSString stringWithFormat:@"订单名称:%@",_orderTitle];
         }
         
         if (indexPath.row == 1) {
-            cell.textLabel.text = [NSString stringWithFormat:@"订单金额:￥%.2f", self.total];
+            cell.textLabel.text = [NSString stringWithFormat:@"订单金额:￥%.2f", _total];
         }
     }
     

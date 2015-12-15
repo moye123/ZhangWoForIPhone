@@ -8,10 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
-#import "IpaynowPluginApi.h"
-#import "IPNPreSignMessageUtil.h"
 
-@interface RechargeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,IpaynowPluginDelegate,UIAlertViewDelegate>{
+@interface RechargeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>{
     @private
     UITextField *_amountField;
     NSInteger _index;

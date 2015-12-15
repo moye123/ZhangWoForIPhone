@@ -9,6 +9,8 @@
 #import "DSXSliderView.h"
 
 @implementation DSXSliderView
+@synthesize groupid = _groupid;
+@synthesize num = _num;
 @synthesize imageViews = _imageViews;
 @synthesize scrollView = _scrollView;
 @synthesize pageControl = _pageControl;
@@ -31,20 +33,46 @@
     return self;
 }
 
+- (void)loaddata{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [manager GET:[SITEAPI stringByAppendingFormat:@"&mod=homepage&ac=showlist&groupid=%ld&num=%ld",(long)_groupid,(long)_num] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([array isKindOfClass:[NSArray class]]) {
+            for (UIView *subview in _scrollView.subviews) {
+                [subview removeFromSuperview];
+            }
+            CGFloat x = 0;
+            _slideData = [NSMutableDictionary dictionary];
+            for (NSDictionary *dict in array) {
+                UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(x, 0, self.frame.size.width, self.frame.size.height)];
+                [imageView sd_setImageWithURL:[NSURL URLWithString:[dict objectForKey:@"pic"]]];
+                [imageView setContentMode:UIViewContentModeScaleToFill];
+                [imageView setTag:[[dict objectForKey:@"id"] integerValue]];
+                [_scrollView addSubview:imageView];
+                
+                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTap:)];
+                [imageView addGestureRecognizer:tap];
+                [imageView setUserInteractionEnabled:YES];
+                x+= self.frame.size.width;
+                [_slideData setObject:dict forKey:[dict objectForKey:@"id"]];
+            }
+            _scrollView.contentSize = CGSizeMake(self.frame.size.width*[_slideData count], 0);
+            _pageControl.numberOfPages = [_slideData count];
+            
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
+}
 
-- (void)setImageViews:(NSArray *)imageViews{
-    _imageViews = imageViews;
-    for (UIView *subview in _scrollView.subviews) {
-        [subview removeFromSuperview];
+- (void)imageViewTap:(UITapGestureRecognizer *)tap{
+    NSDictionary *dict = [_slideData objectForKey:[NSString stringWithFormat:@"%ld",(long)tap.view.tag]];
+    if ([_delegate respondsToSelector:@selector(slideView:touchedImageWithDataID:idType:)]) {
+        NSInteger dataID = [[dict objectForKey:@"dataid"] integerValue];
+        NSString *idType = [dict objectForKey:@"idtype"];
+        [_delegate slideView:self touchedImageWithDataID:dataID idType:idType];
     }
-    CGRect frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    for (int i=0; i < [_imageViews count]; i++) {
-        frame.origin.x = self.frame.size.width * i;
-        [_imageViews[i] setFrame:frame];
-        [_scrollView addSubview:_imageViews[i]];
-    }
-    _scrollView.contentSize = CGSizeMake(self.frame.size.width * [_imageViews count], self.frame.size.height);
-    _pageControl.numberOfPages = [_imageViews count];
 }
 
 - (void)pageControlClick:(UIPageControl *)sender{

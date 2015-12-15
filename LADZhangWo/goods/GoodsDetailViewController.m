@@ -17,15 +17,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self setTitle:@"宝贝详情"];
+    [self setTitle:@"商品详情"];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
-    _webView = [[UIWebView alloc] initWithFrame:self.view.frame];
+    CGRect frame = self.view.bounds;
+    frame.size.height-= 44;
+    _webView = [[UIWebView alloc] initWithFrame:frame];
     _webView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
     _webView.delegate = self;
     _webView.scrollView.delegate = self;
+    _webView.hidden = YES;
     [self.view addSubview:_webView];
     
     CGRect bottomFrame = self.navigationController.toolbar.frame;
@@ -38,6 +41,17 @@
     
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&id=%ld",(long)self.goodsid];
     [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [manager GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([returns isKindOfClass:[NSDictionary class]]) {
+            _goodsdata = returns;
+            _webView.hidden = NO;
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -92,12 +106,7 @@
 
 #pragma mark - webView delegate
 - (void)webViewDidFinishLoad:(UIWebView *)webView{
-    NSString *jsonString = [webView stringByEvaluatingJavaScriptFromString:@"getGoods()"];
-    id dictionary = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:nil];
-    if ([dictionary isKindOfClass:[NSDictionary class]]) {
-        self.goodsdata = dictionary;
-        
-    }
+
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{

@@ -9,11 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface MyIncomeViewController : UITableViewController{
+@interface MyIncomeViewController : UITableViewController<UIScrollViewDelegate>{
     @private
+    AFHTTPRequestOperationManager *_afmanager;
+    int _page;
+    BOOL _isRefreshing;
+    UILabel *_tipsView;
+    ZWRefreshControl *_refreshControl;
+    ZWPullUpView *_pullUpView;
 }
 
 @property(nonatomic,strong)NSMutableArray *incomeList;
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

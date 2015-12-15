@@ -8,6 +8,10 @@
 
 #import "ChaoshiCatViewController.h"
 #import "ChaoshiListViewController.h"
+#import "NewsDetailViewController.h"
+#import "TravelDetailViewController.h"
+#import "ShopDetailViewController.h"
+#import "GoodsDetailViewController.h"
 
 @implementation ChaoshiCatViewController
 @synthesize shopid = _shopid;
@@ -47,6 +51,12 @@
     self.collectionView.dataSource = self;
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"chaoshiCell"];
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"headerView"];
+    
+    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 160)];
+    _slideView.groupid = 8;
+    _slideView.num = 3;
+    _slideView.delegate = self;
+    [_slideView loaddata];
 }
 
 - (void)back{
@@ -104,7 +114,11 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
-    return CGSizeMake(SWIDTH, 45);
+    if (section == 0) {
+        return CGSizeMake(SWIDTH, 205);
+    }else {
+        return CGSizeMake(SWIDTH, 45);
+    }
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
@@ -115,15 +129,23 @@
         for (UIView *subview in reuseableView.subviews) {
             [subview removeFromSuperview];
         }
+        //图标
         NSString *pic = [[_categoryList objectAtIndex:indexPath.section] objectForKey:@"pic"];
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 12, 20, 20)];
         [imageView sd_setImageWithURL:[NSURL URLWithString:pic]];
-        [reuseableView addSubview:imageView];
         
-        UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SWIDTH, 45)];
-        headerLabel.text = [[_categoryList objectAtIndex:indexPath.section] objectForKey:@"cname"];
-        headerLabel.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
-        [reuseableView addSubview:headerLabel];
+        //标题
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, SWIDTH, 45)];
+        titleLabel.text = [[_categoryList objectAtIndex:indexPath.section] objectForKey:@"cname"];
+        titleLabel.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
+        
+        if (indexPath.section == 0) {
+            [reuseableView addSubview:_slideView];
+            [imageView setFrame:CGRectMake(10, 172, 20, 20)];
+            [titleLabel setFrame:CGRectMake(40, 160, SWIDTH, 45)];
+        }
+        [reuseableView addSubview:imageView];
+        [reuseableView addSubview:titleLabel];
     }
     return reuseableView;
 }
@@ -133,8 +155,35 @@
     ChaoshiListViewController *listView = [[ChaoshiListViewController alloc] init];
     listView.catid = [[category objectForKey:@"catid"] integerValue];
     listView.title = [category objectForKey:@"cname"];
-    listView.shopid = _shopid;
+    if(_shopid) listView.shopid = _shopid;
     [self.navigationController pushViewController:listView animated:YES];
+}
+
+#pragma mark - dsxslideview delegate
+- (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
+    if ([idType isEqualToString:@"goodsid"]) {
+        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
+        goodsView.goodsid = dataID;
+        [self.navigationController pushViewController:goodsView animated:YES];
+    }
+    
+    if ([idType isEqualToString:@"aid"]) {
+        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
+        newsView.newsID = dataID;
+        [self.navigationController pushViewController:newsView animated:YES];
+    }
+    
+    if ([idType isEqualToString:@"shopid"]) {
+        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+        shopView.shopid = dataID;
+        [self.navigationController pushViewController:shopView animated:YES];
+    }
+    
+    if ([idType isEqualToString:@"travelid"]) {
+        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
+        travelView.travelID = dataID;
+        [self.navigationController pushViewController:travelView animated:YES];
+    }
 }
 
 @end

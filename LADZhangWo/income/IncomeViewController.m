@@ -10,6 +10,11 @@
 #import "IncomeView.h"
 #import "ContactusViewController.h"
 #import "LoginViewController.h"
+#import "GoodsDetailViewController.h"
+#import "NewsDetailViewController.h"
+#import "WebViewController.h"
+#import "ShopDetailViewController.h"
+#import "TravelDetailViewController.h"
 
 @implementation IncomeViewController
 @synthesize afmanager = _afmanager;
@@ -60,27 +65,46 @@
     [self.scrollView addSubview:contactButton];
     
     //底部广告
-    DSXSliderView *slider = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, 150)];
-    [self.scrollView addSubview:slider];
-    
-    [_afmanager GET:[SITEAPI stringByAppendingString:@"&mod=travel&ac=showlist&pagesize=3"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            NSMutableArray *imageViews = [[NSMutableArray alloc] init];
-            for (NSDictionary *dict in array) {
-                UIImageView *imageView = [[UIImageView alloc] init];
-                [imageView sd_setImageWithURL:[dict objectForKey:@"pic"] placeholderImage:[UIImage imageNamed:@"placeholder600x300.png"]];
-                [imageView setContentMode:UIViewContentModeScaleAspectFill];
-                [imageViews addObject:imageView];
-            }
-            slider.imageViews = imageViews;
-        }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
-    }];
+    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, 150)];
+    _slideView.groupid = 8;
+    _slideView.num = 3;
+    _slideView.delegate = self;
+    [_slideView loaddata];
+    [self.scrollView addSubview:_slideView];
     
     self.scrollView.contentSize = CGSizeMake(0, 460);
     [self.view addSubview:self.scrollView];
+}
+
+- (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
+    if ([idType isEqualToString:@"goodsid"]) {
+        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
+        goodsView.goodsid = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
+        nav.style = ZWNavigationStyleGray;
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"aid"]) {
+        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
+        newsView.newsID = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"shopid"]) {
+        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+        shopView.shopid = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"travelid"]) {
+        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
+        travelView.travelID = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
 }
 
 - (void)showContactus{

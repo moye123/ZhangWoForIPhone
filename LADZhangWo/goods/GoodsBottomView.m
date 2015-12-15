@@ -31,7 +31,7 @@
         _buyButton.layer.cornerRadius = 15.0;
         _buyButton.layer.masksToBounds = YES;
         _buyButton.titleLabel.font = [UIFont systemFontOfSize:16.0];
-        [_buyButton setTitle:@"立即购买" forState:UIControlStateNormal];
+        [_buyButton setTitle:@"立即订购" forState:UIControlStateNormal];
         [_buyButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [_buyButton setBackgroundColor:[UIColor whiteColor]];
         [self addSubview:_buyButton];

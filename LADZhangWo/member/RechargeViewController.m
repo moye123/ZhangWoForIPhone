@@ -47,7 +47,6 @@
 
 - (void)submit{
     [_amountField resignFirstResponder];
-    [self payByType:@"01"];
 }
 
 #pragma mark --
@@ -108,7 +107,7 @@
 }
 
 #pragma mark - payment
-
+/*
 -(void)payByType:(NSString *)payChannelType{
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyyMMddHHmmss"];
@@ -183,5 +182,5 @@
             break;
     }
 }
-
+*/
 @end

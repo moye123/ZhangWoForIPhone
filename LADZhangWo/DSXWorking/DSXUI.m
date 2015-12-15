@@ -148,31 +148,43 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
 
 - (UIView *)showLoadingViewWithMessage:(NSString *)message{
     UIView *popView = [[UIView alloc] init];
-    UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    [popView addSubview:indicatorView];
-    [indicatorView startAnimating];
-    
-    UILabel *label = [[UILabel alloc] init];
-    label.text = message;
-    label.textAlignment = NSTextAlignmentCenter;
-    label.textColor = [UIColor whiteColor];
-    label.font = [UIFont systemFontOfSize:14.0];
-    [label sizeToFit];
-    [popView addSubview:label];
     popView.backgroundColor = [UIColor blackColor];
     popView.layer.cornerRadius = 5.0;
     popView.layer.masksToBounds = YES;
-    popView.frame = CGRectMake(0, 0, label.frame.size.width+30, label.frame.size.height+67);
-    popView.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2, [UIScreen mainScreen].bounds.size.height/2);
     
-    [indicatorView setFrame:CGRectMake((popView.frame.size.width-40)/2, 10, 40, 40)];
-    CGRect frame;
-    frame = label.frame;
-    frame.origin.x = 15;
-    frame.origin.y = 52;
-    [label setFrame:frame];
+    UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] init];
+    [popView addSubview:indicatorView];
+    
+    if (message == nil) {
+        [popView setFrame:CGRectMake(0, 0, 80, 80)];
+        [popView setCenter:CGPointMake([UIScreen mainScreen].bounds.size.width/2, [UIScreen mainScreen].bounds.size.height/2)];
+        [indicatorView setFrame:CGRectMake(15, 15, 50, 50)];
+        [indicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        //[indicatorView setCenter:popView.center];
+    }else {
+        UILabel *label = [[UILabel alloc] init];
+        label.text = message;
+        label.textAlignment = NSTextAlignmentCenter;
+        label.textColor = [UIColor whiteColor];
+        label.font = [UIFont systemFontOfSize:14.0];
+        [label sizeToFit];
+        [popView addSubview:label];
+        
+        popView.frame = CGRectMake(0, 0, label.frame.size.width+30, label.frame.size.height+67);
+        popView.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2, [UIScreen mainScreen].bounds.size.height/2);        
+        
+        CGRect frame;
+        frame = label.frame;
+        frame.origin.x = 15;
+        frame.origin.y = 52;
+        [label setFrame:frame];
+        [indicatorView setFrame:CGRectMake((popView.frame.size.width-40)/2, 10, 40, 40)];
+        [indicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhite];
+    }
+    
     UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
     [window addSubview:popView];
+    [indicatorView startAnimating];
     return popView;
 }
 
@@ -180,6 +192,15 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
     LoginViewController *loginController = [[LoginViewController alloc] init];
     ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:loginController];
     [controller presentViewController:nav animated:YES completion:nil];
+}
+
+- (UILabel *)tipsViewWithTitle:(NSString *)title{
+    UILabel *label = [[UILabel alloc] init];
+    label.text = title;
+    label.font = [UIFont systemFontOfSize:14.0];
+    label.textColor = [UIColor grayColor];
+    [label sizeToFit];
+    return label;
 }
 
 @end

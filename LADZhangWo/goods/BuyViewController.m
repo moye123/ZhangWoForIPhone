@@ -13,6 +13,7 @@
 @synthesize goodsid = _goodsid;
 @synthesize goodsdata = _goodsdata;
 @synthesize tableView = _tableView;
+@synthesize from = _from;
 
 - (instancetype)init{
     self = [super init];
@@ -27,12 +28,21 @@
     [self setTitle:@"购买"];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
-
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&datatype=json&id=%ld",(long)_goodsid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id dictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([dictionary isKindOfClass:[NSDictionary class]]) {
-            _goodsdata = dictionary;
+    
+    NSString *goodsurl;
+    UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:nil];
+    if ([_from isEqualToString:@"chaoshi"]) {
+        goodsurl = [SITEAPI stringByAppendingFormat:@"&mod=chaoshi&ac=showdetail&datatype=json&id=%ld",(long)_goodsid];
+    }else {
+        goodsurl = [SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&datatype=json&id=%ld",(long)_goodsid];
+    }
+    [_afmanager GET:goodsurl parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([returns isKindOfClass:[NSDictionary class]]) {
+            _goodsdata = returns;
+            _totalValue = [[_goodsdata objectForKey:@"price"] floatValue];
             [self showTableView];
+            [loadingView removeFromSuperview];
         }else {
             [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"数据加载失败"];
         }
@@ -43,8 +53,10 @@
 }
 
 - (void)showTableView{
-    if (!_goodsdata) {
-        _goodsdata = [NSDictionary dictionary];
+    if ([[_goodsdata objectForKey:@"id"] integerValue] != _goodsid) {
+        [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"商品数据异常"];
+        [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
+        return;
     }
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _tableView.delegate = self;
@@ -219,23 +231,22 @@
     }
     _numField.text = [NSString stringWithFormat:@"%ld", (long)buynum];
     _buyNum.text = [NSString stringWithFormat:@"x%ld", (long)buynum];
-    float total = [[_goodsdata objectForKey:@"price"] floatValue] * buynum;
-    _total.text = [NSString stringWithFormat:@"￥%.2f", total];
+    _totalValue = [[_goodsdata objectForKey:@"price"] floatValue] * buynum;
+    _total.text = [NSString stringWithFormat:@"￥%.2f", _totalValue];
     [_total sizeToFit];
 }
 
 - (void)submitOrder{
+    _from = _from == nil ? @"shop" : _from;
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
     [params setObject:[_goodsdata objectForKey:@"id"] forKey:@"goods_id"];
-    [params setObject:[_goodsdata objectForKey:@"price"] forKey:@"goods_price"];
     [params setObject:_numField.text forKey:@"buynum"];
+    [params setObject:_from forKey:@"goods_from"];
     
     UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"订单提交中.."];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager POST:[SITEAPI stringByAppendingString:@"&mod=order&ac=create"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=order&ac=create"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         [loadingView removeFromSuperview];
         id returns = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([returns isKindOfClass:[NSDictionary class]]) {
@@ -244,7 +255,7 @@
                 payView.orderid = [[returns objectForKey:@"orderid"] integerValue];
                 payView.orderno = [returns objectForKey:@"orderno"];
                 payView.orderTitle = [_goodsdata objectForKey:@"name"];
-                payView.total = [_numField.text floatValue];
+                payView.total = _totalValue;
                 [self.navigationController pushViewController:payView animated:YES];
             }
         }else {

@@ -47,6 +47,6 @@ UIKIT_EXTERN NSString *const DSXFontStyleBlack;
 - (void)showPopViewWithStyle:(DSXPopViewStyle)style Message:(NSString *)message;
 - (UIView *)showLoadingViewWithMessage:(NSString *)message;
 - (void)showLoginFromViewController:(UIViewController *)controller;
-
+- (UILabel *)tipsViewWithTitle:(NSString *)title;
 
 @end

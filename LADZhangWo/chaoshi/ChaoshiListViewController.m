@@ -55,7 +55,9 @@
 }
 
 - (void)back{
-    [self.navigationController popViewControllerAnimated:YES];
+    if (![self.navigationController popViewControllerAnimated:YES]) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)downloadData{

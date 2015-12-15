@@ -14,7 +14,7 @@
 #import "localView.h"
 #import "searchBar.h"
 #import "DistrictViewController.h"
-@interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,showCategoryDelegate,RecommendDelegate,LocationChangeDelegate>{
+@interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,showCategoryDelegate,RecommendDelegate,LocationChangeDelegate,DSXSliderViewDelegate>{
     @private
     DSXPopMenu *_popMenu;
     AFHTTPRequestOperationManager *_afmanager;

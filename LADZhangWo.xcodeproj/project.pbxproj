@@ -15,14 +15,9 @@
 		185CB2831C0FFDE0007B6F24 /* DSXSandboxHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 185CB2821C0FFDE0007B6F24 /* DSXSandboxHelper.m */; };
 		185CB2861C103A98007B6F24 /* AddAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185CB2851C103A98007B6F24 /* AddAddressViewController.m */; };
 		187097711C180B6A00C3CE6B /* RechargeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 187097701C180B6A00C3CE6B /* RechargeViewController.m */; };
-		187097861C182B2F00C3CE6B /* ipaynow.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 187097741C182B2F00C3CE6B /* ipaynow.bundle */; };
-		187097871C182B2F00C3CE6B /* libIpaynowPlugin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 187097781C182B2F00C3CE6B /* libIpaynowPlugin.a */; };
-		187097881C182B2F00C3CE6B /* libipaynowPlugin.d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 187097791C182B2F00C3CE6B /* libipaynowPlugin.d.a */; };
-		187097891C182B2F00C3CE6B /* 说明.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1870977A1C182B2F00C3CE6B /* 说明.rtf */; };
-		1870978A1C182B2F00C3CE6B /* libUPPayPlugin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1870977C1C182B2F00C3CE6B /* libUPPayPlugin.a */; };
-		1870978B1C182B2F00C3CE6B /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 187097801C182B2F00C3CE6B /* libWeChatSDK.a */; };
-		1870978C1C182B2F00C3CE6B /* AlipaySDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 187097841C182B2F00C3CE6B /* AlipaySDK.bundle */; };
-		1870978D1C182B2F00C3CE6B /* AlipaySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 187097851C182B2F00C3CE6B /* AlipaySDK.framework */; };
+		187257941C1E7DB100D8FF6F /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 187257931C1E7DB100D8FF6F /* WebViewController.m */; };
+		189FF13C1C1911FE0096CE50 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 189FF13B1C1911FE0096CE50 /* StoreKit.framework */; };
+		18BC836C1C1BB7000064AA30 /* ShopDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BC836B1C1BB7000064AA30 /* ShopDetailViewController.m */; };
 		18BF16181C0E7B7200126918 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF148B1C0E7B7200126918 /* AFHTTPRequestOperation.m */; };
 		18BF16191C0E7B7200126918 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF148D1C0E7B7200126918 /* AFHTTPRequestOperationManager.m */; };
 		18BF161A1C0E7B7200126918 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF148F1C0E7B7200126918 /* AFHTTPSessionManager.m */; };
@@ -291,21 +286,11 @@
 		185CB2851C103A98007B6F24 /* AddAddressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddAddressViewController.m; sourceTree = "<group>"; };
 		1870976F1C180B6A00C3CE6B /* RechargeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RechargeViewController.h; sourceTree = "<group>"; };
 		187097701C180B6A00C3CE6B /* RechargeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RechargeViewController.m; sourceTree = "<group>"; };
-		187097741C182B2F00C3CE6B /* ipaynow.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ipaynow.bundle; sourceTree = "<group>"; };
-		187097751C182B2F00C3CE6B /* IpaynowPluginApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IpaynowPluginApi.h; sourceTree = "<group>"; };
-		187097761C182B2F00C3CE6B /* IpaynowPluginDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IpaynowPluginDelegate.h; sourceTree = "<group>"; };
-		187097771C182B2F00C3CE6B /* IPNPreSignMessageUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPNPreSignMessageUtil.h; sourceTree = "<group>"; };
-		187097781C182B2F00C3CE6B /* libIpaynowPlugin.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libIpaynowPlugin.a; sourceTree = "<group>"; };
-		187097791C182B2F00C3CE6B /* libipaynowPlugin.d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libipaynowPlugin.d.a; sourceTree = "<group>"; };
-		1870977A1C182B2F00C3CE6B /* 说明.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = "说明.rtf"; sourceTree = "<group>"; };
-		1870977C1C182B2F00C3CE6B /* libUPPayPlugin.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUPPayPlugin.a; sourceTree = "<group>"; };
-		1870977D1C182B2F00C3CE6B /* UPPayPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPPayPlugin.h; sourceTree = "<group>"; };
-		1870977E1C182B2F00C3CE6B /* UPPayPluginDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPPayPluginDelegate.h; sourceTree = "<group>"; };
-		187097801C182B2F00C3CE6B /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
-		187097811C182B2F00C3CE6B /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
-		187097821C182B2F00C3CE6B /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApiObject.h; sourceTree = "<group>"; };
-		187097841C182B2F00C3CE6B /* AlipaySDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AlipaySDK.bundle; sourceTree = "<group>"; };
-		187097851C182B2F00C3CE6B /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AlipaySDK.framework; sourceTree = "<group>"; };
+		187257921C1E7DB100D8FF6F /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
+		187257931C1E7DB100D8FF6F /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
+		189FF13B1C1911FE0096CE50 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		18BC836A1C1BB7000064AA30 /* ShopDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopDetailViewController.h; sourceTree = "<group>"; };
+		18BC836B1C1BB7000064AA30 /* ShopDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShopDetailViewController.m; sourceTree = "<group>"; };
 		18BF148A1C0E7B7200126918 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		18BF148B1C0E7B7200126918 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		18BF148C1C0E7B7200126918 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -677,18 +662,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				189FF13C1C1911FE0096CE50 /* StoreKit.framework in Frameworks */,
 				18FC70691C0E81B0004283A6 /* MessageUI.framework in Frameworks */,
 				18FC70671C0E819D004283A6 /* libsqlite3.tbd in Frameworks */,
 				18FC70651C0E8196004283A6 /* AdSupport.framework in Frameworks */,
 				18FC70631C0E818E004283A6 /* ImageIO.framework in Frameworks */,
 				18FC70611C0E8170004283A6 /* CoreText.framework in Frameworks */,
-				1870978B1C182B2F00C3CE6B /* libWeChatSDK.a in Frameworks */,
 				18FC705F1C0E8168004283A6 /* libstdc++.tbd in Frameworks */,
 				18FC705D1C0E815F004283A6 /* JavaScriptCore.framework in Frameworks */,
 				18FC705B1C0E8157004283A6 /* Security.framework in Frameworks */,
 				18FC70591C0E814C004283A6 /* libz.1.2.5.tbd in Frameworks */,
 				18FC70571C0E8140004283A6 /* libicucore.tbd in Frameworks */,
-				187097881C182B2F00C3CE6B /* libipaynowPlugin.d.a in Frameworks */,
 				18FC70551C0E8136004283A6 /* CoreTelephony.framework in Frameworks */,
 				18FC70531C0E812C004283A6 /* QuartzCore.framework in Frameworks */,
 				18FC70511C0E811B004283A6 /* SystemConfiguration.framework in Frameworks */,
@@ -696,10 +680,8 @@
 				18BF16AE1C0E7B7200126918 /* ShareSDKShareActionSheet.framework in Frameworks */,
 				18BF169F1C0E7B7200126918 /* TencentWeiboConnection.framework in Frameworks */,
 				18BF169B1C0E7B7200126918 /* QQConnection.framework in Frameworks */,
-				1870978D1C182B2F00C3CE6B /* AlipaySDK.framework in Frameworks */,
 				18BF169A1C0E7B7200126918 /* MailConnection.framework in Frameworks */,
 				18BF16AA1C0E7B7200126918 /* libWeChatSDK.a in Frameworks */,
-				1870978A1C182B2F00C3CE6B /* libUPPayPlugin.a in Frameworks */,
 				18BF16A01C0E7B7200126918 /* WeChatConnection.framework in Frameworks */,
 				18BF16AD1C0E7B7200126918 /* ShareSDKFlatShareViewUI.framework in Frameworks */,
 				18BF169E1C0E7B7200126918 /* SMSConnection.framework in Frameworks */,
@@ -707,7 +689,6 @@
 				18BF16A81C0E7B7200126918 /* libWeiboSDK.a in Frameworks */,
 				18BF16AB1C0E7B7200126918 /* ShareSDK.framework in Frameworks */,
 				18BF16A31C0E7B7200126918 /* MOBFoundation.framework in Frameworks */,
-				187097871C182B2F00C3CE6B /* libIpaynowPlugin.a in Frameworks */,
 				18BF16A61C0E7B7200126918 /* TencentOpenAPI.framework in Frameworks */,
 				18BF169C1C0E7B7200126918 /* QZoneConnection.framework in Frameworks */,
 				18BF16A11C0E7B7200126918 /* AGCommon.framework in Frameworks */,
@@ -748,60 +729,6 @@
 			name = ui;
 			sourceTree = "<group>";
 		};
-		187097721C182AEC00C3CE6B /* payment */ = {
-			isa = PBXGroup;
-			children = (
-				187097731C182B2F00C3CE6B /* IpaynowPlugin */,
-				1870977B1C182B2F00C3CE6B /* UPPayPlugin */,
-				1870977F1C182B2F00C3CE6B /* WechatPlugin */,
-				187097831C182B2F00C3CE6B /* AliPayPlugin */,
-			);
-			path = payment;
-			sourceTree = "<group>";
-		};
-		187097731C182B2F00C3CE6B /* IpaynowPlugin */ = {
-			isa = PBXGroup;
-			children = (
-				187097741C182B2F00C3CE6B /* ipaynow.bundle */,
-				187097751C182B2F00C3CE6B /* IpaynowPluginApi.h */,
-				187097761C182B2F00C3CE6B /* IpaynowPluginDelegate.h */,
-				187097771C182B2F00C3CE6B /* IPNPreSignMessageUtil.h */,
-				187097781C182B2F00C3CE6B /* libIpaynowPlugin.a */,
-				187097791C182B2F00C3CE6B /* libipaynowPlugin.d.a */,
-				1870977A1C182B2F00C3CE6B /* 说明.rtf */,
-			);
-			path = IpaynowPlugin;
-			sourceTree = "<group>";
-		};
-		1870977B1C182B2F00C3CE6B /* UPPayPlugin */ = {
-			isa = PBXGroup;
-			children = (
-				1870977C1C182B2F00C3CE6B /* libUPPayPlugin.a */,
-				1870977D1C182B2F00C3CE6B /* UPPayPlugin.h */,
-				1870977E1C182B2F00C3CE6B /* UPPayPluginDelegate.h */,
-			);
-			path = UPPayPlugin;
-			sourceTree = "<group>";
-		};
-		1870977F1C182B2F00C3CE6B /* WechatPlugin */ = {
-			isa = PBXGroup;
-			children = (
-				187097801C182B2F00C3CE6B /* libWeChatSDK.a */,
-				187097811C182B2F00C3CE6B /* WXApi.h */,
-				187097821C182B2F00C3CE6B /* WXApiObject.h */,
-			);
-			path = WechatPlugin;
-			sourceTree = "<group>";
-		};
-		187097831C182B2F00C3CE6B /* AliPayPlugin */ = {
-			isa = PBXGroup;
-			children = (
-				187097841C182B2F00C3CE6B /* AlipaySDK.bundle */,
-				187097851C182B2F00C3CE6B /* AlipaySDK.framework */,
-			);
-			path = AliPayPlugin;
-			sourceTree = "<group>";
-		};
 		189A9EF91C155D50007C7A29 /* view */ = {
 			isa = PBXGroup;
 			children = (
@@ -827,7 +754,6 @@
 		18BF14881C0E7B7200126918 /* LADZhangWo */ = {
 			isa = PBXGroup;
 			children = (
-				187097721C182AEC00C3CE6B /* payment */,
 				180CC3BD1C16B88900F70B33 /* service */,
 				18BF14C71C0E7B7200126918 /* DSXWorking */,
 				18FC704F1C0E8071004283A6 /* Frameworks */,
@@ -907,6 +833,8 @@
 				18BF14C21C0E7B7200126918 /* MarkMapViewController.m */,
 				18BF14C31C0E7B7200126918 /* MyAnnotation.h */,
 				18BF14C41C0E7B7200126918 /* MyAnnotation.m */,
+				187257921C1E7DB100D8FF6F /* WebViewController.h */,
+				187257931C1E7DB100D8FF6F /* WebViewController.m */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -956,6 +884,8 @@
 				18BF14E51C0E7B7200126918 /* GoodsViewController.m */,
 				18BF14EC1C0E7B7200126918 /* PayViewController.h */,
 				18BF14ED1C0E7B7200126918 /* PayViewController.m */,
+				18BC836A1C1BB7000064AA30 /* ShopDetailViewController.h */,
+				18BC836B1C1BB7000064AA30 /* ShopDetailViewController.m */,
 			);
 			path = goods;
 			sourceTree = "<group>";
@@ -1244,6 +1174,7 @@
 				18FC705A1C0E8157004283A6 /* Security.framework */,
 				18FC70581C0E814C004283A6 /* libz.1.2.5.tbd */,
 				18FC70561C0E8140004283A6 /* libicucore.tbd */,
+				189FF13B1C1911FE0096CE50 /* StoreKit.framework */,
 				18FC70541C0E8136004283A6 /* CoreTelephony.framework */,
 				18FC70521C0E812C004283A6 /* QuartzCore.framework */,
 				18FC70501C0E811B004283A6 /* SystemConfiguration.framework */,
@@ -1527,7 +1458,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				187097891C182B2F00C3CE6B /* 说明.rtf in Resources */,
 				18BF16C61C0E7B7200126918 /* icon-back@2x.png in Resources */,
 				18BF16F61C0E7B7200126918 /* icon-more@2x.png in Resources */,
 				18BF16D91C0E7B7200126918 /* icon-error@3x.png in Resources */,
@@ -1568,7 +1498,6 @@
 				18BF16811C0E7B7200126918 /* seccodebutton.png in Resources */,
 				18BF16D71C0E7B7200126918 /* icon-error.png in Resources */,
 				18BF16A91C0E7B7200126918 /* WeiboSDK.bundle in Resources */,
-				1870978C1C182B2F00C3CE6B /* AlipaySDK.bundle in Resources */,
 				18BF16FD1C0E7B7200126918 /* icon-myfill@3x.png in Resources */,
 				18BF16E71C0E7B7200126918 /* icon-incomefill@2x.png in Resources */,
 				18BF166A1C0E7B7200126918 /* icon-wating-pay.png in Resources */,
@@ -1597,7 +1526,6 @@
 				18BF16FB1C0E7B7200126918 /* icon-myfill.png in Resources */,
 				18BF16491C0E7B7200126918 /* icon-edit-cart.png in Resources */,
 				18BF17041C0E7B7200126918 /* icon-star-orange@3x.png in Resources */,
-				187097861C182B2F00C3CE6B /* ipaynow.bundle in Resources */,
 				18BF16CC1C0E7B7200126918 /* icon-cartfill.png in Resources */,
 				18BF16C21C0E7B7200126918 /* icon-back-white.png in Resources */,
 				18BF16221C0E7B7200126918 /* Assets.xcassets in Resources */,
@@ -1679,6 +1607,7 @@
 				18BF168C1C0E7B7200126918 /* SDImageCache.m in Sources */,
 				18BF16391C0E7B7200126918 /* DSXValidate.m in Sources */,
 				18BF16B21C0E7B7200126918 /* TravelDetailViewController.m in Sources */,
+				187257941C1E7DB100D8FF6F /* WebViewController.m in Sources */,
 				18BF16781C0E7B7200126918 /* MyMessageViewController.m in Sources */,
 				18BF16451C0E7B7200126918 /* GoodsDetailViewController.m in Sources */,
 				18BF16331C0E7B7200126918 /* ZWUserStatus.m in Sources */,
@@ -1721,6 +1650,7 @@
 				18BF16941C0E7B7200126918 /* UIImage+GIF.m in Sources */,
 				18BF16861C0E7B7200126918 /* NewsDetailViewController.m in Sources */,
 				18BF161E1C0E7B7200126918 /* AFURLRequestSerialization.m in Sources */,
+				18BC836C1C1BB7000064AA30 /* ShopDetailViewController.m in Sources */,
 				18BF165C1C0E7B7200126918 /* IncomeViewController.m in Sources */,
 				18FC70901C0E8834004283A6 /* DSXUtil.m in Sources */,
 				18BF16461C0E7B7200126918 /* GoodsListViewController.m in Sources */,

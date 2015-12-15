@@ -8,11 +8,19 @@
 
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
+#import "GoodsBottomView.h"
+#import "AddToCartView.h"
 
-@interface ChaoshiDetailViewController : UIViewController<UIWebViewDelegate>
+@interface ChaoshiDetailViewController : UIViewController<UIWebViewDelegate,UIScrollViewDelegate>{
+    @private
+    UIView *_loadingView;
+    AFHTTPRequestOperationManager *_afmanager;
+    GoodsBottomView *_bottomView;
+    AddToCartView *_addCartView;
+}
 
 @property(nonatomic,assign)NSInteger goodsid;
-@property(nonatomic,strong)NSDictionary *goodsdata;
-@property(nonatomic,retain)UIWebView *contentWebView;
+@property(nonatomic,strong)NSDictionary *goodsData;
+@property(nonatomic,retain)UIWebView *webView;
 
 @end
