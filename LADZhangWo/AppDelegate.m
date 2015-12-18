@@ -14,9 +14,12 @@
 #import "LoginViewController.h"
 
 @implementation AppDelegate
+@synthesize scrollView = _scrollView;
+@synthesize pageControl = _pageControl;
+@synthesize hideButton = _hideButton;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [NSThread sleepForTimeInterval:3];
+    [NSThread sleepForTimeInterval:1];
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
@@ -25,6 +28,47 @@
     tabBarController.delegate = self;
     self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
+    
+    //启动动画
+    _scrollView = [[UIScrollView alloc] initWithFrame:self.window.frame];
+    _scrollView.contentSize = CGSizeMake(self.window.frame.size.width*3, 0);
+    _scrollView.pagingEnabled = YES;
+    _scrollView.showsHorizontalScrollIndicator = NO;
+    _scrollView.showsVerticalScrollIndicator = NO;
+    _scrollView.delegate = self;
+    _scrollView.bounces = NO;
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideAd)];
+    doubleTap.numberOfTapsRequired = 2;
+    [_scrollView addGestureRecognizer:doubleTap];
+    [_scrollView setUserInteractionEnabled:YES];
+    for (int i=0; i<3; i++) {
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.window.frame.size.width*i, 0, self.window.frame.size.width, self.window.frame.size.height)];
+        [imageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"launch_%d.png",i]]];
+        [imageView setContentMode:UIViewContentModeScaleToFill];
+        [_scrollView addSubview:imageView];
+        UITapGestureRecognizer *adTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(ADImageTap:)];
+        [imageView addGestureRecognizer:adTap];
+        [imageView setUserInteractionEnabled:YES];
+        if (i == 2) {
+            _hideButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 120, 40)];
+            _hideButton.layer.cornerRadius = 5.0;
+            _hideButton.layer.masksToBounds = YES;
+            _hideButton.layer.borderColor = [UIColor whiteColor].CGColor;
+            _hideButton.layer.borderWidth = 0.8;
+            _hideButton.backgroundColor = [UIColor clearColor];
+            _hideButton.center = CGPointMake(self.window.center.x, SHEIGHT-120);
+            [_hideButton setTitle:@"立即体验" forState:UIControlStateNormal];
+            [_hideButton addTarget:self action:@selector(hideAd) forControlEvents:UIControlEventTouchDown];
+            [imageView addSubview:_hideButton];
+        }
+    }
+    [tabBarController.view addSubview:_scrollView];
+    
+    _pageControl = [[UIPageControl alloc] init];
+    _pageControl.numberOfPages = 3;
+    _pageControl.center = CGPointMake(self.window.center.x, SHEIGHT-50);
+    [tabBarController.view addSubview:_pageControl];
+    //[NSTimer scheduledTimerWithTimeInterval:6 target:self selector:@selector(hideAd) userInfo:nil repeats:NO];
 
     ZWNavigationController *navHome,*navIncome,*navCart,*navMy;
     HomeViewController *homeView = [[HomeViewController alloc] init];
@@ -73,6 +117,20 @@
     UITabBarItem *tabBarItem = [[UITabBarItem alloc] initWithTitle:title image:image selectedImage:selectedImage];
     [tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:0 green:0.36 blue:0.16 alpha:1]} forState:UIControlStateSelected];
     return tabBarItem;
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    NSInteger index = scrollView.contentOffset.x/SWIDTH;
+    [_pageControl setCurrentPage:index];
+}
+
+- (void)hideAd{
+    [_scrollView removeFromSuperview];
+    [_pageControl removeFromSuperview];
+}
+
+- (void)ADImageTap:(UITapGestureRecognizer *)tap{
+    
 }
 
 #pragma mark - tabbarcontroller delegate

@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		180CC3BC1C166D0400F70B33 /* ChaoshiIndexViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CC3BB1C166D0400F70B33 /* ChaoshiIndexViewController.m */; };
 		180CC3C01C16B8B800F70B33 /* ServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CC3BF1C16B8B800F70B33 /* ServiceViewController.m */; };
+		181971DA1C224BD50037293A /* CartInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 181971D91C224BD50037293A /* CartInfoModel.m */; };
+		181971DD1C224DB40037293A /* CartCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 181971DC1C224DB40037293A /* CartCustomCell.m */; };
+		181971E11C22BF590037293A /* launch_0.png in Resources */ = {isa = PBXBuildFile; fileRef = 181971DE1C22BF590037293A /* launch_0.png */; };
+		181971E21C22BF590037293A /* launch_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 181971DF1C22BF590037293A /* launch_1.png */; };
+		181971E31C22BF590037293A /* launch_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 181971E01C22BF590037293A /* launch_2.png */; };
 		185CB27D1C0EF60B007B6F24 /* button-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 185CB27A1C0EF60B007B6F24 /* button-bg.png */; };
 		185CB27E1C0EF60B007B6F24 /* button-bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 185CB27B1C0EF60B007B6F24 /* button-bg@2x.png */; };
 		185CB27F1C0EF60B007B6F24 /* button-bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 185CB27C1C0EF60B007B6F24 /* button-bg@3x.png */; };
@@ -16,6 +21,12 @@
 		185CB2861C103A98007B6F24 /* AddAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 185CB2851C103A98007B6F24 /* AddAddressViewController.m */; };
 		187097711C180B6A00C3CE6B /* RechargeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 187097701C180B6A00C3CE6B /* RechargeViewController.m */; };
 		187257941C1E7DB100D8FF6F /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 187257931C1E7DB100D8FF6F /* WebViewController.m */; };
+		189233F71C2153BD002C9AFA /* icon-round.png in Resources */ = {isa = PBXBuildFile; fileRef = 189233F51C2153BD002C9AFA /* icon-round.png */; };
+		189233F81C2153BD002C9AFA /* icon-roundcheckfill.png in Resources */ = {isa = PBXBuildFile; fileRef = 189233F61C2153BD002C9AFA /* icon-roundcheckfill.png */; };
+		189234001C215C30002C9AFA /* icon-round@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 189233FC1C215C30002C9AFA /* icon-round@2x.png */; };
+		189234011C215C30002C9AFA /* icon-round@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 189233FD1C215C30002C9AFA /* icon-round@3x.png */; };
+		189234021C215C30002C9AFA /* icon-roundcheckfill@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 189233FE1C215C30002C9AFA /* icon-roundcheckfill@2x.png */; };
+		189234031C215C30002C9AFA /* icon-roundcheckfill@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 189233FF1C215C30002C9AFA /* icon-roundcheckfill@3x.png */; };
 		189FF13C1C1911FE0096CE50 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 189FF13B1C1911FE0096CE50 /* StoreKit.framework */; };
 		18BC836C1C1BB7000064AA30 /* ShopDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BC836B1C1BB7000064AA30 /* ShopDetailViewController.m */; };
 		18BF16181C0E7B7200126918 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF148B1C0E7B7200126918 /* AFHTTPRequestOperation.m */; };
@@ -143,7 +154,6 @@
 		18BF16AC1C0E7B7200126918 /* ShareSDKFlatShareViewUI.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 18BF15A11C0E7B7200126918 /* ShareSDKFlatShareViewUI.bundle */; };
 		18BF16AD1C0E7B7200126918 /* ShareSDKFlatShareViewUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18BF15A21C0E7B7200126918 /* ShareSDKFlatShareViewUI.framework */; };
 		18BF16AE1C0E7B7200126918 /* ShareSDKShareActionSheet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18BF15A31C0E7B7200126918 /* ShareSDKShareActionSheet.framework */; };
-		18BF16AF1C0E7B7200126918 /* ShoppingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF15A61C0E7B7200126918 /* ShoppingViewController.m */; };
 		18BF16B01C0E7B7200126918 /* icon-location.png in Resources */ = {isa = PBXBuildFile; fileRef = 18BF15A81C0E7B7200126918 /* icon-location.png */; };
 		18BF16B11C0E7B7200126918 /* RefreshHeadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF15AA1C0E7B7200126918 /* RefreshHeadView.m */; };
 		18BF16B21C0E7B7200126918 /* TravelDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF15AC1C0E7B7200126918 /* TravelDetailViewController.m */; };
@@ -275,6 +285,13 @@
 		180CC3BB1C166D0400F70B33 /* ChaoshiIndexViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaoshiIndexViewController.m; sourceTree = "<group>"; };
 		180CC3BE1C16B8B800F70B33 /* ServiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceViewController.h; sourceTree = "<group>"; };
 		180CC3BF1C16B8B800F70B33 /* ServiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceViewController.m; sourceTree = "<group>"; };
+		181971D81C224BD50037293A /* CartInfoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CartInfoModel.h; sourceTree = "<group>"; };
+		181971D91C224BD50037293A /* CartInfoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CartInfoModel.m; sourceTree = "<group>"; };
+		181971DB1C224DB40037293A /* CartCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CartCustomCell.h; sourceTree = "<group>"; };
+		181971DC1C224DB40037293A /* CartCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CartCustomCell.m; sourceTree = "<group>"; };
+		181971DE1C22BF590037293A /* launch_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch_0.png; sourceTree = "<group>"; };
+		181971DF1C22BF590037293A /* launch_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch_1.png; sourceTree = "<group>"; };
+		181971E01C22BF590037293A /* launch_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch_2.png; sourceTree = "<group>"; };
 		185CB2771C0EE7D7007B6F24 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		185CB2791C0EEB6E007B6F24 /* LADZhangWo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LADZhangWo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		185CB27A1C0EF60B007B6F24 /* button-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-bg.png"; sourceTree = "<group>"; };
@@ -288,6 +305,12 @@
 		187097701C180B6A00C3CE6B /* RechargeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RechargeViewController.m; sourceTree = "<group>"; };
 		187257921C1E7DB100D8FF6F /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
 		187257931C1E7DB100D8FF6F /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
+		189233F51C2153BD002C9AFA /* icon-round.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-round.png"; sourceTree = "<group>"; };
+		189233F61C2153BD002C9AFA /* icon-roundcheckfill.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-roundcheckfill.png"; sourceTree = "<group>"; };
+		189233FC1C215C30002C9AFA /* icon-round@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-round@2x.png"; sourceTree = "<group>"; };
+		189233FD1C215C30002C9AFA /* icon-round@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-round@3x.png"; sourceTree = "<group>"; };
+		189233FE1C215C30002C9AFA /* icon-roundcheckfill@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-roundcheckfill@2x.png"; sourceTree = "<group>"; };
+		189233FF1C215C30002C9AFA /* icon-roundcheckfill@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-roundcheckfill@3x.png"; sourceTree = "<group>"; };
 		189FF13B1C1911FE0096CE50 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		18BC836A1C1BB7000064AA30 /* ShopDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopDetailViewController.h; sourceTree = "<group>"; };
 		18BC836B1C1BB7000064AA30 /* ShopDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShopDetailViewController.m; sourceTree = "<group>"; };
@@ -518,8 +541,6 @@
 		18BF15A11C0E7B7200126918 /* ShareSDKFlatShareViewUI.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ShareSDKFlatShareViewUI.bundle; sourceTree = "<group>"; };
 		18BF15A21C0E7B7200126918 /* ShareSDKFlatShareViewUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ShareSDKFlatShareViewUI.framework; sourceTree = "<group>"; };
 		18BF15A31C0E7B7200126918 /* ShareSDKShareActionSheet.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ShareSDKShareActionSheet.framework; sourceTree = "<group>"; };
-		18BF15A51C0E7B7200126918 /* ShoppingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShoppingViewController.h; sourceTree = "<group>"; };
-		18BF15A61C0E7B7200126918 /* ShoppingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShoppingViewController.m; sourceTree = "<group>"; };
 		18BF15A81C0E7B7200126918 /* icon-location.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-location.png"; sourceTree = "<group>"; };
 		18BF15A91C0E7B7200126918 /* RefreshHeadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefreshHeadView.h; sourceTree = "<group>"; };
 		18BF15AA1C0E7B7200126918 /* RefreshHeadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RefreshHeadView.m; sourceTree = "<group>"; };
@@ -715,6 +736,17 @@
 			path = service;
 			sourceTree = "<group>";
 		};
+		181971D71C224BB50037293A /* cart */ = {
+			isa = PBXGroup;
+			children = (
+				181971D81C224BD50037293A /* CartInfoModel.h */,
+				181971D91C224BD50037293A /* CartInfoModel.m */,
+				181971DB1C224DB40037293A /* CartCustomCell.h */,
+				181971DC1C224DB40037293A /* CartCustomCell.m */,
+			);
+			name = cart;
+			sourceTree = "<group>";
+		};
 		185CB2801C0FD518007B6F24 /* ui */ = {
 			isa = PBXGroup;
 			children = (
@@ -767,7 +799,6 @@
 				18BF15131C0E7B7200126918 /* main.m */,
 				18BF15141C0E7B7200126918 /* member */,
 				18BF154B1C0E7B7200126918 /* news */,
-				18BF15A41C0E7B7200126918 /* shopping */,
 				18BF15A71C0E7B7200126918 /* travel */,
 				18BF15B11C0E7B7200126918 /* ui */,
 				18FC706C1C0E83D1004283A6 /* support files */,
@@ -870,6 +901,7 @@
 		18BF14D81C0E7B7200126918 /* goods */ = {
 			isa = PBXGroup;
 			children = (
+				181971D71C224BB50037293A /* cart */,
 				18F595BE1C12B10300A34429 /* view */,
 				185CB2801C0FD518007B6F24 /* ui */,
 				18BF14DC1C0E7B7200126918 /* BuyViewController.h */,
@@ -1089,15 +1121,6 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
-		18BF15A41C0E7B7200126918 /* shopping */ = {
-			isa = PBXGroup;
-			children = (
-				18BF15A51C0E7B7200126918 /* ShoppingViewController.h */,
-				18BF15A61C0E7B7200126918 /* ShoppingViewController.m */,
-			);
-			path = shopping;
-			sourceTree = "<group>";
-		};
 		18BF15A71C0E7B7200126918 /* travel */ = {
 			isa = PBXGroup;
 			children = (
@@ -1117,6 +1140,9 @@
 		18BF15B11C0E7B7200126918 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				181971DE1C22BF590037293A /* launch_0.png */,
+				181971DF1C22BF590037293A /* launch_1.png */,
+				181971E01C22BF590037293A /* launch_2.png */,
 				18FC707F1C0E86BC004283A6 /* navbar */,
 				18FC707E1C0E866F004283A6 /* tabbar */,
 				18FC70711C0E8665004283A6 /* font */,
@@ -1195,6 +1221,12 @@
 		18FC706F1C0E85BD004283A6 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				189233F51C2153BD002C9AFA /* icon-round.png */,
+				189233FC1C215C30002C9AFA /* icon-round@2x.png */,
+				189233FD1C215C30002C9AFA /* icon-round@3x.png */,
+				189233F61C2153BD002C9AFA /* icon-roundcheckfill.png */,
+				189233FE1C215C30002C9AFA /* icon-roundcheckfill@2x.png */,
+				189233FF1C215C30002C9AFA /* icon-roundcheckfill@3x.png */,
 				18BF15B21C0E7B7200126918 /* avatar.png */,
 				18BF15B31C0E7B7200126918 /* bg.png */,
 				18BF15FB1C0E7B7200126918 /* icon-recharge.png */,
@@ -1470,6 +1502,7 @@
 				18EFFAD21C11265C00D422A7 /* button-selected.png in Resources */,
 				18BF16CB1C0E7B7200126918 /* icon-cart@3x.png in Resources */,
 				18BF17121C0E7B7200126918 /* pop-bg.png in Resources */,
+				189233F71C2153BD002C9AFA /* icon-round.png in Resources */,
 				18BF170C1C0E7B7200126918 /* navbg-green@3x.png in Resources */,
 				18BF16DF1C0E7B7200126918 /* icon-home@3x.png in Resources */,
 				18BF166C1C0E7B7200126918 /* icon-wating-return.png in Resources */,
@@ -1482,12 +1515,15 @@
 				18BF16FA1C0E7B7200126918 /* icon-my@3x.png in Resources */,
 				18BF16AC1C0E7B7200126918 /* ShareSDKFlatShareViewUI.bundle in Resources */,
 				18BF16D61C0E7B7200126918 /* icon-done@3x.png in Resources */,
+				189234011C215C30002C9AFA /* icon-round@3x.png in Resources */,
 				18BF16ED1C0E7B7200126918 /* icon-invite@2x.png in Resources */,
 				18BF16541C0E7B7200126918 /* icon-search.png in Resources */,
 				18BF16D21C0E7B7200126918 /* icon-comments.png in Resources */,
 				18BF16E11C0E7B7200126918 /* icon-homefill@2x.png in Resources */,
 				18BF16C71C0E7B7200126918 /* icon-back@3x.png in Resources */,
 				18BF17021C0E7B7200126918 /* icon-star-orange.png in Resources */,
+				189234021C215C30002C9AFA /* icon-roundcheckfill@2x.png in Resources */,
+				189233F81C2153BD002C9AFA /* icon-roundcheckfill.png in Resources */,
 				185CB27D1C0EF60B007B6F24 /* button-bg.png in Resources */,
 				18BF17011C0E7B7200126918 /* icon-star-gray@3x.png in Resources */,
 				18BF16E01C0E7B7200126918 /* icon-homefill.png in Resources */,
@@ -1496,6 +1532,7 @@
 				18BF16CF1C0E7B7200126918 /* icon-close.png in Resources */,
 				18BF16D31C0E7B7200126918 /* icon-contact.png in Resources */,
 				18BF16811C0E7B7200126918 /* seccodebutton.png in Resources */,
+				181971E21C22BF590037293A /* launch_1.png in Resources */,
 				18BF16D71C0E7B7200126918 /* icon-error.png in Resources */,
 				18BF16A91C0E7B7200126918 /* WeiboSDK.bundle in Resources */,
 				18BF16FD1C0E7B7200126918 /* icon-myfill@3x.png in Resources */,
@@ -1507,6 +1544,7 @@
 				18BF16CA1C0E7B7200126918 /* icon-cart@2x.png in Resources */,
 				18BF164C1C0E7B7200126918 /* icon-unionpay.png in Resources */,
 				18BF16F21C0E7B7200126918 /* icon-more-white.png in Resources */,
+				189234001C215C30002C9AFA /* icon-round@2x.png in Resources */,
 				18BF16691C0E7B7200126918 /* icon-wating-comment.png in Resources */,
 				18BF17131C0E7B7200126918 /* pop-favor.png in Resources */,
 				18BF16481C0E7B7200126918 /* icon-alipay.png in Resources */,
@@ -1531,8 +1569,10 @@
 				18BF16221C0E7B7200126918 /* Assets.xcassets in Resources */,
 				18FC707A1C0E8665004283A6 /* demilight.ttf in Resources */,
 				18BF16F01C0E7B7200126918 /* icon-invitefill@2x.png in Resources */,
+				181971E11C22BF590037293A /* launch_0.png in Resources */,
 				18BF16FE1C0E7B7200126918 /* icon-recharge.png in Resources */,
 				18BF16EE1C0E7B7200126918 /* icon-invite@3x.png in Resources */,
+				181971E31C22BF590037293A /* launch_2.png in Resources */,
 				18BF16E61C0E7B7200126918 /* icon-incomefill.png in Resources */,
 				18BF16DB1C0E7B7200126918 /* icon-favorite@2x.png in Resources */,
 				18BF16B01C0E7B7200126918 /* icon-location.png in Resources */,
@@ -1582,6 +1622,7 @@
 				18BF16B61C0E7B7200126918 /* bg.png in Resources */,
 				18BF16DC1C0E7B7200126918 /* icon-favorite@3x.png in Resources */,
 				18BF16A41C0E7B7200126918 /* Resource.bundle in Resources */,
+				189234031C215C30002C9AFA /* icon-roundcheckfill@3x.png in Resources */,
 				18BF16C91C0E7B7200126918 /* icon-cart.png in Resources */,
 				18F595C01C12B12D00A34429 /* button-addcart.png in Resources */,
 				18BF16E21C0E7B7200126918 /* icon-homefill@3x.png in Resources */,
@@ -1641,7 +1682,6 @@
 				18BF16831C0E7B7200126918 /* SettingViewController.m in Sources */,
 				18BF168E1C0E7B7200126918 /* SDWebImageDecoder.m in Sources */,
 				18BF16321C0E7B7200126918 /* ZWRefreshControl.m in Sources */,
-				18BF16AF1C0E7B7200126918 /* ShoppingViewController.m in Sources */,
 				18BF16881C0E7B7200126918 /* NewsViewController.m in Sources */,
 				18BF161D1C0E7B7200126918 /* AFURLConnectionOperation.m in Sources */,
 				18BF16381C0E7B7200126918 /* DSXPopMenu.m in Sources */,
@@ -1669,6 +1709,7 @@
 				18BF16771C0E7B7200126918 /* MyIncomeViewController.m in Sources */,
 				18FC708D1C0E8834004283A6 /* DSXStarView.m in Sources */,
 				18BF16581C0E7B7200126918 /* searchBar.m in Sources */,
+				181971DD1C224DB40037293A /* CartCustomCell.m in Sources */,
 				18BF16251C0E7B7200126918 /* ChaoshiCatViewController.m in Sources */,
 				185CB2831C0FFDE0007B6F24 /* DSXSandboxHelper.m in Sources */,
 				18BF16801C0E7B7200126918 /* SafeViewController.m in Sources */,
@@ -1693,6 +1734,7 @@
 				18BF16351C0E7B7200126918 /* MyAnnotation.m in Sources */,
 				18BF168F1C0E7B7200126918 /* SDWebImageDownloader.m in Sources */,
 				18BF16181C0E7B7200126918 /* AFHTTPRequestOperation.m in Sources */,
+				181971DA1C224BD50037293A /* CartInfoModel.m in Sources */,
 				18BF16931C0E7B7200126918 /* UIButton+WebCache.m in Sources */,
 				18BF16611C0E7B7200126918 /* main.m in Sources */,
 				18BF16301C0E7B7200126918 /* ZWNavigationController.m in Sources */,

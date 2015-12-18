@@ -31,7 +31,7 @@
 
 - (void)back{
     if (![self.navigationController popViewControllerAnimated:YES]) {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }
 }
 

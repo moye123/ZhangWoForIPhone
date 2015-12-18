@@ -45,7 +45,7 @@
     if (self.fid > 0) {
         [self.navigationController popToRootViewControllerAnimated:YES];
     }else{
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }
     
 }
