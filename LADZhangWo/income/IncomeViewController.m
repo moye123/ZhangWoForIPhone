@@ -15,6 +15,7 @@
 #import "WebViewController.h"
 #import "ShopDetailViewController.h"
 #import "TravelDetailViewController.h"
+#import "RechargeViewController.h"
 
 @implementation IncomeViewController
 @synthesize afmanager = _afmanager;
@@ -45,13 +46,14 @@
         NSLog(@"%@",error);
     }];
     
-    //邀请按钮
+    //充值按钮
     UIButton *rechargeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [rechargeButton setFrame:CGRectMake(20, 217, 80, 80)];
     [rechargeButton setBackgroundImage:[UIImage imageNamed:@"icon-recharge.png"] forState:UIControlStateNormal];
+    [rechargeButton addTarget:self action:@selector(showRecharge) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollView addSubview:rechargeButton];
     
-    //充值按钮
+    //提现按钮
     UIButton *withdrawalButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [withdrawalButton setFrame:CGRectMake((SWIDTH-80)/2, 217, 80, 80)];
     [withdrawalButton setBackgroundImage:[UIImage imageNamed:@"icon-withdrawal.png"] forState:UIControlStateNormal];
@@ -76,40 +78,53 @@
     [self.view addSubview:self.scrollView];
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+    ZWNavigationController *nav = (ZWNavigationController *)self.navigationController;
+    [nav setStyle:ZWNavigationStyleDefault];
+    [super viewWillAppear:animated];
+}
+
 - (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
     if ([idType isEqualToString:@"goodsid"]) {
         GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
         goodsView.goodsid = dataID;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
         nav.style = ZWNavigationStyleGray;
-        [self presentViewController:nav animated:YES completion:nil];
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
     
     if ([idType isEqualToString:@"aid"]) {
         NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
         newsView.newsID = dataID;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
-        [self presentViewController:nav animated:YES completion:nil];
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
     
     if ([idType isEqualToString:@"shopid"]) {
         ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
         shopView.shopid = dataID;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
-        [self presentViewController:nav animated:YES completion:nil];
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
     
     if ([idType isEqualToString:@"travelid"]) {
         TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
         travelView.travelID = dataID;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
-        [self presentViewController:nav animated:YES completion:nil];
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
 }
 
 - (void)showContactus{
     ContactusViewController *contactController = [[ContactusViewController alloc] init];
     [self.navigationController pushViewController:contactController animated:YES];
+}
+
+- (void)showRecharge{
+    RechargeViewController *rechargeView = [[RechargeViewController alloc] init];
+    ZWNavigationController *nav = (ZWNavigationController *)self.navigationController;
+    [nav setStyle:ZWNavigationStyleGray];
+    [self.navigationController pushViewController:rechargeView animated:YES];
 }
 
 @end

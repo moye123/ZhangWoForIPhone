@@ -11,7 +11,7 @@
 
 @interface PayViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
+
 }
 
 @property(nonatomic,assign)NSInteger orderid;

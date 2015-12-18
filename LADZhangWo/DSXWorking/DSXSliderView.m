@@ -60,7 +60,7 @@
             }
             _scrollView.contentSize = CGSizeMake(self.frame.size.width*[_slideData count], 0);
             _pageControl.numberOfPages = [_slideData count];
-            
+            [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(autoPlay) userInfo:nil repeats:YES];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@", error);
@@ -79,6 +79,16 @@
 - (void)pageControlClick:(UIPageControl *)sender{
     CGFloat x = sender.currentPage * self.frame.size.width;
     [self.scrollView setContentOffset:CGPointMake(x, 0) animated:YES];
+}
+
+- (void)autoPlay{
+    NSInteger index = _pageControl.currentPage;
+    index++;
+    if (index >= _pageControl.numberOfPages) {
+        index = 0;
+    }
+    _pageControl.currentPage = index;
+    [_scrollView setContentOffset:CGPointMake(self.frame.size.width*index, 0) animated:YES];
 }
 
 #pragma mark - scrollView delegate

@@ -132,10 +132,12 @@
     self.navigationController.toolbarHidden = NO;
     ZWNavigationController *nav = (ZWNavigationController *)self.navigationController;
     [nav setStyle:ZWNavigationStyleDefault];
+    [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     self.navigationController.toolbarHidden = YES;
+    [super viewWillDisappear:animated];
 }
 
 - (void)refresh{
@@ -293,6 +295,7 @@
             if ([returns isKindOfClass:[NSDictionary class]]) {
                 if ([[returns objectForKey:@"affects"] integerValue] > 0) {
                     [_cartList removeObjectAtIndex:indexPath.section];
+                    [_goodsModelArray removeObjectAtIndex:indexPath.section];
                     [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationFade];
                 }
             }

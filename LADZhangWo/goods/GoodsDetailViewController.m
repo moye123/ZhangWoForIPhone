@@ -46,11 +46,16 @@
     [manager GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([returns isKindOfClass:[NSDictionary class]]) {
-            _goodsdata = returns;
-            _webView.hidden = NO;
+            if ([[returns objectForKey:@"id"] integerValue] == self.goodsid) {
+                _goodsdata = returns;
+                _webView.hidden = NO;
+            }else {
+                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"商品不存在或已下架"];
+                [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
+            }
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        
+        NSLog(@"%@", error);
     }];
 }
 
