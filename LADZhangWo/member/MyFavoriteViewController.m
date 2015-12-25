@@ -7,11 +7,15 @@
 //
 
 #import "MyFavoriteViewController.h"
+#import "NewsDetailViewController.h"
+#import "TravelDetailViewController.h"
+#import "GoodsDetailViewController.h"
+#import "ShopDetailViewController.h"
+#import "ChaoshiViewController.h"
+#import "ChaoshiDetailViewController.h"
 
 @implementation MyFavoriteViewController
 @synthesize favoriteList = _favoriteList;
-@synthesize userStatus;
-@synthesize afmanager = _afmanager;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -21,10 +25,10 @@
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
     _favoriteList = [NSMutableArray array];
-    self.userStatus = [ZWUserStatus sharedStatus];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor backColor];
+    [self.tableView registerClass:[FavorItemCell class] forCellReuseIdentifier:@"favorCell"];
     
     _refreshContorl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshContorl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
@@ -55,7 +59,7 @@
 }
 
 - (void)loadData{
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=favorite&ac=showlist&page=%d&uid=%ld",_page,(long)self.userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&c=favorite&a=showlist&page=%d&uid=%ld",_page,(long)[ZWUserStatus sharedStatus].uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {
             [self reloadTableViewWithArray:array];
@@ -101,22 +105,81 @@
     return [_favoriteList count];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return SWIDTH*0.37+20;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"favorCell"];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"favorCell"];
-    }else {
-        for (UIView *subview in cell.contentView.subviews) {
-            [subview removeFromSuperview];
-        }
-    }
-    cell.textLabel.text = [[_favoriteList objectAtIndex:indexPath.row] objectForKey:@"title"];
+    NSDictionary *favorItem = [_favoriteList objectAtIndex:indexPath.row];
+    NSDictionary *favorData = [favorItem objectForKey:@"data"];
+    FavorItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"favorCell"];
+    [cell setIdType:[favorItem objectForKey:@"idtype"]];
+    [cell.timeLabel setText:[favorItem objectForKey:@"dateline"]];
+    [cell setFavorData:favorData];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
+    NSDictionary *favorItem = [_favoriteList objectAtIndex:indexPath.row];
+    NSString *idType = [favorItem objectForKey:@"idtype"];
+    if ([idType isEqualToString:@"aid"]) {
+        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
+        newsView.newsID = [[favorItem objectForKey:@"dataid"] integerValue];
+        [self.navigationController pushViewController:newsView animated:YES];
+    }
+    
+    if ([idType isEqualToString:@"travelid"]) {
+        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
+        travelView.travelID = [[favorItem objectForKey:@"dataid"] integerValue];
+        [self.navigationController pushViewController:travelView animated:YES];
+    }
+    
+    if ([idType isEqualToString:@"goodsid"]) {
+        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
+        goodsView.goodsid = [[favorItem objectForKey:@"dataid"] integerValue];
+        [self.navigationController pushViewController:goodsView animated:YES];
+    }
+    
+    if ([idType isEqualToString:@"shopid"]) {
+        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+        shopView.shopid = [[favorItem objectForKey:@"dataid"] integerValue];
+        [self.navigationController pushViewController:shopView animated:YES];
+    }
+    
+    if ([idType isEqualToString:@"csgoodsid"]) {
+        ChaoshiDetailViewController *csdetailView = [[ChaoshiDetailViewController alloc] init];
+        csdetailView.goodsid = [[favorItem objectForKey:@"dataid"] integerValue];
+        [self.navigationController pushViewController:csdetailView animated:YES];
+    }
+    
+    if ([idType isEqualToString:@"chaoshiid"]) {
+        ChaoshiViewController *chaoshiView = [[ChaoshiViewController alloc] init];
+        chaoshiView.shopid = [[favorItem objectForKey:@"dataid"] integerValue];
+        [self.navigationController pushViewController:chaoshiView animated:YES];
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSDictionary *favorItem = [_favoriteList objectAtIndex:indexPath.row];
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        NSInteger favid = [[favorItem objectForKey:@"favid"] integerValue];
+        NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),@"favid":@(favid)};
+        [_afmanager GET:[SITEAPI stringByAppendingString:@"&c=favorite&a=delete"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+            if ([returns isKindOfClass:[NSDictionary class]]) {
+                [_favoriteList removeObjectAtIndex:indexPath.row];
+                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            }
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            NSLog(@"%@", error);
+        }];
+    }
 }
 
 

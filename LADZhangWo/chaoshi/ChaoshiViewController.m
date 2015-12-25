@@ -1,20 +1,19 @@
 //
-//  ShopDetailViewController.m
+//  ChaoshiViewController.m
 //  LADZhangWo
 //
-//  Created by Apple on 15/12/12.
+//  Created by Apple on 15/12/24.
 //  Copyright © 2015年 Apple. All rights reserved.
 //
 
-#import "ShopDetailViewController.h"
-#import "MarkMapViewController.h"
-#import "GoodsDetailViewController.h"
+#import "ChaoshiViewController.h"
 #import "MyMessageViewController.h"
-#import "MyFavoriteViewController.h"
+#import "MarkMapViewController.h"
+#import "ChaoshiDetailViewController.h"
 
-@implementation ShopDetailViewController
-@synthesize webView = _webView;
+@implementation ChaoshiViewController
 @synthesize shopid = _shopid;
+@synthesize webView = _webView;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -31,7 +30,7 @@
     _webView.backgroundColor = [UIColor backColor];
     [self.view addSubview:_webView];
     
-    NSURL *shopURL = [NSURL URLWithString:[SITEAPI stringByAppendingFormat:@"&c=shop&a=showdetail&shopid=%ld",(long)_shopid]];
+    NSURL *shopURL = [NSURL URLWithString:[SITEAPI stringByAppendingFormat:@"&c=chaoshi&a=shopdetail&shopid=%ld",(long)_shopid]];
     NSURLRequest *request = [NSURLRequest requestWithURL:shopURL];
     [_webView loadRequest:request];
     
@@ -62,7 +61,7 @@
             NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
                                      @"username":[ZWUserStatus sharedStatus].username,
                                      @"dataid":@(_shopid),
-                                     @"idtype":@"shopid",
+                                     @"idtype":@"chaoshiid",
                                      @"title":self.title};
             [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
                 id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
@@ -104,7 +103,7 @@
             [self.navigationController pushViewController:mapView animated:YES];
         }
         if ([cmd isEqualToString:@"showgoods"]) {
-            GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
+            ChaoshiDetailViewController *goodsView = [[ChaoshiDetailViewController alloc] init];
             goodsView.goodsid = [[params objectForKey:@"id"] integerValue];
             [self.navigationController pushViewController:goodsView animated:YES];
         }

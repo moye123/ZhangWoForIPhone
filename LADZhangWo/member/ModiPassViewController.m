@@ -32,7 +32,7 @@
     
     _oldPassField = [self textFieldWithPlaceHolder:@"请输入原密码:"];
     _passwordField = [self textFieldWithPlaceHolder:@"请输入新密码:"];
-    _passwordField2 = [self textFieldWithPlaceHolder:@"请确认信密码:"];
+    _passwordField2 = [self textFieldWithPlaceHolder:@"请确认新密码:"];
     
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 100)];
     UIButton *submitButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 40, SWIDTH-20, 40)];

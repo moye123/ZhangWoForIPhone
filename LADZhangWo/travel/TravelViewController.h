@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface TravelViewController : UIViewController<UIWebViewDelegate>{
-
+@interface TravelViewController : UIViewController<UIWebViewDelegate,DSXDropDownMenuDelegate>{
+    DSXDropDownMenu *_popMenu;
 }
 
 @property(nonatomic,retain)UIWebView *webView;

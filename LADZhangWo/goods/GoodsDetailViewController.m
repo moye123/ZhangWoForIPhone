@@ -9,9 +9,11 @@
 #import "GoodsDetailViewController.h"
 #import "MarkMapViewController.h"
 #import "BuyViewController.h"
+#import "MyFavoriteViewController.h"
+#import "MyMessageViewController.h"
 
 @implementation GoodsDetailViewController
-@synthesize goodsid;
+@synthesize goodsid = _goodsid;
 @synthesize goodsdata = _goodsdata;
 @synthesize webView = _webView;
 
@@ -20,7 +22,15 @@
     [self setTitle:@"商品详情"];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
+    
+    //pop菜单
+    _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
+    _popMenu.delegate = self;
+    [self.navigationController.view addSubview:_popMenu];
+    
+    _afmanager = [AFHTTPRequestOperationManager manager];
+    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
     CGRect frame = self.view.bounds;
     frame.size.height-= 44;
@@ -39,14 +49,12 @@
     [self.navigationController.toolbar setBarStyle:UIBarStyleBlackOpaque];
     _addCartView = [[AddToCartView alloc] init];
     
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&id=%ld",(long)self.goodsid];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=goods&a=showdetail&id=%ld",(long)_goodsid];
     [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([returns isKindOfClass:[NSDictionary class]]) {
-            if ([[returns objectForKey:@"id"] integerValue] == self.goodsid) {
+            if ([[returns objectForKey:@"id"] integerValue] == _goodsid) {
                 _goodsdata = returns;
                 _webView.hidden = NO;
             }else {
@@ -74,6 +82,50 @@
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }
 }
+
+- (void)showPopMenu{
+    [_popMenu toggle];
+}
+
+- (void)dropDownMenu:(DSXDropDownMenu *)dropDownMenu didSelectedAtCellItem:(UITableViewCell *)cellItem withData:(NSDictionary *)data{
+    [dropDownMenu slideUp];
+    NSString *action = [data objectForKey:@"action"];
+    if ([action isEqualToString:@"shownotice"]) {
+        MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
+        [self.navigationController pushViewController:messageView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showfavorite"]) {
+        if ([[ZWUserStatus sharedStatus] isLogined]) {
+            NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
+                                     @"username":[ZWUserStatus sharedStatus].username,
+                                     @"dataid":@(_goodsid),
+                                     @"idtype":@"goodsid",
+                                     @"title":[_goodsdata objectForKey:@"name"]};
+            [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+                id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+                if ([returns isKindOfClass:[NSDictionary class]]) {
+                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"收藏成功"];
+                }
+            } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+                NSLog(@"%@", error);
+            }];
+        }else {
+            [self showLogin];
+        }
+    }
+    
+    if ([action isEqualToString:@"showhome"]) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [self.tabBarController setSelectedIndex:0];
+    }
+}
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [_popMenu slideUp];
+}
+
+#pragma mark -
 
 - (void)showLogin{
     [[DSXUI sharedUI] showLoginFromViewController:self];

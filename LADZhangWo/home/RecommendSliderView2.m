@@ -27,7 +27,7 @@
 }
 
 - (void)loadData{
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=homepage&ac=showlist&groupid=%ld&num=%ld",(long)_groupid,(long)_dataCount] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&c=homepage&a=showlist&groupid=%ld&num=%ld",(long)_groupid,(long)_dataCount] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {
             [self showImagesWithArray:array];

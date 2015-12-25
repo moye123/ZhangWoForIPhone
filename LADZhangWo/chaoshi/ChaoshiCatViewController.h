@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface ChaoshiCatViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout,DSXSliderViewDelegate>{
+@interface ChaoshiCatViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout,DSXSliderViewDelegate,DSXDropDownMenuDelegate>{
     @private
     AFHTTPRequestOperationManager *_afmanager;
     CGFloat _itemWith;
     DSXSliderView *_slideView;
+    DSXDropDownMenu *_popMenu;
 }
 
 - (instancetype)init;

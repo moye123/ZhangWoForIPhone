@@ -12,6 +12,8 @@
 #import "TravelDetailViewController.h"
 #import "ShopDetailViewController.h"
 #import "GoodsDetailViewController.h"
+#import "MyMessageViewController.h"
+#import "MyFavoriteViewController.h"
 
 @implementation ChaoshiCatViewController
 @synthesize shopid = _shopid;
@@ -25,7 +27,7 @@
         _categoryList = [NSMutableArray array];
         _afmanager = [AFHTTPRequestOperationManager manager];
         _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        [_afmanager GET:[SITEAPI stringByAppendingString:@"&mod=chaoshi&ac=showcategory"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        [_afmanager GET:[SITEAPI stringByAppendingString:@"&c=chaoshi&a=showcategory"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
             if ([array isKindOfClass:[NSArray class]]) {
                 _categoryList = array;
@@ -44,7 +46,12 @@
     [self setTitle:@"生活超市"];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf0f0f0"]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
+    
+    //pop菜单
+    _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
+    _popMenu.delegate = self;
+    [self.navigationController.view addSubview:_popMenu];
     
     self.collectionView.backgroundColor = [UIColor colorWithHexString:@"0xffffff"];
     self.collectionView.delegate = self;
@@ -63,6 +70,34 @@
     if (![self.navigationController popViewControllerAnimated:YES]) {
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+- (void)showPopMenu{
+    [_popMenu toggle];
+}
+
+- (void)dropDownMenu:(DSXDropDownMenu *)dropDownMenu didSelectedAtCellItem:(UITableViewCell *)cellItem withData:(NSDictionary *)data{
+    [dropDownMenu slideUp];
+    NSString *action = [data objectForKey:@"action"];
+    if ([action isEqualToString:@"shownotice"]) {
+        MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
+        [self.navigationController pushViewController:messageView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showfavorite"]) {
+        MyFavoriteViewController *favorView = [[MyFavoriteViewController alloc] init];
+        [self.navigationController pushViewController:favorView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showhome"]) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [self.tabBarController setSelectedIndex:0];
+    }
+    
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [_popMenu slideUp];
 }
 
 #pragma mark - collectionView delegate

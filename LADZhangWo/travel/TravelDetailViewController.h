@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface TravelDetailViewController : UIViewController<UIWebViewDelegate>
+@interface TravelDetailViewController : UIViewController<UIWebViewDelegate,DSXDropDownMenuDelegate>{
+    DSXDropDownMenu *_popMenu;
+    AFHTTPRequestOperationManager *_afmanager;
+}
 
 @property(nonatomic,assign)NSInteger travelID;
 @property(nonatomic,strong)NSDictionary *travelData;

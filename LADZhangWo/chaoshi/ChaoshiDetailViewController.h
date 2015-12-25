@@ -11,12 +11,13 @@
 #import "GoodsBottomView.h"
 #import "AddToCartView.h"
 
-@interface ChaoshiDetailViewController : UIViewController<UIWebViewDelegate,UIScrollViewDelegate>{
+@interface ChaoshiDetailViewController : UIViewController<UIWebViewDelegate,UIScrollViewDelegate,DSXDropDownMenuDelegate>{
     @private
     UIView *_loadingView;
     AFHTTPRequestOperationManager *_afmanager;
     GoodsBottomView *_bottomView;
     AddToCartView *_addCartView;
+    DSXDropDownMenu *_popMenu;
 }
 
 @property(nonatomic,assign)NSInteger goodsid;

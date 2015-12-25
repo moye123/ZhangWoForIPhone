@@ -8,15 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
-#import "HomeCategoryView.h"
+#import "ChannelListView.h"
 #import "RecommendSliderView.h"
 #import "RecommendSliderView2.h"
 #import "localView.h"
 #import "searchBar.h"
 #import "DistrictViewController.h"
-@interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,showCategoryDelegate,RecommendDelegate,LocationChangeDelegate,DSXSliderViewDelegate>{
+@interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,RecommendDelegate,LocationChangeDelegate,DSXSliderViewDelegate,ChannelViewDelegate>{
     @private
-    DSXPopMenu *_popMenu;
+    DSXDropDownMenu *_popMenu;
     DSXSliderView *_slideView;
 }
 
@@ -24,7 +24,7 @@
 
 @property(nonatomic,retain)localView *local;
 @property(nonatomic,retain)UITableView *tableView;
-@property(nonatomic,retain)HomeCategoryView *categoryView;
+@property(nonatomic,retain)ChannelListView *channelView;
 @property(nonatomic,retain)RecommendSliderView *businessView;
 @property(nonatomic,retain)RecommendSliderView *travelView;
 @property(nonatomic,retain)RecommendSliderView *productView;

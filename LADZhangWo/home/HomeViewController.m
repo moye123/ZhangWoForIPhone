@@ -22,7 +22,7 @@
 @implementation HomeViewController
 @synthesize local;
 @synthesize tableView = _tableView;
-@synthesize categoryView = _categoryView;
+@synthesize channelView = _channelView;
 @synthesize businessView = _businessView;
 @synthesize travelView = _travelView;
 @synthesize productView = _productView;
@@ -31,7 +31,7 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        
+
     }
     return self;
 }
@@ -52,6 +52,9 @@
     
     UIBarButtonItem *moreButton = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMoreWhite target:self action:@selector(showPopMenu)];
     self.navigationItem.rightBarButtonItem = moreButton;
+    _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 64, 100, 140)];
+    [self.navigationController.view addSubview:_popMenu];
+    
     CGRect frame = self.view.bounds;
     frame.size.height = frame.size.height - 54;
     _tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
@@ -70,8 +73,8 @@
     [_tableView setTableHeaderView:_slideView];
     
     //分类列表
-    _categoryView = [[HomeCategoryView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
-    _categoryView.categoryDelegate = self;
+    _channelView = [[ChannelListView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 180)];
+    _channelView.delegate = self;
     
     //推荐商家
     CGFloat height = (SWIDTH - 50)/3;
@@ -113,46 +116,15 @@
     _foodView.dataCount = 6;
     _foodView.contentSize = CGSizeMake((SWIDTH-20)*2, 0);
     [_foodView loadData];
+}
+
+- (void)viewWillLayoutSubviews{
     
-    _popMenu = [[DSXPopMenu alloc] init];
-    _popMenu.frame = CGRectMake(SWIDTH-110, -150, 100, 150);
-    _popMenu.hidden = YES;
-    [self.navigationController.view insertSubview:_popMenu belowSubview:self.navigationController.navigationBar];
 }
 
 - (void)showPopMenu{
-    [_popMenu toggle];
-}
-
-- (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
-    if ([idType isEqualToString:@"goodsid"]) {
-        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
-        goodsView.goodsid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:NO completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"aid"]) {
-        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
-        newsView.newsID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
-        [self presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"shopid"]) {
-        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
-        shopView.shopid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
-        [self presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"travelid"]) {
-        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
-        travelView.travelID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
-        [self presentViewController:nav animated:YES completion:nil];
-    }
+    //UISearchController *searchController = [[UISearchController alloc] init];
+    //[self presentViewController:searchController animated:YES completion:nil];
 }
 
 #pragma mark - tableView delegate
@@ -170,7 +142,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 0) {
-        return 210;
+        return 190;
     }else if (indexPath.section == 1){
         if (indexPath.row == 0) {
             return 45;
@@ -203,7 +175,7 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            [cell addSubview:_categoryView];
+            [cell addSubview:_channelView];
         }
     }
     if (indexPath.section == 1) {
@@ -256,8 +228,39 @@
     return 10;
 }
 
-#pragma mark -
-- (void)showCategoryWithTag:(NSString *)tag{
+#pragma mark - sliderView delegate
+- (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
+    if ([idType isEqualToString:@"goodsid"]) {
+        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
+        goodsView.goodsid = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:NO completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"aid"]) {
+        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
+        newsView.newsID = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"shopid"]) {
+        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+        shopView.shopid = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"travelid"]) {
+        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
+        travelView.travelID = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+}
+
+- (void)channelView:(ChannelListView *)channelView didSelectItemAtTag:(NSString *)tag{
     //旅游
     if ([tag isEqualToString:@"travel"]) {
         TravelViewController *travelController = [[TravelViewController alloc] init];
@@ -386,7 +389,7 @@
     districtController.delegate = self;
     ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:districtController];
     nav.style = ZWNavigationStyleGray;
-    [self.navigationController presentViewController:nav animated:YES completion:nil];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 #pragma mark - 

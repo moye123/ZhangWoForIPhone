@@ -59,12 +59,12 @@
             annotation.title = _address;
             annotation.coordinate = [location coordinate];
             [_mapView addAnnotation:annotation];
+            [_mapView selectAnnotation:annotation animated:YES];
             
             MKCoordinateSpan span = MKCoordinateSpanMake(0.05, 0.05);
             MKCoordinateRegion regin = MKCoordinateRegionMake([location coordinate], span);
             [_mapView setRegion:regin animated:YES];
         }else {
-            
         }
         
     }];

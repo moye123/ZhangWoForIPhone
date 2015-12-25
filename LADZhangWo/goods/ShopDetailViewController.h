@@ -9,7 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface ShopDetailViewController : UIViewController<UIWebViewDelegate>
+@interface ShopDetailViewController : UIViewController<UIWebViewDelegate,DSXDropDownMenuDelegate>{
+    @private
+    DSXDropDownMenu *_popMenu;
+    AFHTTPRequestOperationManager *_afmanager;
+}
 
 @property(nonatomic,retain)UIWebView *webView;
 @property(nonatomic,assign)NSInteger shopid;

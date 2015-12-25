@@ -7,18 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ZWCommon.h"
-#import "DSXStarView.h"
+#import "GoodsItemCell.h"
 
-@interface GoodsListViewController : UITableViewController<UIScrollViewDelegate>{
+@interface GoodsListViewController : UITableViewController<UIScrollViewDelegate,DSXDropDownMenuDelegate>{
     @private
     int _page;
     BOOL _isRefreshing;
     ZWRefreshControl *_refreshControl;
     ZWPullUpView *_pullUpView;
+    DSXDropDownMenu *_popMenu;
+    AFHTTPRequestOperationManager *_afmanager;
 }
 
-@property(nonatomic,assign)int catid;
-@property(nonatomic,strong)NSMutableArray *goodsArray;
+@property(nonatomic,assign)NSInteger catid;
+@property(nonatomic,strong)NSMutableArray *goodsList;
 
 @end

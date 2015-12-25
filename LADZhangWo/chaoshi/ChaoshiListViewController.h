@@ -10,7 +10,7 @@
 #import "ZWCommon.h"
 #import "DSXStarView.h"
 
-@interface ChaoshiListViewController : UICollectionViewController<UIScrollViewDelegate,UICollectionViewDelegateFlowLayout>{
+@interface ChaoshiListViewController : UICollectionViewController<UIScrollViewDelegate,UICollectionViewDelegateFlowLayout,DSXDropDownMenuDelegate>{
 @private
     int _page;
     BOOL _isRefreshing;
@@ -20,6 +20,7 @@
     CGFloat _cellWith;
     CGFloat _cellHeight;
     UILabel *_tipsView;
+    DSXDropDownMenu *_popMenu;
 }
 
 - (instancetype)init;

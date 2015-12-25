@@ -7,16 +7,15 @@
 //
 
 #import "NewsDetailViewController.h"
+#import "MyMessageViewController.h"
 
 @implementation NewsDetailViewController
 @synthesize newsID = _newsID;
 @synthesize contentWebView = _contentWebView;
 @synthesize commentWebView = _commentWebView;
 @synthesize scrollView = _scrollView;
-@synthesize afmanager = _afmanager;
-@synthesize userStatus;
 @synthesize commentView = _commentView;
-@synthesize articleData;
+@synthesize articleData = _articleData;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -24,11 +23,13 @@
     [self setTitle:@"正文"];
     
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
     
-    //初始化用户登录状态
-    self.userStatus = [[ZWUserStatus alloc] init];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStatusChanged) name:UserStatusChangedNotification object:nil];
+    //pop菜单
+    _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
+    _popMenu.delegate = self;
+    [self.navigationController.view addSubview:_popMenu];
+    
     //初始化网络操作对象
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
@@ -46,19 +47,33 @@
     //正文
     _contentWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
     _contentWebView.backgroundColor = [UIColor backColor];
-    self.contentWebView.delegate = self;
+    _contentWebView.delegate = self;
+    _contentWebView.hidden = YES;
     [_scrollView addSubview:_contentWebView];
     
-    urlString = [SITEAPI stringByAppendingFormat:@"&mod=post&ac=showdetail&id=%ld",(long)_newsID];
+    urlString = [SITEAPI stringByAppendingFormat:@"&c=post&a=showdetail&id=%ld",(long)_newsID];
     request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     [_contentWebView loadRequest:request];
+    
+    [_afmanager GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([returns isKindOfClass:[NSDictionary class]]) {
+            _articleData = returns;
+            _contentWebView.hidden = NO;
+            NSString *stringNum = [self.articleData objectForKey:@"commentnum"];
+            [commButton setTitle:stringNum forState:UIControlStateNormal];
+            commentNum = [stringNum intValue];
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
     
     //评论列表
     _commentWebView = [[UIWebView alloc] initWithFrame:CGRectMake(frame.size.width, 0, frame.size.width, frame.size.height)];
     _commentWebView.backgroundColor = [UIColor whiteColor];
     [_scrollView addSubview:_commentWebView];
     
-    urlString = [SITEAPI stringByAppendingFormat:@"&mod=comment&ac=showlist&idtype=aid&id=%ld",(long)_newsID];
+    urlString = [SITEAPI stringByAppendingFormat:@"&c=comment&a=showlist&idtype=aid&dataid=%ld",(long)_newsID];
     request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     [_commentWebView loadRequest:request];
     
@@ -100,6 +115,49 @@
     }
 }
 
+- (void)showPopMenu{
+    [_popMenu toggle];
+}
+
+- (void)dropDownMenu:(DSXDropDownMenu *)dropDownMenu didSelectedAtCellItem:(UITableViewCell *)cellItem withData:(NSDictionary *)data{
+    [dropDownMenu slideUp];
+    NSString *action = [data objectForKey:@"action"];
+    if ([action isEqualToString:@"shownotice"]) {
+        MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
+        [self.navigationController pushViewController:messageView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showfavorite"]) {
+        if ([[ZWUserStatus sharedStatus] isLogined]) {
+            NSString *title = [NSString stringWithString:[_articleData objectForKey:@"title"]];
+            NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
+                                     @"username":[ZWUserStatus sharedStatus].username,
+                                     @"dataid":@(_newsID),
+                                     @"idtype":@"aid",
+                                     @"title":title};
+            [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+                id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+                if ([returns isKindOfClass:[NSDictionary class]]) {
+                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"收藏成功"];
+                }
+            } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+                NSLog(@"%@", error);
+            }];
+        }else {
+            [self showLogin];
+        }
+    }
+    
+    if ([action isEqualToString:@"showhome"]) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [self.tabBarController setSelectedIndex:0];
+    }
+}
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [_popMenu slideUp];
+}
+
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.navigationController.toolbarHidden = NO;
@@ -108,11 +166,8 @@
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     self.navigationController.toolbarHidden = YES;
+    [_popMenu slideUp];
     //[self.commentView remove];
-}
-
-- (void)addLike{
-    
 }
 
 - (void)showLogin{
@@ -120,7 +175,7 @@
 }
 
 - (void)showCommentView{
-    if (self.userStatus.isLogined) {
+    if ([[ZWUserStatus sharedStatus] isLogined]) {
         [_commentView show];
     }else {
         [self showLogin];
@@ -143,22 +198,9 @@
     [_scrollView setContentOffset:offset animated:YES];
 }
 
-- (void)userStatusChanged{
-    self.userStatus = [ZWUserStatus sharedStatus];
-}
-
 #pragma mark - webView delegate
 - (void)webViewDidFinishLoad:(UIWebView *)webView{
-    if (webView == _contentWebView) {
-        NSString *json = [_contentWebView stringByEvaluatingJavaScriptFromString:@"getArticle()"];
-        id article = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:nil];
-        if ([article isKindOfClass:[NSDictionary class]]) {
-            self.articleData = article;
-        }
-        NSString *stringNum = [self.articleData objectForKey:@"commentnum"];
-        [commButton setTitle:stringNum forState:UIControlStateNormal];
-        commentNum = [stringNum intValue];
-    }
+
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
@@ -169,12 +211,12 @@
     NSString *message = self.commentView.textView.text;
     if (message.length > 0) {
         NSMutableDictionary *params = [NSMutableDictionary dictionary];
-        [params setObject:@(_newsID) forKey:@"id"];
+        [params setObject:@(_newsID) forKey:@"dataid"];
         [params setObject:@"aid" forKey:@"idtype"];
-        [params setObject:@(self.userStatus.uid) forKey:@"uid"];
-        [params setObject:self.userStatus.username forKey:@"username"];
+        [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
+        [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
         [params setObject:message forKey:@"message"];
-        [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=comment&ac=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=comment&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             id dictionary = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
             if ([dictionary isKindOfClass:[NSDictionary class]]) {
                 if ([dictionary objectForKey:@"cid"]) {

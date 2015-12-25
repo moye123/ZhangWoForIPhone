@@ -10,17 +10,17 @@
 #import "ZWCommon.h"
 #import "CommentView.h"
 
-@interface NewsDetailViewController : UIViewController<UIScrollViewDelegate,UIWebViewDelegate,CommentViewDelegate>{
+@interface NewsDetailViewController : UIViewController<UIScrollViewDelegate,UIWebViewDelegate,CommentViewDelegate,DSXDropDownMenuDelegate>{
     UIButton *commButton;
     NSInteger commentNum;
+    DSXDropDownMenu *_popMenu;
+    AFHTTPRequestOperationManager *_afmanager;
 }
 
 @property(nonatomic,assign)NSInteger newsID;
 @property(nonatomic,retain)UIWebView *contentWebView;
 @property(nonatomic,retain)UIWebView *commentWebView;
 @property(nonatomic,retain)UIScrollView *scrollView;
-@property(nonatomic,retain)AFHTTPRequestOperationManager *afmanager;
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)CommentView *commentView;
 @property(nonatomic,strong)NSDictionary *articleData;
 

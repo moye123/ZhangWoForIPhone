@@ -11,9 +11,9 @@
 #import "NewsColumnView.h"
 #import "NewsListView.h"
 
-@interface NewsViewController : UIViewController<NewsListDelegate,UIScrollViewDelegate>{
+@interface NewsViewController : UIViewController<NewsListDelegate,UIScrollViewDelegate,DSXDropDownMenuDelegate>{
     @private
-    DSXPopMenu *_popMenu;
+    DSXDropDownMenu *_popMenu;
 }
 
 @property(nonatomic,strong)NSArray *columns;

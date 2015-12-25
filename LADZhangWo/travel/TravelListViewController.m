@@ -8,22 +8,29 @@
 
 #import "TravelListViewController.h"
 #import "TravelDetailViewController.h"
+#import "MyFavoriteViewController.h"
+#import "MyMessageViewController.h"
 
 @implementation TravelListViewController
-@synthesize catid;
-@synthesize travelArray;
+@synthesize catid = _catid;
+@synthesize travelList = _travelList;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
+    //pop菜单
+    _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
+    _popMenu.delegate = self;
+    [self.navigationController.view addSubview:_popMenu];
+    
     //实例化afnetworking manager
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
     //初始化列表数组
-    self.travelArray = [NSMutableArray array];
+    _travelList = [NSMutableArray array];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -51,20 +58,44 @@
     
 }
 
+- (void)showPopMenu{
+    [_popMenu toggle];
+}
+
+- (void)dropDownMenu:(DSXDropDownMenu *)dropDownMenu didSelectedAtCellItem:(UITableViewCell *)cellItem withData:(NSDictionary *)data{
+    [dropDownMenu slideUp];
+    NSString *action = [data objectForKey:@"action"];
+    if ([action isEqualToString:@"shownotice"]) {
+        MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
+        [self.navigationController pushViewController:messageView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showfavorite"]) {
+        MyFavoriteViewController *favorView = [[MyFavoriteViewController alloc] init];
+        [self.navigationController pushViewController:favorView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showhome"]) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [self.tabBarController setSelectedIndex:0];
+    }
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [_popMenu slideUp];
+}
+
 #pragma mark
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=travel&ac=showlist&catid=%ld&page=%d", (long)self.catid,_page];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=travel&a=showlist&catid=%ld&page=%d", (long)_catid,_page];
     [_afmanager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSData *data = (NSData *)responseObject;
-        if ([data length] > 0) {
-            id array = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-            if ([array isKindOfClass:[NSArray class]]) {
-                if (_isRefreshing) {
-                    [[NSUserDefaults standardUserDefaults] setObject:array forKey:@"travelList"];
-                    
-                }
-                [self showTableViewWithArray:array];
+        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([array isKindOfClass:[NSArray class]]) {
+            if (_isRefreshing) {
+                [[NSUserDefaults standardUserDefaults] setObject:array forKey:@"travelList"];
+                
             }
+            [self showTableViewWithArray:array];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);
@@ -72,15 +103,14 @@
 }
 
 - (void)showTableViewWithArray:(NSArray *)array{
-    
     if ([array count]>0) {
         if (_isRefreshing) {
-            [self.travelArray removeAllObjects];
+            [_travelList removeAllObjects];
             [self.tableView reloadData];
         }
         
         for (NSDictionary *item in array) {
-            [self.travelArray addObject:item];
+            [_travelList addObject:item];
         }
         [self.tableView reloadData];
     }
@@ -88,16 +118,16 @@
         [_refreshControl endRefreshing];
     }
     [_pullUpView endLoading];
-    if ([array count] >= 20) {
-        _pullUpView.hidden = NO;
-    }else{
+    if ([array count] < 20) {
         _pullUpView.hidden = YES;
+    }else{
+        _pullUpView.hidden = NO;
     }
     
     if (_tipsLabel) {
         [_tipsLabel removeFromSuperview];
     }
-    if ([self.travelArray count] == 0) {
+    if ([_travelList count] == 0) {
         _tipsLabel = [[UILabel alloc] initWithFrame:CGRectMake((SWIDTH-200)/2, 100, 200, 30)];
         _tipsLabel.text = @"此板块暂无数据..";
         _tipsLabel.font = [UIFont systemFontOfSize:14.0];
@@ -125,7 +155,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [self.travelArray count];
+    return [_travelList count];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -142,7 +172,7 @@
         }
     }
     cell.contentView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
-    NSDictionary *travelItem = [self.travelArray objectAtIndex:indexPath.row];
+    NSDictionary *travelItem = [_travelList objectAtIndex:indexPath.row];
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 140)];
     //imageView.layer.cornerRadius = 10.0;
     imageView.layer.masksToBounds = YES;
@@ -180,7 +210,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
-    NSDictionary *travelItem = [self.travelArray objectAtIndex:indexPath.row];
+    NSDictionary *travelItem = [_travelList objectAtIndex:indexPath.row];
     TravelDetailViewController *detailController = [[TravelDetailViewController alloc] init];
     detailController.travelID = [[travelItem objectForKey:@"id"] intValue];
     detailController.title = [travelItem objectForKey:@"title"];

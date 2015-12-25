@@ -7,16 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ZWCommon.h"
+#import "FavorItemCell.h"
 
 @interface MyFavoriteViewController : UITableViewController<UIScrollViewDelegate>{
     ZWPullUpView*_pullUpView;
     ZWRefreshControl *_refreshContorl;
+    AFHTTPRequestOperationManager *_afmanager;
     BOOL _isRefreshing;
     int _page;
 }
 
 @property(nonatomic,strong)NSMutableArray *favoriteList;
-@property(nonatomic,retain)ZWUserStatus *userStatus;
-@property(nonatomic,retain)AFHTTPRequestOperationManager *afmanager;
 @end

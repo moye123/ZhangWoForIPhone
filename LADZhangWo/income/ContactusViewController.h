@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
+#import <CoreLocation/CoreLocation.h>
 #import "ZWCommon.h"
 
 @interface ContactusViewController : UIViewController
+
+@property(nonatomic)MKMapView *mapView;
 
 @end

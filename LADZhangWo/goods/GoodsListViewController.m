@@ -7,21 +7,30 @@
 //
 
 #import "GoodsListViewController.h"
-#import "UIImageView+WebCache.h"
 #import "GoodsDetailViewController.h"
+#import "MyFavoriteViewController.h"
+#import "MyMessageViewController.h"
 
 @implementation GoodsListViewController
-@synthesize catid;
-@synthesize goodsArray;
+@synthesize catid = _catid;
+@synthesize goodsList = _goodsList;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
     
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    //pop菜单
+    _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
+    _popMenu.delegate = self;
+    [self.navigationController.view addSubview:_popMenu];
     
-    self.goodsArray = [NSMutableArray array];
+    //AFNetworking
+    _afmanager = [AFHTTPRequestOperationManager manager];
+    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    
+    _goodsList = [NSMutableArray array];
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
@@ -34,7 +43,7 @@
     _pullUpView.hidden = YES;
     self.tableView.tableFooterView = _pullUpView;
     
-    NSString *key = [NSString stringWithFormat:@"googsList_%d",self.catid];
+    NSString *key = [NSString stringWithFormat:@"googsList_%ld",(long)_catid];
     [self reloadTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:key]];
     [self refresh];
 }
@@ -43,6 +52,34 @@
     if (![self.navigationController popViewControllerAnimated:YES]) {
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+- (void)showPopMenu{
+    [_popMenu toggle];
+}
+
+- (void)dropDownMenu:(DSXDropDownMenu *)dropDownMenu didSelectedAtCellItem:(UITableViewCell *)cellItem withData:(NSDictionary *)data{
+    [dropDownMenu slideUp];
+    NSString *action = [data objectForKey:@"action"];
+    if ([action isEqualToString:@"shownotice"]) {
+        MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
+        [self.navigationController pushViewController:messageView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showfavorite"]) {
+        MyFavoriteViewController *favorView = [[MyFavoriteViewController alloc] init];
+        [self.navigationController pushViewController:favorView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showhome"]) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [self.tabBarController setSelectedIndex:0];
+    }
+    
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [_popMenu slideUp];
 }
 
 #pragma mark - 
@@ -58,24 +95,18 @@
     [self loadData];
 }
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showlist&catid=%d&page=%d",self.catid,_page];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=goods&a=showlist&catid=%ld&page=%d",(long)_catid,_page];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSData *data = (NSData *)responseObject;
-        if ([data length]>2) {
-            id array = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-            if ([array isKindOfClass:[NSArray class]]) {
-                if ([array count] > 0) {
-                    if (_isRefreshing) {
-                        NSString *key = [NSString stringWithFormat:@"googsList_%d",self.catid];
-                        [[NSUserDefaults standardUserDefaults] setObject:array forKey:key];
-                    }
-                    [self reloadTableViewWithArray:array];
-                }else{
-                    
+        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([array isKindOfClass:[NSArray class]]) {
+            if ([array count] > 0) {
+                if (_isRefreshing) {
+                    NSString *key = [NSString stringWithFormat:@"googsList_%ld",(long)_catid];
+                    [[NSUserDefaults standardUserDefaults] setObject:array forKey:key];
                 }
-                
+                [self reloadTableViewWithArray:array];
             }
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
@@ -86,12 +117,12 @@
 - (void)reloadTableViewWithArray:(NSArray *)array{
     if ([array count] > 0) {
         if (_isRefreshing) {
-            [self.goodsArray removeAllObjects];
+            [_goodsList removeAllObjects];
             [self.tableView reloadData];
         }
         
         for (NSDictionary *dict in array) {
-            [self.goodsArray addObject:dict];
+            [_goodsList addObject:dict];
         }
         [self.tableView reloadData];
     }
@@ -112,50 +143,20 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [self.goodsArray count];
+    return [_goodsList count];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 137;
+    return SWIDTH*0.37+20;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell"];
+    NSDictionary *goodsData = [_goodsList objectAtIndex:indexPath.row];
+    GoodsItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell"];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"goodsCell"];
-    }else {
-        for (UIView *subview in cell.contentView.subviews) {
-            [subview removeFromSuperview];
-        }
+        cell = [[GoodsItemCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"goodsCell"];
     }
-    
-    NSDictionary *goods = [self.goodsArray objectAtIndex:indexPath.row];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 15, 107, 107)];
-    imageView.layer.cornerRadius = 3.0;
-    imageView.layer.masksToBounds = YES;
-    [imageView sd_setImageWithURL:[NSURL URLWithString:[goods objectForKey:@"pic"]]];
-    [cell.contentView addSubview:imageView];
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(130, 15, SWIDTH-130, 20)];
-    titleLabel.text = [goods objectForKey:@"name"];
-    titleLabel.font = [UIFont systemFontOfSize:16.0];
-    [titleLabel sizeToFit];
-    [cell.contentView addSubview:titleLabel];
-    
-    NSInteger starnum = [[goods objectForKey:@"score"] integerValue];
-    DSXStarView *starView = [[DSXStarView alloc] initWithStar:starnum];
-    starView.frame = CGRectMake(130, 35, starView.frame.size.width, starView.frame.size.height);
-    [cell.contentView addSubview:starView];
-    
-    //价格
-    UILabel *priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(130, 73, 80, 18)];
-    priceLabel.text = [NSString stringWithFormat:@"￥%@",[goods objectForKey:@"price"]];
-    priceLabel.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
-    priceLabel.font = [UIFont systemFontOfSize:18.0];
-    
-    cell.tag = [[goods objectForKey:@"id"] integerValue];
-    [cell.contentView addSubview:priceLabel];
-    
+    [cell setGoodsData:goodsData];
     cell.selectionStyle = UITableViewCellSelectionStyleGray;
     cell.contentView.backgroundColor = [UIColor whiteColor];
     return cell;
@@ -165,11 +166,11 @@
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
     
-    NSDictionary *goods = [self.goodsArray objectAtIndex:indexPath.row];
+    NSDictionary *goodsData = [_goodsList objectAtIndex:indexPath.row];
     GoodsDetailViewController *detailController = [[GoodsDetailViewController alloc] init];
     detailController.hidesBottomBarWhenPushed = YES;
-    detailController.goodsid = cell.tag;
-    detailController.title = [goods objectForKey:@"name"];
+    detailController.goodsid = [[goodsData objectForKey:@"id"] integerValue];
+    detailController.title = [goodsData objectForKey:@"name"];
     [self.navigationController pushViewController:detailController animated:YES];
 }
 

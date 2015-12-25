@@ -8,31 +8,94 @@
 
 #import "TravelDetailViewController.h"
 #import "MarkMapViewController.h"
+#import "MyMessageViewController.h"
+#import "MyFavoriteViewController.h"
 
 @implementation TravelDetailViewController
-@synthesize travelID;
-@synthesize travelData;
+@synthesize travelID = _travelID;
+@synthesize travelData = _travelData;
 @synthesize webView = _webView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
+    //pop菜单
+    _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
+    _popMenu.delegate = self;
+    [self.navigationController.view addSubview:_popMenu];
     
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=travel&ac=showdetail&id=%ld",(long)self.travelID];
+    _afmanager = [AFHTTPRequestOperationManager manager];
+    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    
+    //加载页面数据
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=travel&a=showdetail&id=%ld",(long)_travelID];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     _webView = [[UIWebView alloc] initWithFrame:self.view.frame];
     _webView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
     _webView.delegate = self;
+    _webView.hidden = YES;
     [_webView loadRequest:request];
     [self.view addSubview:_webView];
+    
+    [_afmanager GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        if ([returns isKindOfClass:[NSDictionary class]]) {
+            _travelData = returns;
+            _webView.hidden = NO;
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        
+    }];
 }
 
 - (void)back{
     if (![self.navigationController popViewControllerAnimated:YES]) {
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+- (void)showPopMenu{
+    [_popMenu toggle];
+}
+
+- (void)dropDownMenu:(DSXDropDownMenu *)dropDownMenu didSelectedAtCellItem:(UITableViewCell *)cellItem withData:(NSDictionary *)data{
+    [dropDownMenu slideUp];
+    NSString *action = [data objectForKey:@"action"];
+    if ([action isEqualToString:@"shownotice"]) {
+        MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
+        [self.navigationController pushViewController:messageView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showfavorite"]) {
+        if ([[ZWUserStatus sharedStatus] isLogined]) {
+            NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
+                                     @"username":[ZWUserStatus sharedStatus].username,
+                                     @"dataid":@(_travelID),
+                                     @"idtype":@"travelid",
+                                     @"title":[_travelData objectForKey:@"title"]};
+            [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+                id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+                if ([returns isKindOfClass:[NSDictionary class]]) {
+                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"收藏成功"];
+                }
+            } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+                NSLog(@"%@", error);
+            }];
+        }else {
+            [[DSXUI sharedUI] showLoginFromViewController:self];
+        }
+    }
+    
+    if ([action isEqualToString:@"showhome"]) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [self.tabBarController setSelectedIndex:0];
+    }
+}
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [_popMenu slideUp];
 }
 
 #pragma mark - webView delegate

@@ -9,6 +9,7 @@
 #import "ChaoshiDetailViewController.h"
 #import "MarkMapViewController.h"
 #import "BuyViewController.h"
+#import "MyMessageViewController.h"
 
 @implementation ChaoshiDetailViewController
 @synthesize goodsid = _goodsid;
@@ -20,7 +21,12 @@
     [self setTitle:@"宝贝详情"];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
+    
+    //pop菜单
+    _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
+    _popMenu.delegate = self;
+    [self.navigationController.view addSubview:_popMenu];
     
     _afmanager = [AFHTTPRequestOperationManager manager];
     _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
@@ -78,6 +84,50 @@
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }
 }
+
+- (void)showPopMenu{
+    [_popMenu toggle];
+}
+
+- (void)dropDownMenu:(DSXDropDownMenu *)dropDownMenu didSelectedAtCellItem:(UITableViewCell *)cellItem withData:(NSDictionary *)data{
+    [dropDownMenu slideUp];
+    NSString *action = [data objectForKey:@"action"];
+    if ([action isEqualToString:@"shownotice"]) {
+        MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
+        [self.navigationController pushViewController:messageView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showfavorite"]) {
+        if ([[ZWUserStatus sharedStatus] isLogined]) {
+            NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
+                                     @"username":[ZWUserStatus sharedStatus].username,
+                                     @"dataid":@(_goodsid),
+                                     @"idtype":@"csgoodsid",
+                                     @"title":[_goodsData objectForKey:@"name"]};
+            [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+                id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+                if ([returns isKindOfClass:[NSDictionary class]]) {
+                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"收藏成功"];
+                }
+            } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+                NSLog(@"%@", error);
+            }];
+        }else {
+            [[DSXUI sharedUI] showLoginFromViewController:self];
+        }
+    }
+    
+    if ([action isEqualToString:@"showhome"]) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [self.tabBarController setSelectedIndex:0];
+    }
+}
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [_popMenu slideUp];
+}
+
+#pragma mark -----------
 
 - (void)addToCart{
     if ([[ZWUserStatus sharedStatus] isLogined]) {

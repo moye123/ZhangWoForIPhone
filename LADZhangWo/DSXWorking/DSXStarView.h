@@ -8,8 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DSXStarView : UIView
+@interface DSXStarView : UIView{
+    @private
+    UIImageView *_starView;
+}
 
-- (instancetype)initWithStar:(NSInteger)starnum;
+- (instancetype)init;
+- (instancetype)initWithStarNum:(NSInteger)starNum position:(CGPoint)position;
+
+@property(nonatomic,assign)NSInteger starNum;
+@property(nonatomic,assign)CGPoint position;
 
 @end

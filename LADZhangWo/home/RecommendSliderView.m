@@ -31,7 +31,7 @@
 }
 
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=homepage&ac=showlist&groupid=%ld&num=%ld",(long)_groupid,(long)_dataCount];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=homepage&a=showlist&groupid=%ld&num=%ld",(long)_groupid,(long)_dataCount];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {

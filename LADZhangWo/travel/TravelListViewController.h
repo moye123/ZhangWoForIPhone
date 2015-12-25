@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface TravelListViewController : UITableViewController<UIScrollViewDelegate>{
+@interface TravelListViewController : UITableViewController<UIScrollViewDelegate,DSXDropDownMenuDelegate>{
 @private
     int _page;
     BOOL _isRefreshing;
@@ -17,8 +17,9 @@
     ZWPullUpView*_pullUpView;
     UILabel *_tipsLabel;
     AFHTTPRequestOperationManager *_afmanager;
+    DSXDropDownMenu *_popMenu;
 }
-@property(nonatomic,strong)NSMutableArray *travelArray;
+@property(nonatomic,strong)NSMutableArray *travelList;
 @property(nonatomic,assign)NSInteger catid;
 
 @end

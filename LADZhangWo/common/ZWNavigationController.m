@@ -42,7 +42,7 @@
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated{
     CATransition *animation = [CATransition animation];
-    animation.duration = 0.3;
+    animation.duration = 0.5;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
     animation.type = kCATransitionPush;
     animation.subtype = kCATransitionFromRight;
@@ -62,7 +62,7 @@
 
 - (void)presentViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion{
     CATransition *animation = [CATransition animation];
-    animation.duration = 0.4;
+    animation.duration = 0.5;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
     animation.type = kCATransitionPush;
     animation.subtype = kCATransitionFromRight;
@@ -72,7 +72,7 @@
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion{
     CATransition *animation = [CATransition animation];
-    animation.duration = 0.4;
+    animation.duration = 0.3;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
     animation.type = kCATransitionPush;
     animation.subtype = kCATransitionFromLeft;

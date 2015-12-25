@@ -42,7 +42,7 @@
 }
 
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=post&ac=showlist&catid=%d&page=%d",_catid,_page];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=post&a=showlist&catid=%d&page=%d",_catid,_page];
     [_afmanager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
         if ([array isKindOfClass:[NSArray class]]) {

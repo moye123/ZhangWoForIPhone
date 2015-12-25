@@ -8,11 +8,13 @@
 
 #import "NewsViewController.h"
 #import "NewsDetailViewController.h"
+#import "MyMessageViewController.h"
+#import "MyFavoriteViewController.h"
 
 @implementation NewsViewController
 @synthesize columnView;
-@synthesize toolbar;
-@synthesize columnButtons;
+@synthesize toolbar = _toolbar;
+@synthesize columnButtons = _columnButtons;
 @synthesize navView = _navView;
 @synthesize scrollView = _scrollView;
 
@@ -25,18 +27,20 @@
     UIBarButtonItem *moreButton = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
     self.navigationItem.rightBarButtonItem = moreButton;
     
-    self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 64, SWIDTH, 50)];
-    [self.toolbar setHidden:YES];
-    [self.toolbar setBackgroundColor:[UIColor whiteColor]];
-    [self.toolbar setBackgroundImage:[UIImage imageNamed:@"bg.png"] forToolbarPosition:UIBarPositionTop barMetrics:UIBarMetricsDefault];
-    [self.navigationController.view addSubview:self.toolbar];
+    //菜单栏
+    _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 64, SWIDTH, 50)];
+    [_toolbar setHidden:YES];
+    [_toolbar setBackgroundColor:[UIColor whiteColor]];
+    [_toolbar setBackgroundImage:[UIImage imageNamed:@"bg.png"] forToolbarPosition:UIBarPositionTop barMetrics:UIBarMetricsDefault];
+    [self.navigationController.view addSubview:_toolbar];
     UIView *toolbarLine = [[UIView alloc] initWithFrame:CGRectMake(0, 49, SWIDTH, 1)];
     toolbarLine.backgroundColor = [UIColor colorWithHexString:@"0xC9C9C9"];
-    [self.toolbar addSubview:toolbarLine];
+    [_toolbar addSubview:toolbarLine];
     
-    _popMenu = [[DSXPopMenu alloc] init];
-    _popMenu.frame = CGRectMake(SWIDTH-110, -150, 100, 150);
-    _popMenu.hidden = YES;
+    //pop菜单
+    _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
+    _popMenu.delegate = self;
+    [self.navigationController.view addSubview:_popMenu];
     
     CGRect frame = self.view.frame;
     frame.origin.y = frame.origin.y + 50;
@@ -86,6 +90,11 @@
     [self.view addSubview:_scrollView];
 }
 
+- (void)viewDidDisappear:(BOOL)animated{
+    [_popMenu slideUp];
+    [super viewDidDisappear:animated];
+}
+
 - (void)back{
     if (![self.navigationController popViewControllerAnimated:YES]) {
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
@@ -95,6 +104,35 @@
 - (void)showPopMenu{
     [_popMenu toggle];
 }
+
+- (void)dropDownMenu:(DSXDropDownMenu *)dropDownMenu didSelectedAtCellItem:(UITableViewCell *)cellItem withData:(NSDictionary *)data{
+    [dropDownMenu slideUp];
+    NSString *action = [data objectForKey:@"action"];
+    if ([action isEqualToString:@"shownotice"]) {
+        MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
+        [self.navigationController pushViewController:messageView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showfavorite"]) {
+        MyFavoriteViewController *favorView = [[MyFavoriteViewController alloc] init];
+        [self.navigationController pushViewController:favorView animated:YES];
+    }
+    
+    if ([action isEqualToString:@"showhome"]) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [self.tabBarController setSelectedIndex:0];
+    }
+
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    UITouch *touch = [touches anyObject];
+    if (touch.view != _popMenu) {
+        
+    }
+    [_popMenu slideUp];
+}
+
 //栏目按钮点击事件
 - (void)columnButtonClick:(UIButton *)button{
     NSInteger index = 0;

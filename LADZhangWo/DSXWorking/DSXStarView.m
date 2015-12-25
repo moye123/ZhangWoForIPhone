@@ -9,25 +9,45 @@
 #import "DSXStarView.h"
 
 @implementation DSXStarView
-
-- (instancetype)initWithStar:(NSInteger)starnum{
-    self = [super init];
-    if (self) {
+@synthesize starNum = _starNum;
+@synthesize position = _position;
+- (instancetype)init{
+    if (self = [super init]) {
         self.frame = CGRectMake(0, 0, 77, 14);
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor clearColor];
         UIImageView *backView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 77, 14)];
         [backView setImage:[UIImage imageNamed:@"icon-star-gray.png"]];
+        [backView setContentMode:UIViewContentModeLeft];
         [self addSubview:backView];
         
-        CGFloat width = (CGFloat)starnum * 66/5;
-        UIImageView *starView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width, 14)];
-        [starView setImage:[UIImage imageNamed:@"icon-star-orange.png"]];
-        [starView.layer setMasksToBounds:YES];
-        [starView setContentMode:UIViewContentModeLeft];
-        //starView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"icon-star-orange.png"]];
-        [self addSubview:starView];
+        _starView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon-star-orange.png"]];
+        [_starView.layer setMasksToBounds:YES];
+        [_starView setContentMode:UIViewContentModeLeft];
+        [self addSubview:_starView];
     }
     return self;
+}
+
+- (instancetype)initWithStarNum:(NSInteger)starNum position:(CGPoint)position{
+    if (self = [self init]) {
+        self.starNum = starNum;
+        self.position = position;
+    }
+    return self;
+}
+
+- (void)setStarNum:(NSInteger)starNum{
+    _starNum = starNum;
+    CGFloat width = (CGFloat)starNum * 77/5;
+    [_starView setFrame:CGRectMake(0, 0, width, 14)];
+}
+
+- (void)setPosition:(CGPoint)position{
+    _position = position;
+    CGRect frame = self.frame;
+    frame.origin.x = position.x;
+    frame.origin.y = position.y;
+    [self setFrame:frame];
 }
 
 @end

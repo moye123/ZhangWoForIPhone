@@ -11,10 +11,12 @@
 #import "AddToCartView.h"
 #import "GoodsBottomView.h"
 
-@interface GoodsDetailViewController : UIViewController<UIWebViewDelegate,UIScrollViewDelegate>{
+@interface GoodsDetailViewController : UIViewController<UIWebViewDelegate,UIScrollViewDelegate,DSXDropDownMenuDelegate>{
     @private
     AddToCartView *_addCartView;
     GoodsBottomView *_bottomView;
+    DSXDropDownMenu *_popMenu;
+    AFHTTPRequestOperationManager *_afmanager;
 }
 
 @property(nonatomic,assign)NSInteger goodsid;
