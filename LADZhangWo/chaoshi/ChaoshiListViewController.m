@@ -20,12 +20,10 @@
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     self = [super initWithCollectionViewLayout:layout];
     if (self) {
-        _afmanager = [AFHTTPRequestOperationManager manager];
-        _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        _goodsList = [NSMutableArray array];
         _page = 1;
         _cellWith = (SWIDTH-10)/2 - 0.01;
         _cellHeight = 210;
+        _goodsList = [NSMutableArray array];
     }
     return self;
 }
@@ -105,10 +103,9 @@
     if (_page) {
         [params setObject:@(_page) forKey:@"page"];
     }
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=chaoshi&a=showlist"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            [self reloadCollectionViewWithArray:array];
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=chaoshi&a=showlist"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            [self reloadCollectionViewWithArray:responseObject];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@", error);

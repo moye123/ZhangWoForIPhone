@@ -10,9 +10,8 @@
 #import "AddAddressViewController.h"
 
 @implementation MyAddressViewController
-@synthesize userStatus = _userStatus;
 @synthesize addressList = _addressList;
-@synthesize tableView = _tableView;
+@synthesize tableView   = _tableView;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -21,10 +20,8 @@
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addnew)];
     self.navigationItem.rightBarButtonItem = rightButton;
-    _userStatus = [[ZWUserStatus alloc] init];
+
     _addressList = [[NSMutableArray alloc] init];
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
     _tableView.hidden = YES;
     _tableView.delegate = self;
@@ -32,11 +29,10 @@
     [self.view addSubview:_tableView];
     
     UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"正在加载.."];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=address&ac=showlist"] parameters:@{@"uid":@(_userStatus.uid),@"username":_userStatus.username} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=address&a=showlist"] parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"username":[ZWUserStatus sharedStatus].username} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         [loadingView removeFromSuperview];
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            _addressList = [NSMutableArray arrayWithArray:array];
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            _addressList = [NSMutableArray arrayWithArray:responseObject];
             [_tableView reloadData];
             [_tableView setHidden:NO];
         }
@@ -97,10 +93,9 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSInteger addressid = [[[_addressList objectAtIndex:indexPath.row] objectForKey:@"addressid"] integerValue];
-        [_afmanager GET:[SITEAPI stringByAppendingString:@"&mod=address&ac=delete"] parameters:@{@"uid":@(_userStatus.uid),@"username":_userStatus.username,@"addressid":@(addressid)} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            if ([returns isKindOfClass:[NSDictionary class]]) {
-                if ([[returns objectForKey:@"addressid"] integerValue] == addressid) {
+        [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=address&a=delete"] parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"username":[ZWUserStatus sharedStatus].username,@"addressid":@(addressid)} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                if ([[responseObject objectForKey:@"addressid"] integerValue] == addressid) {
                     [_addressList removeObjectAtIndex:indexPath.row];
                     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
                 }

@@ -16,8 +16,6 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        _afmanager = [AFHTTPRequestOperationManager manager];
-        _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
         _idTypes = [NSMutableDictionary dictionary];
         self.pagingEnabled = YES;
         self.showsHorizontalScrollIndicator = NO;
@@ -27,10 +25,14 @@
 }
 
 - (void)loadData{
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&c=homepage&a=showlist&groupid=%ld&num=%ld",(long)_groupid,(long)_dataCount] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            [self showImagesWithArray:array];
+    NSString *keyName = [NSString stringWithFormat:@"recommend_%d",_groupid];
+    [self showImagesWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:keyName]];
+    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=homepage&a=showlist&groupid=%d&num=%d",_groupid,_dataCount] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            if ([responseObject count] > 0) {
+                [self showImagesWithArray:responseObject];
+                [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:keyName];
+            }
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@", error);
@@ -39,6 +41,9 @@
 
 - (void)showImagesWithArray:(NSArray *)array{
     if ([array count] > 0) {
+        for (UIView *subview in self.subviews) {
+            [subview removeFromSuperview];
+        }
         CGFloat x = 0;
         CGFloat width = (self.frame.size.width-10)/2;
         for (int i=0; i < [array count]; i++) {

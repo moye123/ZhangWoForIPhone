@@ -17,8 +17,8 @@
     if (self) {
         self.layer.cornerRadius = 15.0;
         self.layer.masksToBounds = YES;
-        self.backgroundColor = [UIColor colorWithHexString:@"0x16B479"];
-        self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 7, 18, 18)];
+        self.backgroundColor = [UIColor colorWithHexString:@"0xF96667"];
+        self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 7, 16, 16)];
         self.imageView.image = [UIImage imageNamed:@"icon-search.png"];
         self.imageView.contentMode = UIViewContentModeScaleToFill;
         [self addSubview:self.imageView];

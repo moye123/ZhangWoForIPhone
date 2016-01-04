@@ -11,7 +11,6 @@
 
 @interface ChaoshiCatViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout,DSXSliderViewDelegate,DSXDropDownMenuDelegate>{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
     CGFloat _itemWith;
     DSXSliderView *_slideView;
     DSXDropDownMenu *_popMenu;

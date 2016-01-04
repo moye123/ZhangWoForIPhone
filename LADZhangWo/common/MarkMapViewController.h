@@ -17,8 +17,8 @@
 }
 
 - (instancetype)init;
-
-@property(nonatomic,retain)NSString *address;
+@property(nonatomic,strong)NSString *city;
+@property(nonatomic,strong)NSString *address;
 @property(nonatomic,retain)MKMapView *mapView;
 @property(nonatomic,retain)CLLocationManager *locationManager;
 @property(nonatomic,retain)CLGeocoder *geocoder;

@@ -12,7 +12,6 @@
 
 @interface CartViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CartCustomCellDelegate>{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
     int _page;
     BOOL _isRefreshing;
     ZWRefreshControl *_refreshControl;

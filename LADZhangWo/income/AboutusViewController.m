@@ -19,7 +19,7 @@
     webView.backgroundColor = [UIColor backColor];
     [self.view addSubview:webView];
     
-    NSString *urlString = [SITEAPI stringByAppendingString:@"&mod=page&ac=showdetail&pageid=13"];
+    NSString *urlString = [SITEAPI stringByAppendingString:@"&c=page&a=showdetail&pageid=13"];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     [webView loadRequest:request];
 }

@@ -34,9 +34,6 @@
     NSURL *shopURL = [NSURL URLWithString:[SITEAPI stringByAppendingFormat:@"&c=shop&a=showdetail&shopid=%ld",(long)_shopid]];
     NSURLRequest *request = [NSURLRequest requestWithURL:shopURL];
     [_webView loadRequest:request];
-    
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
 }
 
 - (void)back{
@@ -64,10 +61,9 @@
                                      @"dataid":@(_shopid),
                                      @"idtype":@"shopid",
                                      @"title":self.title};
-            [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-                id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-                if ([returns isKindOfClass:[NSDictionary class]]) {
-                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"收藏成功"];
+            [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+                if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"收藏成功"];
                 }
             } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
                 NSLog(@"%@", error);

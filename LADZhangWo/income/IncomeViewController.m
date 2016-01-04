@@ -18,28 +18,22 @@
 #import "RechargeViewController.h"
 
 @implementation IncomeViewController
-@synthesize afmanager = _afmanager;
-@synthesize userStatus = _userStatus;
-@synthesize scrollView;
+@synthesize scrollView = _scrollView;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self setTitle:@"我的收益"];
     [self.navigationController.tabBarItem setTitle:@"收益"];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
-    _userStatus = [ZWUserStatus sharedStatus];
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
     IncomeView *myIncomeView = [[IncomeView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
     [self.scrollView addSubview:myIncomeView];
     
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     //下载个人收益数据
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=income&ac=getdata&uid=%ld",(long)self.userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id dictionary = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([dictionary isKindOfClass:[NSDictionary class]]) {
-            self.income = [dictionary objectForKey:@"income"];
-            float income = [[dictionary objectForKey:@"income"] floatValue];
+    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=income&a=getdata&uid=%ld",(long)[ZWUserStatus sharedStatus].uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            self.income = [responseObject objectForKey:@"income"];
+            float income = [[responseObject objectForKey:@"income"] floatValue];
             myIncomeView.incomeLabel.text = [NSString stringWithFormat:@"￥: %.2f",income];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
@@ -57,6 +51,7 @@
     UIButton *withdrawalButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [withdrawalButton setFrame:CGRectMake((SWIDTH-80)/2, 217, 80, 80)];
     [withdrawalButton setBackgroundImage:[UIImage imageNamed:@"icon-withdrawal.png"] forState:UIControlStateNormal];
+    [withdrawalButton addTarget:self action:@selector(withDrawal) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollView addSubview:withdrawalButton];
     
     //联系我们按钮
@@ -125,6 +120,11 @@
     ZWNavigationController *nav = (ZWNavigationController *)self.navigationController;
     [nav setStyle:ZWNavigationStyleGray];
     [self.navigationController pushViewController:rechargeView animated:YES];
+}
+
+- (void)withDrawal{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"尽请期待" message:@"提现功能暂未开放" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil];
+    [alert show];
 }
 
 @end

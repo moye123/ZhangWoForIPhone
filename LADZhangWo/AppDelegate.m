@@ -12,6 +12,7 @@
 #import "CartViewController.h"
 #import "MyViewController.h"
 #import "LoginViewController.h"
+#import "DSXPayManager.h"
 
 @implementation AppDelegate
 @synthesize scrollView = _scrollView;
@@ -19,6 +20,9 @@
 @synthesize hideButton = _hideButton;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    //微信注册
+    [WXApi registerApp:WXAppID withDescription:@"长沃"];
+    
     [NSThread sleepForTimeInterval:1];
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -146,6 +150,15 @@
     }else{
         return YES;
     }
+}
+
+#pragma mark - weixin
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
+    return [WXApi handleOpenURL:url delegate:[DSXPayManager sharedManager]];
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
+    return [WXApi handleOpenURL:url delegate:[DSXPayManager sharedManager]];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

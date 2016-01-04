@@ -26,13 +26,10 @@
     }else {
         self.title = @"选择城市";
     }
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=district&ac=showlist&fid=%d",self.fid];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            self.districtList = array;
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=district&a=showlist&fid=%d",self.fid];
+    [[AFHTTPRequestOperationManager sharedManager] GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            self.districtList = responseObject;
             [self.tableView reloadData];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {

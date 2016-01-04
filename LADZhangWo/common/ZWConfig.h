@@ -14,4 +14,8 @@
 #define ShareAppKey @"bead19631694"
 #define ShareAppSecret @"d60ed5a9a38a04efdf775470eefd5a8f"
 
+//微信接口
+#define WXAppID @"wx8614522cc7a7a9bf"
+#define WXAppSecret @"0baacd4d79946ec38c2b376697889500"
+
 #define IOS [[[UIDevice currentDevice] systemVersion] floatValue]

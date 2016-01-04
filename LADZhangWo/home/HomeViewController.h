@@ -14,10 +14,12 @@
 #import "localView.h"
 #import "searchBar.h"
 #import "DistrictViewController.h"
-@interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,RecommendDelegate,LocationChangeDelegate,DSXSliderViewDelegate,ChannelViewDelegate>{
+
+@interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,RecommendDelegate,LocationChangeDelegate,DSXSliderViewDelegate,ChannelViewDelegate,UITextFieldDelegate>{
     @private
     DSXDropDownMenu *_popMenu;
     DSXSliderView *_slideView;
+    DSXSliderView *_shopSlideView;
 }
 
 - (instancetype)init;
@@ -25,7 +27,6 @@
 @property(nonatomic,retain)localView *local;
 @property(nonatomic,retain)UITableView *tableView;
 @property(nonatomic,retain)ChannelListView *channelView;
-@property(nonatomic,retain)RecommendSliderView *businessView;
 @property(nonatomic,retain)RecommendSliderView *travelView;
 @property(nonatomic,retain)RecommendSliderView *productView;
 @property(nonatomic,retain)RecommendSliderView2 *foodView;

@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ZWCommon.h"
+#import "DSXPayManager.h"
 
-@interface RechargeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>{
+@interface RechargeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate,DSXPayManagerDelegate>{
     @private
     UITextField *_amountField;
     NSInteger _index;
+    NSString *_payType;
 }
 
 @property(nonatomic,retain)UITableView *tableView;

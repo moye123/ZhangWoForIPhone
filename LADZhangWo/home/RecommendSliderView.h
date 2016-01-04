@@ -18,8 +18,8 @@
 - (instancetype)initWithFrame:(CGRect)frame;
 - (void)loadData;
 @property(nonatomic,assign)id<RecommendDelegate>tapDelegate;
-@property(nonatomic,assign)NSInteger groupid;
-@property(nonatomic,assign)NSInteger dataCount;
+@property(nonatomic,assign)int groupid;
+@property(nonatomic,assign)int dataCount;
 @property(nonatomic,assign)CGFloat imgWidth;
 @property(nonatomic,assign)CGFloat imgHeight;
 

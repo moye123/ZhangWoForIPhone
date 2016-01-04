@@ -15,8 +15,6 @@
 }
 
 @property(nonatomic,strong)NSString *income;
-@property(nonatomic,retain)AFHTTPRequestOperationManager *afmanager;
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)UIScrollView *scrollView;
 
 @end

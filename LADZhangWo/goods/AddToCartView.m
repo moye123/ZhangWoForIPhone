@@ -121,13 +121,10 @@
         [params setObject:_buyNumField.text forKey:@"buynum"];
         [params setObject:@(_userStatus.uid) forKey:@"uid"];
         [params setObject:_userStatus.username forKey:@"username"];
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        [manager POST:[SITEAPI stringByAppendingString:@"&mod=cart&ac=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            id dictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            if ([dictionary isKindOfClass:[NSDictionary class]]) {
-                if ([dictionary objectForKey:@"cartid"]) {
-                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"添加成功"];
+        [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=cart&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                if ([responseObject objectForKey:@"cartid"]) {
+                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"添加成功"];
                     [self hide];
                 }
             }else {

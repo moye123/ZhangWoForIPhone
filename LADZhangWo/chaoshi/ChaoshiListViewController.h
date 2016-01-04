@@ -16,7 +16,6 @@
     BOOL _isRefreshing;
     ZWRefreshControl *_refreshControl;
     ZWPullUpView *_pullUpView;
-    AFHTTPRequestOperationManager *_afmanager;
     CGFloat _cellWith;
     CGFloat _cellHeight;
     UILabel *_tipsView;

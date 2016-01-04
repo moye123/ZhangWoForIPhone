@@ -10,14 +10,12 @@
 
 @implementation FeedbackViewController
 @synthesize textView = _textView;
-@synthesize userStatus = _userStatus;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setTitle:@"反馈建议"];
     [self.view setBackgroundColor:[UIColor backColor]];
     [self.navigationController setNavigationBarHidden:NO];
-    self.userStatus = [ZWUserStatus sharedStatus];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     UIBarButtonItem *sendButton = [[UIBarButtonItem alloc] initWithTitle:@"发送" style:UIBarButtonItemStylePlain target:self action:@selector(send)];
@@ -50,19 +48,17 @@
     [self.textView resignFirstResponder];
     NSString *message = self.textView.text;
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:@(_userStatus.uid) forKey:@"uid"];
-    [params setObject:_userStatus.username forKey:@"username"];
+    [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
+    [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:message forKey:@"message"];
     if ([message length] > 0) {
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        [manager POST:[SITEAPI stringByAppendingString:@"&mod=feedback&ac=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            if (responseObject) {
+        [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=feedback&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
                 [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"发送成功，谢谢你的支持"];
                 [self.navigationController popViewControllerAnimated:YES];
             }
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-            
+            NSLog(@"%@", error);
         }];
     }else {
         [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"请输入内容"];

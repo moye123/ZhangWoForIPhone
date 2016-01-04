@@ -36,9 +36,6 @@
     _pullUpView.hidden = YES;
     self.refreshControl = _refreshContorl;
     self.tableView.tableFooterView = _pullUpView;
-    
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     [self refresh];
 }
 
@@ -59,10 +56,9 @@
 }
 
 - (void)loadData{
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&c=favorite&a=showlist&page=%d&uid=%ld",_page,(long)[ZWUserStatus sharedStatus].uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            [self reloadTableViewWithArray:array];
+    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=favorite&a=showlist&page=%d&uid=%ld",_page,(long)[ZWUserStatus sharedStatus].uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            [self reloadTableViewWithArray:responseObject];
         }else {
             [_pullUpView endLoading];
             [_refreshContorl endRefreshing];
@@ -170,9 +166,8 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSInteger favid = [[favorItem objectForKey:@"favid"] integerValue];
         NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),@"favid":@(favid)};
-        [_afmanager GET:[SITEAPI stringByAppendingString:@"&c=favorite&a=delete"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            if ([returns isKindOfClass:[NSDictionary class]]) {
+        [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=favorite&a=delete"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
                 [_favoriteList removeObjectAtIndex:indexPath.row];
                 [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             }

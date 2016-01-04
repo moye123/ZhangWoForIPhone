@@ -25,10 +25,6 @@
     _popMenu.delegate = self;
     [self.navigationController.view addSubview:_popMenu];
     
-    //实例化afnetworking manager
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    
     //初始化列表数组
     _travelList = [NSMutableArray array];
     self.tableView.delegate = self;
@@ -88,14 +84,12 @@
 #pragma mark
 - (void)loadData{
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=travel&a=showlist&catid=%ld&page=%d", (long)_catid,_page];
-    [_afmanager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
+    [[AFHTTPRequestOperationManager sharedManager] GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
             if (_isRefreshing) {
-                [[NSUserDefaults standardUserDefaults] setObject:array forKey:@"travelList"];
-                
+                [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:@"travelList"];
             }
-            [self showTableViewWithArray:array];
+            [self showTableViewWithArray:responseObject];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);

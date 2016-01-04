@@ -11,7 +11,6 @@
 
 @interface MyIncomeViewController : UITableViewController<UIScrollViewDelegate>{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
     int _page;
     BOOL _isRefreshing;
     UILabel *_tipsView;

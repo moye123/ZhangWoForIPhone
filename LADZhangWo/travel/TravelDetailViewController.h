@@ -11,7 +11,6 @@
 
 @interface TravelDetailViewController : UIViewController<UIWebViewDelegate,DSXDropDownMenuDelegate>{
     DSXDropDownMenu *_popMenu;
-    AFHTTPRequestOperationManager *_afmanager;
 }
 
 @property(nonatomic,assign)NSInteger travelID;

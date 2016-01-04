@@ -15,7 +15,7 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"top-bg.png"]];
+        self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"top-bg-orange.png"]];
         self.imageView = [[UIImageView alloc] init];
         self.textLabel = [[UILabel alloc] init];
     }

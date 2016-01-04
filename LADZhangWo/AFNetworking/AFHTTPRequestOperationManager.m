@@ -41,6 +41,15 @@
     return [[self alloc] initWithBaseURL:nil];
 }
 
++ (instancetype)sharedManager{
+    static id instance;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        instance = [self new];
+    });
+    return instance;
+}
+
 - (instancetype)init {
     return [self initWithBaseURL:nil];
 }

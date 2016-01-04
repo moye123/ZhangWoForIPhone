@@ -14,7 +14,6 @@
     UIButton *commButton;
     NSInteger commentNum;
     DSXDropDownMenu *_popMenu;
-    AFHTTPRequestOperationManager *_afmanager;
 }
 
 @property(nonatomic,assign)NSInteger newsID;

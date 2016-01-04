@@ -12,13 +12,11 @@
 #import "ModiMobileViewController.h"
 
 @implementation SafeViewController
-@synthesize userStatus = _userStatus;
 @synthesize tableView = _tableView;
 
 - (instancetype)init{
     self = [super init];
     if (self) {
-        _userStatus = [ZWUserStatus sharedStatus];
         _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
         _tableView.delegate = self;
         _tableView.dataSource = self;
@@ -61,7 +59,7 @@
         if (indexPath.row == 0) {
             cell.textLabel.text = @"用户名";
             UILabel *usernameLabel = [[UILabel alloc] init];
-            usernameLabel.text = _userStatus.username;
+            usernameLabel.text = [ZWUserStatus sharedStatus].username;
             usernameLabel.textColor = [UIColor colorWithHexString:@"0x666666"];
             [usernameLabel sizeToFit];
             cell.accessoryView = usernameLabel;

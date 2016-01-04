@@ -22,7 +22,6 @@
     BOOL _isRefreshing;
     ZWRefreshControl *_refreshControl;
     ZWPullUpView *_pullUpView;
-    AFHTTPRequestOperationManager *_afmanager;
 }
 @property(nonatomic,assign)int catid;
 @property(nonatomic,strong)NSMutableArray *newsArray;

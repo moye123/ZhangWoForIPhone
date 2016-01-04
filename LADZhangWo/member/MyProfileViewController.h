@@ -13,13 +13,11 @@
     @private
     UIDatePicker *_datePicker;
     DSXModalView *_datePickerView;
-    AFHTTPRequestOperationManager *_afmanager;
 }
 
 - (instancetype)init;
 
 @property(nonatomic,retain)UITableView *tableView;
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)NSMutableDictionary *profile;
 
 @end

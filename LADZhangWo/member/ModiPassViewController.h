@@ -10,10 +10,9 @@
 #import "ZWCommon.h"
 
 @interface ModiPassViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
-    AFHTTPRequestOperationManager *_afmanager;
+
 }
 
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)UITextField *oldPassField;
 @property(nonatomic,retain)UITextField *passwordField;
 @property(nonatomic,retain)UITextField *passwordField2;

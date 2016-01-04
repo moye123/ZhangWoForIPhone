@@ -22,8 +22,8 @@
 - (instancetype)initWithFrame:(CGRect)frame;
 - (void)loaddata;
 
-@property(nonatomic,assign)NSInteger groupid;
-@property(nonatomic,assign)NSInteger num;
+@property(nonatomic,assign)int groupid;
+@property(nonatomic,assign)int num;
 @property(nonatomic,strong)NSArray *imageViews;
 @property(nonatomic,retain)UIScrollView *scrollView;
 @property(nonatomic,retain)UIPageControl *pageControl;

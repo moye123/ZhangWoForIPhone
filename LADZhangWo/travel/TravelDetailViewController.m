@@ -12,7 +12,7 @@
 #import "MyFavoriteViewController.h"
 
 @implementation TravelDetailViewController
-@synthesize travelID = _travelID;
+@synthesize travelID   = _travelID;
 @synthesize travelData = _travelData;
 @synthesize webView = _webView;
 
@@ -26,9 +26,6 @@
     _popMenu.delegate = self;
     [self.navigationController.view addSubview:_popMenu];
     
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    
     //加载页面数据
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=travel&a=showdetail&id=%ld",(long)_travelID];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
@@ -39,14 +36,14 @@
     [_webView loadRequest:request];
     [self.view addSubview:_webView];
     
-    [_afmanager GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            _travelData = returns;
+    [[AFHTTPRequestOperationManager sharedManager] GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            _travelData = responseObject;
             _webView.hidden = NO;
+            self.title = [_travelData objectForKey:@"title"];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        
+        NSLog(@"%@", error);
     }];
 }
 
@@ -75,10 +72,9 @@
                                      @"dataid":@(_travelID),
                                      @"idtype":@"travelid",
                                      @"title":[_travelData objectForKey:@"title"]};
-            [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-                id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-                if ([returns isKindOfClass:[NSDictionary class]]) {
-                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"收藏成功"];
+            [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+                if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"收藏成功"];
                 }
             } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
                 NSLog(@"%@", error);
@@ -99,9 +95,6 @@
 }
 
 #pragma mark - webView delegate
-- (void)webViewDidFinishLoad:(UIWebView *)webView{
-    self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-}
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
     NSURL *url = [request URL];
     NSDictionary *params = [[DSXUtil sharedUtil] parseQueryString:[url query]];

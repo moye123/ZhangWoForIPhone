@@ -19,6 +19,11 @@
     return instance;
 }
 
++ (void)nslogData:(NSData *)data{
+    NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"%@",string);
+}
+
 - (void)nslogStringWithData:(NSData *)data{
     NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"%@",string);
@@ -51,7 +56,7 @@
 - (void)addFavoriteWithParams:(NSMutableDictionary *)params{
     NSData *data = [self sendDataForURL:[SITEAPI stringByAppendingString:@"&ac=misc&op=addfavorite"] params:params];
     if ([data length] > 0) {
-        [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"收藏成功"];
+        [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"收藏成功"];
     }
 }
 

@@ -19,6 +19,7 @@
 @property(nonatomic)float goodsPrice;
 @property(nonatomic)NSInteger goodsNum;
 @property(nonatomic)NSString *shopName;
+@property(nonatomic)NSString *goodsFrom;
 @property(nonatomic)BOOL selectState;
 
 @end

@@ -35,36 +35,45 @@
 }
 
 - (void)loaddata{
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:[SITEAPI stringByAppendingFormat:@"&mod=homepage&ac=showlist&groupid=%ld&num=%ld",(long)_groupid,(long)_num] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            for (UIView *subview in _scrollView.subviews) {
-                [subview removeFromSuperview];
+    NSString *keyName = [NSString stringWithFormat:@"slider_%d",_groupid];
+    [self showImageWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:keyName]];
+    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=homepage&a=showlist&groupid=%d&num=%d",_groupid,_num] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            if ([responseObject count] > 0) {
+                [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:keyName];
+                [self showImageWithArray:responseObject];
             }
-            CGFloat x = 0;
-            _slideData = [NSMutableDictionary dictionary];
-            for (NSDictionary *dict in array) {
-                UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(x, 0, self.frame.size.width, self.frame.size.height)];
-                [imageView sd_setImageWithURL:[NSURL URLWithString:[dict objectForKey:@"pic"]]];
-                [imageView setContentMode:UIViewContentModeScaleToFill];
-                [imageView setTag:[[dict objectForKey:@"id"] integerValue]];
-                [_scrollView addSubview:imageView];
-                
-                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTap:)];
-                [imageView addGestureRecognizer:tap];
-                [imageView setUserInteractionEnabled:YES];
-                x+= self.frame.size.width;
-                [_slideData setObject:dict forKey:[dict objectForKey:@"id"]];
-            }
-            _scrollView.contentSize = CGSizeMake(self.frame.size.width*[_slideData count], 0);
-            _pageControl.numberOfPages = [_slideData count];
-            [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(autoPlay) userInfo:nil repeats:YES];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
+}
+
+- (void)showImageWithArray:(NSArray *)array{
+    if (!array) {
+        return;
+    }
+    for (UIView *subview in _scrollView.subviews) {
+        [subview removeFromSuperview];
+    }
+    CGFloat x = 0;
+    _slideData = [NSMutableDictionary dictionary];
+    for (NSDictionary *dict in array) {
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(x, 0, self.frame.size.width, self.frame.size.height)];
+        [imageView sd_setImageWithURL:[NSURL URLWithString:[dict objectForKey:@"pic"]]];
+        [imageView setContentMode:UIViewContentModeScaleToFill];
+        [imageView setTag:[[dict objectForKey:@"id"] integerValue]];
+        [_scrollView addSubview:imageView];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTap:)];
+        [imageView addGestureRecognizer:tap];
+        [imageView setUserInteractionEnabled:YES];
+        x+= self.frame.size.width;
+        [_slideData setObject:dict forKey:[dict objectForKey:@"id"]];
+    }
+    _scrollView.contentSize = CGSizeMake(self.frame.size.width*[_slideData count], 0);
+    _pageControl.numberOfPages = [_slideData count];
+    [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(autoPlay) userInfo:nil repeats:YES];
 }
 
 - (void)imageViewTap:(UITapGestureRecognizer *)tap{

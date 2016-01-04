@@ -10,12 +10,10 @@
 #import "ZWCommon.h"
 
 @interface ModiMobileViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
-    AFHTTPRequestOperationManager *_afmanager;
     int _waitSeconds;
     NSString *_secCode;
 }
 
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)UITextField *mobileField;
 @property(nonatomic,retain)UITextField *seccodeField;
 @property(nonatomic,retain)UIButton *secButton;

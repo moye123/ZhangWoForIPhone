@@ -11,7 +11,6 @@
 
 @interface MyWalletViewController : UITableViewController{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
     UIView *_headerView;
     UIView *_footerView;
     UILabel *_totalLabel;

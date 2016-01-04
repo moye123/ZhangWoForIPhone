@@ -14,6 +14,5 @@
 - (instancetype)init;
 
 @property(nonatomic,retain)UITableView *tableView;
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

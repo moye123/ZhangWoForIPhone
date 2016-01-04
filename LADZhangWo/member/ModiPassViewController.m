@@ -9,9 +9,8 @@
 #import "ModiPassViewController.h"
 
 @implementation ModiPassViewController
-@synthesize userStatus = _userStatus;
-@synthesize oldPassField = _oldPassField;
-@synthesize passwordField = _passwordField;
+@synthesize oldPassField   = _oldPassField;
+@synthesize passwordField  = _passwordField;
 @synthesize passwordField2 = _passwordField2;
 @synthesize tableView = _tableView;
 
@@ -21,17 +20,13 @@
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
-    _userStatus = [ZWUserStatus sharedStatus];
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [self.view addSubview:_tableView];
     
-    _oldPassField = [self textFieldWithPlaceHolder:@"请输入原密码:"];
-    _passwordField = [self textFieldWithPlaceHolder:@"请输入新密码:"];
+    _oldPassField   = [self textFieldWithPlaceHolder:@"请输入原密码:"];
+    _passwordField  = [self textFieldWithPlaceHolder:@"请输入新密码:"];
     _passwordField2 = [self textFieldWithPlaceHolder:@"请确认新密码:"];
     
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 100)];
@@ -90,18 +85,17 @@
     }
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:@(_userStatus.uid) forKey:@"uid"];
-    [params setObject:_userStatus.username forKey:@"username"];
+    [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
+    [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:[oldpass md5] forKey:@"oldpass"];
     [params setObject:[password md5] forKey:@"password"];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=member&ac=modipass"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            if ([[returns objectForKey:@"uid"] integerValue] == _userStatus.uid) {
-                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"密码修改成功"];
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=member&a=modipass"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"uid"] integerValue] == [ZWUserStatus sharedStatus].uid) {
+                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"密码修改成功"];
                 [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
             }else {
-                if ([[returns objectForKey:@"errno"] integerValue] == -1) {
+                if ([[responseObject objectForKey:@"errno"] integerValue] == -1) {
                     [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"原密码错误"];
                 }
             }

@@ -23,9 +23,6 @@
     [rightBarButton setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor blackColor]} forState:UIControlStateNormal];
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    
     _headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 120)];
     _headerView.backgroundColor = [UIColor colorWithHexString:@"0xDB7E7D"];
     self.tableView.tableHeaderView = _headerView;
@@ -60,10 +57,9 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=wallet&ac=showdetail"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            _walletData = returns;
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=wallet&a=showdetail"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            _walletData = responseObject;
             _totalLabel.text = [NSString stringWithFormat:@"￥%.2f",[[_walletData objectForKey:@"balance"] floatValue]];
             [self.tableView reloadData];
         }else {

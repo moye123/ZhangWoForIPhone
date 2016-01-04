@@ -11,15 +11,11 @@
 
 @implementation MyProfileViewController
 @synthesize tableView = _tableView;
-@synthesize userStatus = _userStatus;
-@synthesize profile = _profile;
+@synthesize profile   = _profile;
 
 - (instancetype)init{
     self = [super init];
     if (self) {
-        _userStatus = [ZWUserStatus sharedStatus];
-        _afmanager = [[AFHTTPRequestOperationManager alloc] init];
-        _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
         _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
         _tableView.delegate = self;
         _tableView.dataSource = self;
@@ -36,10 +32,9 @@
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"正在加载.."];
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=profile&ac=showdetail&uid=%ld",(long)_userStatus.uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            _profile = [NSMutableDictionary dictionaryWithDictionary:returns];
+    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=profile&a=showdetail&uid=%ld",(long)[ZWUserStatus sharedStatus].uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            _profile = [NSMutableDictionary dictionaryWithDictionary:responseObject];
             _tableView.hidden = NO;
             [_tableView reloadData];
             [loadingView removeFromSuperview];
@@ -77,7 +72,7 @@
         if (indexPath.row == 0) {
             cell.textLabel.text = @"用户名";
             cell.selectionStyle = UITableViewCellAccessoryNone;
-            cell.detailTextLabel.text = _userStatus.username;
+            cell.detailTextLabel.text = [ZWUserStatus sharedStatus].username;
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
         
@@ -85,7 +80,7 @@
             cell.textLabel.text = @"头像";
             cell.detailTextLabel.text = @"       ";
             UIImageView *avatar = [[UIImageView alloc] initWithFrame:CGRectMake(0, -5, 30, 30)];
-            [avatar sd_setImageWithURL:[NSURL URLWithString:_userStatus.userpic]];
+            [avatar sd_setImageWithURL:[NSURL URLWithString:[ZWUserStatus sharedStatus].userpic]];
             avatar.layer.cornerRadius = 15.0;
             avatar.layer.masksToBounds = YES;
             [cell.detailTextLabel addSubview:avatar];
@@ -166,15 +161,12 @@
     NSDateFormatter *formater = [[NSDateFormatter alloc] init];
     [formater setDateFormat:@"yyyy-MM-dd"];
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:@(_userStatus.uid) forKey:@"uid"];
-    [params setObject:_userStatus.username forKey:@"username"];
+    [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
+    [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:[formater stringFromDate:date] forKey:@"profilenew[birthday]"];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=profile&ac=update"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        //[[DSXUtil sharedUtil] nslogStringWithData:responseObject];
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            if ([[returns objectForKey:@"uid"] integerValue] == _userStatus.uid) {
-                //[[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"修改成功"];
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=profile&a=update"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"uid"] integerValue] == [ZWUserStatus sharedStatus].uid) {
                 [_profile setObject:[formater stringFromDate:date] forKey:@"birthday"];
                 [_datePickerView hide];
                 [_tableView reloadData];
@@ -187,19 +179,18 @@
 
 - (void)setSex:(NSInteger)sex{
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:@(_userStatus.uid) forKey:@"uid"];
-    [params setObject:_userStatus.username forKey:@"username"];
+    [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
+    [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:@(sex) forKey:@"profilenew[usersex]"];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=profile&ac=update"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            if ([[returns objectForKey:@"uid"] integerValue] == _userStatus.uid) {
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=profile&a=update"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"uid"] intValue] == [ZWUserStatus sharedStatus].uid) {
                 [_profile setObject:@(sex) forKey:@"usersex"];
                 [_tableView reloadData];
             }
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        
+        NSLog(@"%@", error);
     }];
 }
 
@@ -239,15 +230,15 @@
     NSString *filePath = [[DSXSandboxHelper tmpPath] stringByAppendingString:@"/tmp_image.jpg"];
     NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:filePath];
     if ([imageData writeToFile:filePath atomically:YES]) {
-        [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=profile&ac=setavatar"] parameters:@{@"uid":@(_userStatus.uid),@"username":_userStatus.username} constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=profile&a=setavatar"] parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"username":[ZWUserStatus sharedStatus].username} constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
             [formData appendPartWithFileURL:fileURL name:@"filedata" error:nil];
         } success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             [loadingView removeFromSuperview];
             [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
             id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
             if ([returns isKindOfClass:[NSDictionary class]]) {
-                [_userStatus setUserpic:[_userStatus.userpic stringByAppendingFormat:@"?%d",rand()]];
-                [_userStatus update];
+                [[ZWUserStatus sharedStatus] setUserpic:[[ZWUserStatus sharedStatus].userpic stringByAppendingFormat:@"?%d",rand()]];
+                [[ZWUserStatus sharedStatus] update];
                 [_tableView reloadData];
                 [[NSNotificationCenter defaultCenter] postNotificationName:UserImageChangedNotification object:nil];
             }

@@ -7,16 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ZWCommon.h"
+#import "NoticeViewCell.h"
 
 @interface MyMessageViewController : UITableViewController{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
+    ZWRefreshControl *_refreshControl;
+    ZWPullUpView *_pullUpView;
+    BOOL _isRefreshing;
+    int _page;
 }
 
 - (instancetype)init;
-
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,strong)NSMutableArray *messageList;
 
 @end

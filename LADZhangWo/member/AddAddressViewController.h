@@ -13,10 +13,8 @@
     @private
     DSXModalView *_madelView;
     UIPickerView *_pickerView;
-    AFHTTPRequestOperationManager *_afmanager;
 }
 
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 @property(nonatomic,retain)UITextField *nameField;
 @property(nonatomic,retain)UITextField *phoneField;
 @property(nonatomic,retain)UITextField *districtField;

@@ -15,6 +15,5 @@
 }
 
 @property(nonatomic,retain)UITextView *textView;
-@property(nonatomic,retain)ZWUserStatus *userStatus;
 
 @end

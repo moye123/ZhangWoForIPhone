@@ -16,7 +16,6 @@
     ZWRefreshControl *_refreshControl;
     ZWPullUpView*_pullUpView;
     UILabel *_tipsLabel;
-    AFHTTPRequestOperationManager *_afmanager;
     DSXDropDownMenu *_popMenu;
 }
 @property(nonatomic,strong)NSMutableArray *travelList;

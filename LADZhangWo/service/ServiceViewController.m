@@ -19,8 +19,6 @@
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     self = [super initWithCollectionViewLayout:layout];
     if (self) {
-        _afmanager = [AFHTTPRequestOperationManager manager];
-        _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
         _cellWidth = SWIDTH/4 - 0.5;
         _cellHeight = 90;
     }
@@ -40,10 +38,9 @@
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"serviceCell"];
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"slideView"];
     
-    [_afmanager GET:[SITEAPI stringByAppendingString:@"&mod=service&ac=showlist"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            _serviceList = [NSMutableArray arrayWithArray:array];
+    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=service&a=showlist"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            _serviceList = [NSMutableArray arrayWithArray:responseObject];
             [self.collectionView reloadData];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {

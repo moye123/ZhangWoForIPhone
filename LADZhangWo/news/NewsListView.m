@@ -10,8 +10,8 @@
 
 @implementation NewsListView
 @synthesize catid = _catid;
-@synthesize newsArray;
-@synthesize showNewsDelegate;
+@synthesize newsArray = _newsArray;
+@synthesize showNewsDelegate = _showNewsDelegate;
 
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame style:UITableViewStylePlain];
@@ -28,9 +28,6 @@
         self.delegate = self;
         self.dataSource = self;
         self.newsArray = [NSMutableArray array];
-        
-        _afmanager = [AFHTTPRequestOperationManager manager];
-        _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     }
     return self;
 }
@@ -43,14 +40,13 @@
 
 - (void)loadData{
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=post&a=showlist&catid=%d&page=%d",_catid,_page];
-    [_afmanager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            if (_isRefreshing && [array count]>0) {
+    [[AFHTTPRequestOperationManager sharedManager] GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            if (_isRefreshing && [responseObject count]>0) {
                 NSString *key = [NSString stringWithFormat:@"newsList_%d",_catid];
-                [[NSUserDefaults standardUserDefaults] setObject:array forKey:key];
+                [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:key];
             }
-            [self showTableViewWithArray:array];
+            [self showTableViewWithArray:responseObject];
             
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {

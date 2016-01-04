@@ -13,7 +13,7 @@
 @synthesize newsID = _newsID;
 @synthesize contentWebView = _contentWebView;
 @synthesize commentWebView = _commentWebView;
-@synthesize scrollView = _scrollView;
+@synthesize scrollView  = _scrollView;
 @synthesize commentView = _commentView;
 @synthesize articleData = _articleData;
 
@@ -29,10 +29,6 @@
     _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
     _popMenu.delegate = self;
     [self.navigationController.view addSubview:_popMenu];
-    
-    //初始化网络操作对象
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
     CGRect frame = self.view.frame;
     _scrollView = [[UIScrollView alloc] initWithFrame:frame];
@@ -55,10 +51,9 @@
     request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     [_contentWebView loadRequest:request];
     
-    [_afmanager GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            _articleData = returns;
+    [[AFHTTPRequestOperationManager sharedManager] GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            _articleData = responseObject;
             _contentWebView.hidden = NO;
             NSString *stringNum = [self.articleData objectForKey:@"commentnum"];
             [commButton setTitle:stringNum forState:UIControlStateNormal];
@@ -135,10 +130,9 @@
                                      @"dataid":@(_newsID),
                                      @"idtype":@"aid",
                                      @"title":title};
-            [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-                id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-                if ([returns isKindOfClass:[NSDictionary class]]) {
-                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"收藏成功"];
+            [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+                if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"收藏成功"];
                 }
             } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
                 NSLog(@"%@", error);
@@ -216,17 +210,16 @@
         [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
         [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
         [params setObject:message forKey:@"message"];
-        [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=comment&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            id dictionary = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-            if ([dictionary isKindOfClass:[NSDictionary class]]) {
-                if ([dictionary objectForKey:@"cid"]) {
+        [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=comment&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                if ([responseObject objectForKey:@"cid"]) {
                     commentNum++;
                     NSString *title = [NSString stringWithFormat:@"%ld",(long)commentNum];
                     [commButton setTitle:title forState:UIControlStateNormal];
                     
                     _commentView.textView.text = @"";
                     [_commentWebView reload];
-                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"评论发表成功"];
+                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"评论发表成功"];
                 }else {
                     [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"内部系统错误"];
                 }

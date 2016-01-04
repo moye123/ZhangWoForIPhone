@@ -29,11 +29,11 @@
         case ZWNavigationStyleGray:
             [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbg-gray.png"] forBarMetrics:UIBarMetricsDefault];
             [self.navigationBar setBarStyle:UIBarStyleDefault];
-            [self.navigationBar setTintColor:[UIColor blackColor]];
+            [self.navigationBar setTintColor:[UIColor colorWithRed:0.2 green:0.22 blue:0.25 alpha:1]];
             break;
             
         default:
-            [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbg-green.png"] forBarMetrics:UIBarMetricsDefault];
+            [self.navigationBar setBackgroundImage:[UIImage imageNamed:@"nav-bg-orange.png"] forBarMetrics:UIBarMetricsDefault];
             [self.navigationBar setBarStyle:UIBarStyleBlack];
             [self.navigationBar setTintColor:[UIColor whiteColor]];
             break;
@@ -42,9 +42,9 @@
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated{
     CATransition *animation = [CATransition animation];
-    animation.duration = 0.5;
+    animation.duration = 0.3;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
-    animation.type = kCATransitionPush;
+    animation.type = kCATransitionMoveIn;
     animation.subtype = kCATransitionFromRight;
     [self.view.window.layer addAnimation:animation forKey:nil];
     [super pushViewController:viewController animated:NO];
@@ -52,19 +52,19 @@
 
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated{
     CATransition *animation = [CATransition animation];
-    animation.duration = 0.3;
+    animation.duration = 0.2;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
-    animation.type = kCATransitionPush;
+    animation.type = kCATransitionReveal;
     animation.subtype = kCATransitionFromLeft;
     [self.view.window.layer addAnimation:animation forKey:nil];
-    return [super popViewControllerAnimated:animated];
+    return [super popViewControllerAnimated:NO];
 }
 
 - (void)presentViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion{
     CATransition *animation = [CATransition animation];
-    animation.duration = 0.5;
+    animation.duration = 0.3;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
-    animation.type = kCATransitionPush;
+    animation.type = kCATransitionMoveIn;
     animation.subtype = kCATransitionFromRight;
     [self.view.window.layer addAnimation:animation forKey:nil];
     [super presentViewController:viewControllerToPresent animated:NO completion:completion];
@@ -72,12 +72,12 @@
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion{
     CATransition *animation = [CATransition animation];
-    animation.duration = 0.3;
+    animation.duration = 0.2;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
     animation.type = kCATransitionPush;
     animation.subtype = kCATransitionFromLeft;
     [self.view.window.layer addAnimation:animation forKey:nil];
-    [super dismissViewControllerAnimated:flag completion:completion];
+    [super dismissViewControllerAnimated:NO completion:completion];
 }
 
 @end

@@ -8,16 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
+#import "DSXPayManager.h"
 
-@interface PayViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
+@interface PayViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,DSXPayManagerDelegate>{
     @private
-
+    NSString *_billID;
+    NSString *_billAmount;
 }
 
-@property(nonatomic,assign)NSInteger orderid;
-@property(nonatomic,strong)NSString *orderno;
-@property(nonatomic,strong)NSString *orderTitle;
-@property(nonatomic,assign)float total;
+@property(nonatomic,strong)NSString *orderID;
+@property(nonatomic,strong)NSString *orderName;
+@property(nonatomic,strong)NSString *orderDetail;
 @property(nonatomic,retain)UITableView *tableView;
 
 @end

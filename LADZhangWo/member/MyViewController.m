@@ -323,23 +323,23 @@
         MyOrderViewController *orderView = [[MyOrderViewController alloc] init];
         switch (sender.tag) {
             case 101:
-                orderView.status = 1;
+                orderView.shippingStatus = @"1";
                 orderView.title = @"待发货";
                 break;
             case 102:
-                orderView.status = 4;
+                orderView.shippingStatus = @"4";
                 orderView.title = @"待使用";
                 break;
             case 103:
-                orderView.status = 2;
+                orderView.shippingStatus = @"2";
                 orderView.title = @"待收货";
                 break;
             case 104:
-                orderView.evaluate = 0;
+                orderView.evaluateStatus = @"1";
                 orderView.title = @"待评价";
                 break;
             case 105:
-                orderView.status = 6;
+                orderView.orderStatus = @"2";
                 orderView.title = @"申请退款";
                 break;
             default: orderView.title = @"我的订单";

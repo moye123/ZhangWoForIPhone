@@ -183,6 +183,7 @@ NS_ASSUME_NONNULL_BEGIN
  Creates and returns an `AFHTTPRequestOperationManager` object.
  */
 + (instancetype)manager;
++ (instancetype)sharedManager;
 
 /**
  Initializes an `AFHTTPRequestOperationManager` object with the specified base URL.

@@ -11,7 +11,6 @@
 
 @interface ServiceViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout,DSXSliderViewDelegate>{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
     CGFloat _cellWidth;
     CGFloat _cellHeight;
     DSXSliderView *_slideView;

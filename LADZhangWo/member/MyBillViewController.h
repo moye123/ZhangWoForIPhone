@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ZWCommon.h"
+#import "BillItemCell.h"
 
 @interface MyBillViewController : UITableViewController{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
     int _page;
     BOOL _isRefreshing;
     UILabel *_tipsView;

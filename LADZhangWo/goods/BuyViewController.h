@@ -16,7 +16,6 @@
     UIButton *_useCoupons;
     UILabel *_total;
     UIButton *_submitButton;
-    AFHTTPRequestOperationManager *_afmanager;
     float _totalValue;
 }
 

@@ -31,14 +31,15 @@
 }
 
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=homepage&a=showlist&groupid=%ld&num=%ld",(long)_groupid,(long)_dataCount];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            [[NSUserDefaults standardUserDefaults] setObject:array forKey:[NSString stringWithFormat:@"recommendSlider%ld",(long)_groupid]];
-            [self showImageWithArray:array];
+    NSString *keyName   = [NSString stringWithFormat:@"recommend_%d",_groupid];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=homepage&a=showlist&groupid=%d&num=%d",_groupid,_dataCount];
+    [self showImageWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:keyName]];
+    [[AFHTTPRequestOperationManager sharedManager] GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            if ([responseObject count] > 0) {
+                [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:keyName];
+                [self showImageWithArray:responseObject];
+            }
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);
@@ -46,6 +47,10 @@
 }
 
 - (void)showImageWithArray:(NSArray *)array{
+    for (UIView *subview in self.subviews) {
+        [subview removeFromSuperview];
+    }
+    
     if ([array count] > 0) {
         CGFloat x = 0;
         if (!_imgWidth) {

@@ -11,7 +11,7 @@
 @implementation GoodsBottomView
 @synthesize goodsid = _goodsid;
 @synthesize cartButton = _cartButton;
-@synthesize buyButton = _buyButton;
+@synthesize buyButton  = _buyButton;
 
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];

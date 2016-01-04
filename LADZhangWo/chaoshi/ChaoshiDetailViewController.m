@@ -28,9 +28,6 @@
     _popMenu.delegate = self;
     [self.navigationController.view addSubview:_popMenu];
     
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    
     CGRect frame = self.view.bounds;
     frame.size.height-= 44;
     _webView = [[UIWebView alloc] initWithFrame:frame];
@@ -41,13 +38,12 @@
     [self.view addSubview:_webView];
     
     _loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:nil];
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=chaoshi&ac=showdetail&id=%ld",(long)_goodsid];
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=chaoshi&a=showdetail&id=%ld",(long)_goodsid];
     [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
-    [_afmanager GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            if ([[returns objectForKey:@"id"] integerValue] == _goodsid) {
-                _goodsData = returns;
+    [[AFHTTPRequestOperationManager sharedManager] GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                _goodsData = responseObject;
                 _webView.hidden = NO;
                 [_loadingView removeFromSuperview];
             }else{
@@ -104,10 +100,9 @@
                                      @"dataid":@(_goodsid),
                                      @"idtype":@"csgoodsid",
                                      @"title":[_goodsData objectForKey:@"name"]};
-            [_afmanager POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-                id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-                if ([returns isKindOfClass:[NSDictionary class]]) {
-                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"收藏成功"];
+            [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+                if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"收藏成功"];
                 }
             } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
                 NSLog(@"%@", error);

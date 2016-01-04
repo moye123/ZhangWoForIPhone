@@ -12,7 +12,6 @@
 @interface MyFavoriteViewController : UITableViewController<UIScrollViewDelegate>{
     ZWPullUpView*_pullUpView;
     ZWRefreshControl *_refreshContorl;
-    AFHTTPRequestOperationManager *_afmanager;
     BOOL _isRefreshing;
     int _page;
 }

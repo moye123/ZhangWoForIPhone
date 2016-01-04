@@ -9,23 +9,23 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef enum {
-    DSXBarButtonStyleBack,
-    DSXBarButtonStyleBackWhite,
+typedef NS_ENUM(NSInteger, DSXBarButtonStyle) {
     DSXBarButtonStyleAdd,
+    DSXBarButtonStyleBack,
+    DSXBarButtonStyleClose,
+    DSXBarButtonStyleDelete,
+    DSXBarButtonStyleFavor,
     DSXBarButtonStyleLike,
-    DSXBarButtonStyleShare,
-    DSXBarButtonStyleFavorite,
-    DSXBarButtonStyleRefresh,
     DSXBarButtonStyleMore,
-    DSXBarButtonStyleMoreWhite,
-    DSXBarButtonStyleClose
-}DSXBarButtonStyle;
+    DSXBarButtonStyleMessage,
+    DSXBarButtonStyleRefresh,
+    DSXBarButtonStyleShare
+};
 
 typedef NS_ENUM(NSInteger,DSXPopViewStyle){
     DSXPopViewStyleDefault,
     DSXPopViewStyleWarning,
-    DSXPopViewStyleDone,
+    DSXPopViewStyleSuccess,
     DSXPopViewStyleError
 };
 

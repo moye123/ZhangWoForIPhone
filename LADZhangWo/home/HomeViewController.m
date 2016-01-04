@@ -18,15 +18,16 @@
 #import "ServiceViewController.h"
 #import "ShopDetailViewController.h"
 #import "WebViewController.h"
+#import "SearchViewController.h"
+#import "MyMessageViewController.h"
 
 @implementation HomeViewController
 @synthesize local;
-@synthesize tableView = _tableView;
+@synthesize tableView   = _tableView;
 @synthesize channelView = _channelView;
-@synthesize businessView = _businessView;
-@synthesize travelView = _travelView;
+@synthesize travelView  = _travelView;
 @synthesize productView = _productView;
-@synthesize foodView = _foodView;
+@synthesize foodView    = _foodView;
 
 - (instancetype)init{
     self = [super init];
@@ -47,10 +48,10 @@
     self.navigationItem.leftBarButtonItem = leftButton;
     
     searchBar *search = [[searchBar alloc] initWithFrame:CGRectMake(0, 0, 280, 29)];
-    search.textField.enabled = NO;
+    search.textField.delegate = self;
     self.navigationItem.titleView = search;
     
-    UIBarButtonItem *moreButton = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMoreWhite target:self action:@selector(showPopMenu)];
+    UIBarButtonItem *moreButton = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showMessage)];
     self.navigationItem.rightBarButtonItem = moreButton;
     _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 64, 100, 140)];
     [self.navigationController.view addSubview:_popMenu];
@@ -67,7 +68,7 @@
     //轮播广告
     _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, 150)];
     _slideView.groupid = 5;
-    _slideView.num = 3;
+    _slideView.num = 6;
     _slideView.delegate = self;
     [_slideView loaddata];
     [_tableView setTableHeaderView:_slideView];
@@ -77,15 +78,13 @@
     _channelView.delegate = self;
     
     //推荐商家
-    CGFloat height = (SWIDTH - 50)/3;
-    _businessView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, height)];
-    _businessView.tapDelegate = self;
-    _businessView.groupid = 1;
-    _businessView.dataCount = 9;
-    _businessView.imgWidth = (SWIDTH-40)/3;
-    _businessView.imgHeight = height;
-    _businessView.contentSize = CGSizeMake((SWIDTH-20)*3, 0);
-    [_businessView loadData];
+    CGFloat height = SWIDTH*0.30;
+    _shopSlideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, height)];
+    _shopSlideView.delegate = self;
+    _shopSlideView.groupid = 1;
+    _shopSlideView.num = 5;
+    _shopSlideView.pageControl.hidden = YES;
+    [_shopSlideView loaddata];
     
     //旅游推荐
     height = (SWIDTH - 30)/2;
@@ -122,9 +121,23 @@
     
 }
 
-- (void)showPopMenu{
-    //UISearchController *searchController = [[UISearchController alloc] init];
-    //[self presentViewController:searchController animated:YES completion:nil];
+- (void)showMessage{
+    if ([[ZWUserStatus sharedStatus] isLogined]) {
+        MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:messageView];
+        [nav setStyle:ZWNavigationStyleGray];
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }else{
+        [[DSXUI sharedUI] showLoginFromViewController:self];
+    }
+}
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    SearchViewController *searchView = [[SearchViewController alloc] init];
+    ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:searchView];
+    [nav setStyle:ZWNavigationStyleGray];
+    [self presentViewController:nav animated:NO completion:nil];
+    return NO;
 }
 
 #pragma mark - tableView delegate
@@ -133,7 +146,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if (section == 0) {
+    if (section == 0 || section == 1) {
         return 1;
     }else {
         return 2;
@@ -144,11 +157,7 @@
     if (indexPath.section == 0) {
         return 190;
     }else if (indexPath.section == 1){
-        if (indexPath.row == 0) {
-            return 45;
-        }else {
-            return (SWIDTH - 50)/3 + 10;
-        }
+        return SWIDTH*0.30;
     }else if (indexPath.section == 2){
         if (indexPath.row == 0) {
             return 45;
@@ -180,10 +189,7 @@
     }
     if (indexPath.section == 1) {
         if (indexPath.row == 0) {
-            cell.textLabel.text = @"特色商家推荐";
-        }
-        if (indexPath.row == 1) {
-            [cell addSubview:_businessView];
+            [cell addSubview:_shopSlideView];
         }
     }
     
@@ -242,21 +248,24 @@
         NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
         newsView.newsID = dataID;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
-        [self presentViewController:nav animated:YES completion:nil];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
     
     if ([idType isEqualToString:@"shopid"]) {
         ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
         shopView.shopid = dataID;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
-        [self presentViewController:nav animated:YES completion:nil];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
     
     if ([idType isEqualToString:@"travelid"]) {
         TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
         travelView.travelID = dataID;
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
-        [self presentViewController:nav animated:YES completion:nil];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
 }
 

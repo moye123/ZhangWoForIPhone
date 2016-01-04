@@ -7,23 +7,23 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ZWCommon.h"
+#import "OrderItemCell.h"
 
-@interface MyOrderViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>{
+@interface MyOrderViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,DSXDropDownMenuDelegate>{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
-    ZWRefreshControl *_refreshControl;
-    ZWPullUpView *_pullUpView;
-    BOOL _isRefreshing;
     int _page;
+    BOOL _isRefreshing;
     UILabel *_tipsView;
+    DSXDropDownMenu *_popMenu;
+    ZWPullUpView *_pullUpView;
+    ZWRefreshControl *_refreshControl;
 }
 
-- (instancetype)init;
-
-@property(nonatomic,assign)NSInteger status;
-@property(nonatomic,assign)NSInteger evaluate;
 @property(nonatomic,strong)NSMutableArray *orderList;
 @property(nonatomic,retain)UITableView *tableView;
+@property(nonatomic,strong)NSString *orderStatus;
+@property(nonatomic,strong)NSString *payStatus;
+@property(nonatomic,strong)NSString *shippingStatus;
+@property(nonatomic,strong)NSString *evaluateStatus;
 
 @end

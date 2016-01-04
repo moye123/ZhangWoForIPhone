@@ -9,8 +9,7 @@
 #import "ModiEmailViewController.h"
 
 @implementation ModiEmailViewController
-@synthesize userStatus = _userStatus;
-@synthesize emailField = _emailField;
+@synthesize emailField    = _emailField;
 @synthesize passwordField = _passwordField;
 @synthesize tableView = _tableView;
 
@@ -19,9 +18,6 @@
     [self setTitle:@"修改绑定邮箱"];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    _userStatus = [ZWUserStatus sharedStatus];
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
     _tableView.delegate = self;
@@ -73,25 +69,24 @@
     }
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:@(_userStatus.uid) forKey:@"uid"];
-    [params setObject:_userStatus.username forKey:@"username"];
+    [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
+    [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:email forKey:@"email"];
     [params setObject:[password md5] forKey:@"password"];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=member&ac=modiemail"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            if ([[returns objectForKey:@"email"] isEqualToString:email]) {
-                NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:_userStatus.userInfo];
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=member&a=modiemail"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"email"] isEqualToString:email]) {
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[ZWUserStatus sharedStatus].userInfo];
                 [userInfo setObject:email forKey:@"email"];
                 //[_userStatus setUserInfo:userInfo];
-                [_userStatus update];
-                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"邮箱绑定成功"];
+                [[ZWUserStatus sharedStatus] update];
+                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"邮箱绑定成功"];
                 [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
             }else {
-                if ([[returns objectForKey:@"errno"] integerValue] == -1) {
+                if ([[responseObject objectForKey:@"errno"] intValue] == -1) {
                     [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"邮箱格式错误"];
                 }
-                if ([[returns objectForKey:@"errno"] integerValue] == -2) {
+                if ([[responseObject objectForKey:@"errno"] intValue] == -2) {
                     [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"密码错误"];
                 }
             }

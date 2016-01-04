@@ -16,12 +16,11 @@
     [self setTitle:@"我的账单"];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    _billList = [NSMutableArray array];
     
+    _billList = [NSMutableArray array];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    [self.tableView registerClass:[BillItemCell class] forCellReuseIdentifier:@"billCell"];
     
     _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
@@ -34,6 +33,7 @@
     _tipsView = [[DSXUI sharedUI] tipsViewWithTitle:@"账单空空也"];
     _tipsView.center = CGPointMake(self.view.center.x, 200);
     [self.view addSubview:_tipsView];
+    [self refresh];
 }
 
 - (void)back{
@@ -42,6 +42,7 @@
 
 - (void)refresh{
     _page = 1;
+    _isRefreshing = YES;
     [self downloadData];
 }
 
@@ -54,10 +55,9 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=wallet&ac=showbill"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            [self reloadTableViewWithArray:array];
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingFormat:@"&c=bill&a=showlist&page=%d",_page] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            [self reloadTableViewWithArray:responseObject];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);
@@ -101,8 +101,14 @@
     return [_billList count];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 90;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [[UITableViewCell alloc] init];
+    BillItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"billCell"];
+    NSDictionary *billData = [_billList objectAtIndex:indexPath.row];
+    [cell setBillData:billData];
     return cell;
 }
 

@@ -11,7 +11,6 @@
 
 @interface ChaoshiIndexViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout>{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
     CGFloat _cellWith;
     CGFloat _cellHeight;
     DSXSliderView *_slideView;

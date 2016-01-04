@@ -23,7 +23,7 @@
     [self setTitle:@"手机注册"];
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBackWhite target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"邮箱注册" style:UIBarButtonItemStylePlain target:self action:@selector(showRegister)];
     
     //手机号输入框
@@ -93,7 +93,7 @@
         [self.seccodeButton setBackgroundImage:[UIImage imageNamed:@"seccodebutton2.png"] forState:UIControlStateNormal];
         [self.seccodeButton setTitle:@"重新发送(60)" forState:UIControlStateNormal];
         [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(wating:) userInfo:nil repeats:YES];
-        [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"验证码发送成功"];
+        [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"验证码发送成功"];
         
         NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=member&ac=sendseccode&phone=%@",phone];
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];

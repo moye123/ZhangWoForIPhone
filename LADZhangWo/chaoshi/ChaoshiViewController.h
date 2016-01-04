@@ -10,7 +10,6 @@
 #import "ZWCommon.h"
 @interface ChaoshiViewController : UIViewController<UIWebViewDelegate,DSXDropDownMenuDelegate>{
     @private
-    AFHTTPRequestOperationManager *_afmanager;
     DSXDropDownMenu *_popMenu;
 }
 

@@ -15,7 +15,7 @@
     [super viewDidLoad];
     [self setTitle:@"联系我们"];
     
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBackWhite target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     _mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
     [self.view addSubview:_mapView];
@@ -31,7 +31,7 @@
             MyAnnotation *annotation = [[MyAnnotation alloc] init];
             annotation.title = @"力爱迪科技有限公司";
             annotation.coordinate = [location coordinate];
-            annotation.subtitle = @"电话:0858-8772117 六盘水钟山区金水港湾C座1102室";
+            annotation.subtitle = @"六盘水钟山区金水港湾C座1101 电话:0858-8772117";
             [_mapView addAnnotation:annotation];
             [_mapView selectAnnotation:annotation animated:YES];
             MKCoordinateSpan span = MKCoordinateSpanMake(0.05, 0.05);

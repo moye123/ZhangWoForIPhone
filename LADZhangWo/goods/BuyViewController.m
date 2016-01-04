@@ -10,7 +10,7 @@
 #import "PayViewController.h"
 
 @implementation BuyViewController
-@synthesize goodsid = _goodsid;
+@synthesize goodsid   = _goodsid;
 @synthesize goodsdata = _goodsdata;
 @synthesize tableView = _tableView;
 @synthesize from = _from;
@@ -18,8 +18,7 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        _afmanager = [AFHTTPRequestOperationManager manager];
-        _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        
     }
     return self;
 }
@@ -27,37 +26,39 @@
     [super viewDidLoad];
     [self setTitle:@"购买"];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
+    self.navigationItem.rightBarButtonItem = rightButton;
     
     NSString *goodsurl;
     UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:nil];
-    if ([_from isEqualToString:@"chaoshi"]) {
-        goodsurl = [SITEAPI stringByAppendingFormat:@"&mod=chaoshi&ac=showdetail&datatype=json&id=%ld",(long)_goodsid];
-    }else {
-        goodsurl = [SITEAPI stringByAppendingFormat:@"&mod=goods&ac=showdetail&datatype=json&id=%ld",(long)_goodsid];
-    }
-    [_afmanager GET:goodsurl parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            _goodsdata = returns;
-            _totalValue = [[_goodsdata objectForKey:@"price"] floatValue];
-            [self showTableView];
-            [loadingView removeFromSuperview];
-        }else {
-            [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"数据加载失败"];
-        }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
-    }];
     
+    //从服务器读取商品数据
+    if ([_from isEqualToString:@"chaoshi"]) {
+        goodsurl = [SITEAPI stringByAppendingFormat:@"&c=chaoshi&a=showdetail&datatype=json&id=%ld",(long)_goodsid];
+    }else {
+        goodsurl = [SITEAPI stringByAppendingFormat:@"&c=goods&a=showdetail&datatype=json&id=%ld",(long)_goodsid];
+    }
+    [[AFHTTPRequestOperationManager sharedManager] GET:goodsurl parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        [loadingView removeFromSuperview];
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                _goodsdata  = responseObject;
+                _totalValue = [[_goodsdata objectForKey:@"price"] floatValue];
+                [self showTableView];
+            }
+        }else {
+            [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"商品数据读取失败"];
+            [self back];
+        }
+        
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        [loadingView removeFromSuperview];
+        [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"数据加载失败"];
+        [self back];
+    }];
 }
 
 - (void)showTableView{
-    if ([[_goodsdata objectForKey:@"id"] integerValue] != _goodsid) {
-        [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"商品数据异常"];
-        [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
-        return;
-    }
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -75,7 +76,7 @@
     [_submitButton setBackgroundColor:[UIColor whiteColor]];
     [_submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
     [_submitButton setBackgroundImage:[UIImage imageNamed:@"button-selected.png"] forState:UIControlStateHighlighted];
-    [_submitButton addTarget:self action:@selector(submitOrder) forControlEvents:UIControlEventTouchUpInside];
+    [_submitButton addTarget:self action:@selector(submit) forControlEvents:UIControlEventTouchUpInside];
     [footerView addSubview:_submitButton];
 }
 
@@ -83,6 +84,10 @@
     if (![self.navigationController popViewControllerAnimated:YES]) {
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+- (void)cancel{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - tableView delegate
@@ -236,34 +241,37 @@
     [_total sizeToFit];
 }
 
-- (void)submitOrder{
+//提交订单
+- (void)submit{
+    if (_goodsdata == nil) {
+        return;
+    }
     _from = _from == nil ? @"shop" : _from;
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
-    [params setObject:[_goodsdata objectForKey:@"id"] forKey:@"goods_id"];
-    [params setObject:_numField.text forKey:@"buynum"];
-    [params setObject:_from forKey:@"goods_from"];
+    [params setObject:[_goodsdata objectForKey:@"id"] forKey:@"goodsids"];
+    [params setObject:_numField.text forKey:@"goodsnums"];
+    [params setObject:_from forKey:@"goodsfroms"];
     
-    UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"订单提交中.."];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=order&ac=create"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"订单处理中.."];
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=order&a=create"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         [loadingView removeFromSuperview];
-        id returns = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            if ([[returns objectForKey:@"orderid"] integerValue] > 0) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                 PayViewController *payView = [[PayViewController alloc] init];
-                payView.orderid = [[returns objectForKey:@"orderid"] integerValue];
-                payView.orderno = [returns objectForKey:@"orderno"];
-                payView.orderTitle = [_goodsdata objectForKey:@"name"];
-                payView.total = _totalValue;
-                [self.navigationController pushViewController:payView animated:YES];
+                payView.orderID     = [responseObject objectForKey:@"orderid"];
+                payView.orderName   = [_goodsdata objectForKey:@"name"];
+                payView.orderDetail = [_goodsdata objectForKey:@"shopname"];
+                [self .navigationController pushViewController:payView animated:YES];
+            }else {
+                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"订单提交失败"];
+                [self back];
             }
-        }else {
-            [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"订单保存失败,请重试"];
         }
-        
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"系统繁忙,请稍后重试"];
+        [loadingView removeFromSuperview];
+        NSLog(@"%@", error);
     }];
 }
 

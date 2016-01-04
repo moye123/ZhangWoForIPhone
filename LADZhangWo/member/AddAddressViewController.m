@@ -9,16 +9,15 @@
 #import "AddAddressViewController.h"
 
 @implementation AddAddressViewController
-@synthesize userStatus = _userStatus;
-@synthesize nameField = _nameField;
-@synthesize phoneField = _phoneField;
+@synthesize nameField     = _nameField;
+@synthesize phoneField    = _phoneField;
 @synthesize districtField = _districtField;
-@synthesize addressField = _addressField;
+@synthesize addressField  = _addressField;
 @synthesize postcodeField = _postcodeField;
-@synthesize provinceList = _provinceList;
-@synthesize cityList = _cityList;
-@synthesize countyList = _countyList;
-@synthesize submitButton = _submitButton;
+@synthesize provinceList  = _provinceList;
+@synthesize cityList      = _cityList;
+@synthesize countyList    = _countyList;
+@synthesize submitButton  = _submitButton;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -27,10 +26,6 @@
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    
-    _userStatus = [ZWUserStatus sharedStatus];
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
     _nameField = [self textFieldWithPlaceHolder:@"收货人姓名"];
     _phoneField = [self textFieldWithPlaceHolder:@"联系电话"];
@@ -73,21 +68,20 @@
 }
 
 - (void)reloadPickerViewComponent:(NSInteger)Component level:(NSInteger)level fid:(NSInteger)fid{
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=district&level=%ld&fid=%ld",(long)level,(long)fid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            if ([array count] > 0) {
+    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=district&level=%ld&fid=%ld",(long)level,(long)fid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            if ([responseObject count] > 0) {
                 if (Component == 0) {
-                    _provinceList = [NSMutableArray arrayWithArray:array];
+                    _provinceList = [NSMutableArray arrayWithArray:responseObject];
                     NSInteger fid = [[_provinceList[0] objectForKey:@"id"] integerValue];
                     [self reloadPickerViewComponent:1 level:2 fid:fid];
                 }else if (Component == 1){
-                    _cityList = [NSMutableArray arrayWithArray:array];
+                    _cityList = [NSMutableArray arrayWithArray:responseObject];
                     NSInteger fid = [[_cityList[0] objectForKey:@"id"] integerValue];
                     [self reloadPickerViewComponent:2 level:3 fid:fid];
                     [_pickerView selectRow:0 inComponent:1 animated:YES];
                 }else {
-                    _countyList = [NSMutableArray arrayWithArray:array];
+                    _countyList = [NSMutableArray arrayWithArray:responseObject];
                     [_pickerView selectRow:0 inComponent:2 animated:YES];
                 }
                 
@@ -152,18 +146,17 @@
         return;
     }
     [_submitButton setEnabled:NO];
-    [params setObject:@(_userStatus.uid) forKey:@"uid"];
-    [params setObject:_userStatus.username forKey:@"username"];
+    [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
+    [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:name forKey:@"name"];
     [params setObject:phone forKey:@"phone"];
     [params setObject:postcode forKey:@"postcode"];
     [params setObject:district forKey:@"district"];
     [params setObject:address forKey:@"address"];
     UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"保存中.."];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=address&ac=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            if ([[returns objectForKey:@"addressid"] integerValue] > 0) {
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=address&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"addressid"] integerValue] > 0) {
                 [[self.navigationController popViewControllerAnimated:YES] viewDidLoad];
             }
         }else {

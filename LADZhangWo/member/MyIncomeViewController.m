@@ -17,10 +17,7 @@
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     _incomeList = [NSMutableArray array];
-    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor backColor];
@@ -66,10 +63,9 @@
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
     
-    [_afmanager POST:[SITEAPI stringByAppendingFormat:@"&mod=income&ac=showinfo&page=%d",_page] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            [self reloadTableViewWithArray:array];
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingFormat:@"&c=income&a=showinfo&page=%d",_page] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            [self reloadTableViewWithArray:responseObject];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@", error);

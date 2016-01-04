@@ -9,6 +9,7 @@
 #import "MarkMapViewController.h"
 
 @implementation MarkMapViewController
+@synthesize city = _city;
 @synthesize address = _address;
 @synthesize mapView = _mapView;
 @synthesize locationManager = _locationManager;
@@ -30,10 +31,14 @@
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     if (!_address) {
-        _address = @"贵州省 六盘水市 凤池路 力爱迪科技";
-    }else {
-        //_address = [_address stringByAppendingFormat:@"%@",[[NSUserDefaults standardUserDefaults] objectForKey:@"locality"]];
-        _address = [NSString stringWithFormat:@"%@ %@",[[NSUserDefaults standardUserDefaults] objectForKey:@"locality"], _address];
+        _address = @"金水港湾 力爱迪科技";
+    }
+    
+    if (!_city) {
+        _city = [[NSUserDefaults standardUserDefaults] objectForKey:@"locality"];
+        if (_city) {
+            _city = @"六盘水";
+        }
     }
     
     //初始化地图
@@ -50,7 +55,7 @@
 - (void)markPlace{
     _geocoder = [[CLGeocoder alloc] init];
     CLRegion *region = [[CLRegion alloc] init];
-    [_geocoder geocodeAddressString:_address inRegion:region completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+    [_geocoder geocodeAddressString:[NSString stringWithFormat:@"%@ %@",_city,_address] inRegion:region completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
         if ([placemarks count] > 0) {
             CLPlacemark *placeMark = [placemarks firstObject];
             CLLocation *location = placeMark.location;

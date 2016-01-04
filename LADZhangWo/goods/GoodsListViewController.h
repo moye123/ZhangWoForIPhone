@@ -16,7 +16,6 @@
     ZWRefreshControl *_refreshControl;
     ZWPullUpView *_pullUpView;
     DSXDropDownMenu *_popMenu;
-    AFHTTPRequestOperationManager *_afmanager;
 }
 
 @property(nonatomic,assign)NSInteger catid;

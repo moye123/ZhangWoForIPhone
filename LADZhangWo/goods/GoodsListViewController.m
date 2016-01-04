@@ -26,10 +26,6 @@
     _popMenu.delegate = self;
     [self.navigationController.view addSubview:_popMenu];
     
-    //AFNetworking
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    
     _goodsList = [NSMutableArray array];
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame];
     self.tableView.delegate = self;
@@ -96,17 +92,14 @@
 }
 - (void)loadData{
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=goods&a=showlist&catid=%ld&page=%d",(long)_catid,_page];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            if ([array count] > 0) {
+    [[AFHTTPRequestOperationManager sharedManager] GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            if ([responseObject count] > 0) {
                 if (_isRefreshing) {
                     NSString *key = [NSString stringWithFormat:@"googsList_%ld",(long)_catid];
-                    [[NSUserDefaults standardUserDefaults] setObject:array forKey:key];
+                    [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:key];
                 }
-                [self reloadTableViewWithArray:array];
+                [self reloadTableViewWithArray:responseObject];
             }
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {

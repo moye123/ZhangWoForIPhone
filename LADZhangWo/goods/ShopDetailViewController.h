@@ -12,7 +12,6 @@
 @interface ShopDetailViewController : UIViewController<UIWebViewDelegate,DSXDropDownMenuDelegate>{
     @private
     DSXDropDownMenu *_popMenu;
-    AFHTTPRequestOperationManager *_afmanager;
 }
 
 @property(nonatomic,retain)UIWebView *webView;

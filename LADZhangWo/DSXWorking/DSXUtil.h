@@ -12,7 +12,7 @@
 @interface DSXUtil : NSObject
 
 + (instancetype)sharedUtil;
-
++ (void)nslogData:(NSData *)data;
 - (void)nslogStringWithData:(NSData *)data;
 - (NSData *)dataWithURL:(NSString *)urlString;
 - (NSData *)sendDataForURL:(NSString *)urlString params:(NSMutableDictionary *)params;

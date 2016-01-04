@@ -16,8 +16,6 @@
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     self = [super initWithCollectionViewLayout:layout];
     if (self) {
-        _afmanager = [AFHTTPRequestOperationManager manager];
-        _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
         _cellWith = (SWIDTH/3)-1;
         _cellHeight = 120;
     }
@@ -38,26 +36,6 @@
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"chaoshiCell"];
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"slideView"];
     [self downloadData];
-    
-    //轮播广告
-    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 150)];
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [_afmanager GET:[SITEAPI stringByAppendingString:@"&c=travel&a=showlist&pagesize=3"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            NSMutableArray *imageViews = [[NSMutableArray alloc] init];
-            for (NSDictionary *dict in array) {
-                UIImageView *imageView = [[UIImageView alloc] init];
-                [imageView sd_setImageWithURL:[dict objectForKey:@"pic"] placeholderImage:[UIImage imageNamed:@"placeholder600x300.png"]];
-                [imageView setContentMode:UIViewContentModeScaleAspectFill];
-                [imageViews addObject:imageView];
-            }
-            _slideView.imageViews = imageViews;
-        }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
-    }];
 }
 
 - (void)back{
@@ -67,10 +45,9 @@
 }
 
 - (void)downloadData{
-    [_afmanager GET:[SITEAPI stringByAppendingString:@"&c=chaoshi&a=showshop"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            _chaoshiList = [NSMutableArray arrayWithArray:array];
+    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=chaoshi&a=showshop"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            _chaoshiList = [NSMutableArray arrayWithArray:responseObject];
             [self.collectionView reloadData];
         }
         

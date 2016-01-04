@@ -14,7 +14,6 @@
 @interface ChaoshiDetailViewController : UIViewController<UIWebViewDelegate,UIScrollViewDelegate,DSXDropDownMenuDelegate>{
     @private
     UIView *_loadingView;
-    AFHTTPRequestOperationManager *_afmanager;
     GoodsBottomView *_bottomView;
     AddToCartView *_addCartView;
     DSXDropDownMenu *_popMenu;

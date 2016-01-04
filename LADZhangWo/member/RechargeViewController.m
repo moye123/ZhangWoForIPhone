@@ -7,6 +7,7 @@
 //
 
 #import "RechargeViewController.h"
+#import "MyWalletViewController.h"
 
 @implementation RechargeViewController
 @synthesize tableView = _tableView;
@@ -39,6 +40,7 @@
     _amountField.keyboardType = UIKeyboardTypeNumberPad;
     _amountField.clearButtonMode = UITextFieldViewModeWhileEditing;
     _index = 0;
+    _payType = @"wechat";
 }
 
 - (void)back{
@@ -47,6 +49,39 @@
 
 - (void)submit{
     [_amountField resignFirstResponder];
+    DSXPayManager *pay = [DSXPayManager sharedManager];
+    pay.delegate = self;
+    pay.orderName = @"账号充值";
+    pay.orderDetail = @"长沃账号充值";
+    pay.orderAmount = @"0.01";
+    if (!(pay.orderAmount.floatValue > 0)) {
+        [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleWarning Message:@"请输入有效金额"];
+        return;
+    }
+    UIView *loading = [[DSXUI sharedUI] showLoadingViewWithMessage:@"正在处理.."];
+    [[AFHTTPRequestOperationManager manager] POST:[SITEAPI stringByAppendingString:@"&c=bill&a=create"] parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"username":[ZWUserStatus sharedStatus].username,@"billname":pay.orderName,@"detail":pay.orderDetail,@"amount":pay.orderAmount} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        //NSLog(@"%@",responseObject);
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"billid"] integerValue] > 0) {
+                pay.orderNO = [NSString stringWithFormat:@"zwrecharge%@",[responseObject objectForKey:@"billid"]];
+                pay.payID   = [responseObject objectForKey:@"billid"];
+                pay.payType = @"recharge";
+                if ([_payType isEqualToString:@"wechat"]) {
+                    [pay WechatPay];
+                }
+            }
+            [loading removeFromSuperview];
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
+    }];
+}
+
+#pragma mark --
+- (void)payManager:(DSXPayManager *)manager didFinishedWithCode:(int)errCode{
+    NSLog(@"%d",errCode);
+    MyWalletViewController *walletView = [[MyWalletViewController alloc] init];
+    [self.navigationController pushViewController:walletView animated:YES];
 }
 
 #pragma mark --
@@ -60,15 +95,16 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"rechargeCell"];
+    
     if (indexPath.row == 0) {
-        cell.imageView.image = [UIImage imageNamed:@"icon-alipay.png"];
-        cell.textLabel.text = @"支付宝支付";
-        cell.selected = YES;
+        cell.imageView.image = [UIImage imageNamed:@"icon-wechat.png"];
+        cell.textLabel.text = @"微信支付";
     }
     
     if (indexPath.row == 1) {
-        cell.imageView.image = [UIImage imageNamed:@"icon-wechat.png"];
-        cell.textLabel.text = @"微信支付";
+        cell.imageView.image = [UIImage imageNamed:@"icon-alipay.png"];
+        cell.textLabel.text = @"支付宝支付";
+        cell.selected = YES;
     }
     
     if (indexPath.row == 2) {
@@ -97,6 +133,16 @@
         
         // 保存选中的
         _index = indexPath.row;
+        
+        if (indexPath.row == 0) {
+            _payType = @"wechat";
+        }
+        if (indexPath.row == 1) {
+            _payType = @"alipay";
+        }
+        if (indexPath.row == 2) {
+            _payType = @"unionpay";
+        }
     }
     [_amountField resignFirstResponder];
 }
@@ -107,80 +153,5 @@
 }
 
 #pragma mark - payment
-/*
--(void)payByType:(NSString *)payChannelType{
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyyMMddHHmmss"];
-    
-    IPNPreSignMessageUtil *preSign=[[IPNPreSignMessageUtil alloc]init];
-    preSign.appId=@"1449652776799784";
-    preSign.mhtOrderNo=[dateFormatter stringFromDate:[NSDate date]];
-    preSign.mhtOrderName=@"ass";
-    preSign.mhtOrderType=@"01";
-    preSign.mhtCurrencyType=@"156";
-    preSign.mhtOrderAmt=@"10";
-    preSign.mhtOrderDetail=@"dsds";
-    preSign.mhtOrderStartTime=[dateFormatter stringFromDate:[NSDate date]];
-    preSign.notifyUrl=@"http://192.168.1.154:8080/api/mchnotify";
-    preSign.mhtCharset=@"UTF-8";
-    preSign.mhtOrderTimeOut=@"3600";
-    preSign.mhtReserved=@"test";
-    preSign.consumerId=@"IPN00001";
-    preSign.consumerName=@"IpaynowCS";
-    if (payChannelType!=nil) {
-        preSign.payChannelType=payChannelType;
-    }
-    
-    NSString *originStr=[preSign generatePresignMessage];
-    
-    NSString *orderNo = [dateFormatter stringFromDate:[NSDate date]];
-    NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:@"1449652776799784" forKey:@"appId"];
-    [params setObject:orderNo forKey:@"mhtOrderNo"];
-    [params setObject:@"长沃测试订单" forKey:@"mhtOrderName"];
-    [params setObject:@"01" forKey:@"mhtOrderType"];
-    [params setObject:@"156" forKey:@"mhtCurrencyType"];
-    [params setObject:@"10" forKey:@"mhtOrderAmt"];
-    [params setObject:@"订单详情" forKey:@"mhtOrderDetail"];
-    [params setObject:[dateFormatter stringFromDate:[NSDate date]] forKey:@"mhtOrderStartTime"];
-    [params setObject:@"http://192.168.1.154:8080/api/mchnotify" forKey:@"notifyUrl"];
-    [params setObject:@"UTF-8" forKey:@"mhtCharset"];
-    [params setObject:@"3600" forKey:@"mhtOrderTimeOut"];
-    [params setObject:@"订单测试" forKey:@"mhtReserved"];
-    [params setObject:@"IPN00001" forKey:@"consumerId"];
-    [params setObject:@"IpaynowCS" forKey:@"consumerName"];
-    if (payChannelType) {
-        [params setObject:payChannelType forKey:@"payChannelType"];
-    }
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager POST:@"http://posp.ipaynow.cn/ZyPluginPaymentTest_PAY/api/pay2.php" parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        [IpaynowPluginApi setProductIdentifier:@"cn.zhangwoo.zhangwo" andQuantity:1 orderNo:orderNo];
-        [IpaynowPluginApi pay:@"" AndScheme:@"IpaynowPluginDemo" viewController:self delegate:self];
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        
-    }];
-}
 
--(void)IpaynowPluginResult:(IPNPayResult)result errCode:(NSString *)errCode errInfo:(NSString *)errInfo{
-    NSString *resultString=nil;
-    switch (result) {
-        case IPNPayResultSuccess:
-            resultString=@"支付成功";
-            break;
-        case IPNPayResultCancel:
-            resultString=@"支付被取消";
-            break;
-        case IPNPayResultFail:
-            resultString=[NSString stringWithFormat:@"支付失败:\r\n错误码:%@,异常信息:%@",errCode, errInfo];
-            break;
-        case IPNPayResultUnknown:
-            resultString=[NSString stringWithFormat:@"支付结果未知:%@",errInfo];
-            break;
-            
-        default:
-            break;
-    }
-}
-*/
 @end

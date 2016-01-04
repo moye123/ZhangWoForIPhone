@@ -9,10 +9,9 @@
 #import "ModiMobileViewController.h"
 
 @implementation ModiMobileViewController
-@synthesize userStatus = _userStatus;
-@synthesize mobileField = _mobileField;
-@synthesize seccodeField = _seccodeField;
-@synthesize secButton = _secButton;
+@synthesize mobileField    = _mobileField;
+@synthesize seccodeField   = _seccodeField;
+@synthesize secButton      = _secButton;
 @synthesize mobilenewField = _mobilenewField;
 @synthesize tableView = _tableView;
 
@@ -22,17 +21,13 @@
     [self.view setBackgroundColor:[UIColor whiteColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
-    _userStatus = [ZWUserStatus sharedStatus];
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [self.view addSubview:_tableView];
     
     _mobileField = [self textFieldWithPlaceHolder:@"请输入手机号"];
-    _mobileField.text = _userStatus.mobile;
+    _mobileField.text = [ZWUserStatus sharedStatus].mobile;
     
     _seccodeField = [self textFieldWithPlaceHolder:@"请输入验证码"];
     [_seccodeField sizeThatFits:CGSizeMake(100, 40)];
@@ -76,13 +71,11 @@
 - (void)sendSecCode{
     NSString *phone = _mobileField.text;
     if ([DSXValidate validateMobile:phone]) {
-        [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=member&ac=sendseccode&phone=%@",phone] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            //NSLog(@"%@",returns);
-            if ([returns isKindOfClass:[NSDictionary class]]) {
-                _secCode = [returns objectForKey:@"seccode"];
+        [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=member&a=sendseccode&phone=%@",phone] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                _secCode = [responseObject objectForKey:@"seccode"];
                 if (_secCode != nil) {
-                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"验证码发送成功"];
+                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"验证码发送成功"];
                     _waitSeconds = 60;
                     [_secButton setTitle:@"重新发送(60)" forState:UIControlStateNormal];
                     [_secButton setEnabled:NO];
@@ -126,24 +119,22 @@
     }
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:@(_userStatus.uid) forKey:@"uid"];
-    [params setObject:_userStatus.username forKey:@"username"];
+    [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
+    [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:mobile forKey:@"mobile"];
     [params setObject:mobilenew forKey:@"newmobile"];
     [params setObject:secCode forKey:@"seccode"];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=member&ac=modimobile"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            if ([[returns objectForKey:@"status"] isEqualToString:@"success"]) {
-                NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:_userStatus.userInfo];
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=member&a=modimobile"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[ZWUserStatus sharedStatus].userInfo];
                 [userInfo setObject:mobilenew forKey:@"mobile"];
-                //[_userStatus setUserInfo:userInfo];
-                [_userStatus update];
-                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDone Message:@"手机修改成功"];
+                [[ZWUserStatus sharedStatus] update];
+                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"手机修改成功"];
                 [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
             }else {
                 NSString *errMsg;
-                switch ([[returns objectForKey:@"errno"] integerValue]) {
+                switch ([[responseObject objectForKey:@"errno"] integerValue]) {
                     case -1:
                         errMsg = @"验证码错误";
                         break;

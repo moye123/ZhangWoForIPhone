@@ -17,11 +17,10 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+    [self setTitle:@"我的购物车"];
     _cartList = [NSMutableArray array];
     _shopBoxs = [NSMutableArray array];
     _goodsModelArray = [NSMutableArray array];
-    _afmanager = [AFHTTPRequestOperationManager manager];
-    _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
     CGRect frame = self.view.bounds;
     frame.size.height = frame.size.height - 60;
@@ -40,7 +39,6 @@
     _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _pullUpView.hidden = YES;
     _tableView.tableFooterView = _pullUpView;
-    [self refresh];
     
     _totalNum = 0;
     _totalValue = 0.00;
@@ -70,19 +68,20 @@
 - (void)resetTotalLabel{
     [_totaLabel sizeToFit];
     CGRect totalFrame = _totaLabel.frame;
-    totalFrame.origin.x = SWIDTH-110-totalFrame.size.width;
+    totalFrame.origin.x = SWIDTH-totalFrame.size.width-110;
     [_totaLabel setFrame:totalFrame];
 }
 
 - (void)total{
-    _totalValue = 0.00;
     _totalNum = 0;
+    _totalValue = 0;
     for (CartInfoModel *model in _goodsModelArray) {
         if (model.selectState) {
-            _totalValue+= model.goodsPrice*model.goodsNum;
+            _totalValue+= model.goodsPrice * (float)model.goodsNum;
             _totalNum++;
         }
     }
+
     if (_totalNum == [_cartList count] && _totalNum>0) {
         _checkAll.selected = YES;
     }else {
@@ -93,38 +92,60 @@
     [self resetTotalLabel];
 }
 
+#pragma mark - 结算
 - (void)settlement{
     if (_totalNum < 1) {
         [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"请选择商品"];
         return;
     }
-    NSString *goodsids = @"0";
-    NSString *buynumStr = @"0";
+    NSString *goodsids  = @"";
+    NSString *buynumStr = @"";
+    NSString *fromStr   = @"";
+    NSString *cartIdStr = @"";
+    NSString *comma = @"";
     for (CartInfoModel *model in _goodsModelArray) {
         if (model.selectState) {
-            goodsids = [goodsids stringByAppendingFormat:@",%ld",(long)model.goodsID];
-            buynumStr = [buynumStr stringByAppendingFormat:@",%ld",(long)model.goodsNum];
+            goodsids  = [goodsids stringByAppendingFormat:@"%@%ld",comma,(long)model.goodsID];
+            buynumStr = [buynumStr stringByAppendingFormat:@"%@%ld",comma,(long)model.goodsNum];
+            fromStr   = [fromStr stringByAppendingFormat:@"%@%@",comma,model.goodsFrom];
+            cartIdStr = [cartIdStr stringByAppendingFormat:@"%@%ld",comma,(long)model.cartID];
+            comma = @",";
         }
     }
+    //NSLog(@"%@",buynumStr);return;
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
     [params setObject:goodsids forKey:@"goodsids"];
-    [params setObject:buynumStr forKey:@"buynums"];
-    [_afmanager POST:[SITEAPI stringByAppendingString:@"&mod=order&ac=cartorder"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            PayViewController *payView = [[PayViewController alloc] init];
-            payView.orderid = [[returns objectForKey:@"orderid"] integerValue];
-            payView.orderno = [returns objectForKey:@"orderno"];
-            payView.total = _totalValue;
-            payView.orderTitle = payView.orderno;
-            ZWNavigationController *nav = (ZWNavigationController *)self.navigationController;
-            [nav setStyle:ZWNavigationStyleGray];
-            [self.navigationController pushViewController:payView animated:YES];
+    [params setObject:buynumStr forKey:@"goodsnums"];
+    [params setObject:fromStr forKey:@"goodsfroms"];
+    
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=order&a=create"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                [self deleteGoods:cartIdStr];
+                PayViewController *payView = [[PayViewController alloc] init];
+                payView.orderID     = [responseObject objectForKey:@"orderid"];
+                payView.orderName   = @"在线购物支付";
+                payView.orderDetail = @"购物车结算支付";
+                ZWNavigationController *nav = (ZWNavigationController *)self.navigationController;
+                [nav setStyle:ZWNavigationStyleGray];
+                [self.navigationController pushViewController:payView animated:YES];
+            }else {
+                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"订单提交失败"];
+            }
+            
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@", error);
+    }];
+}
+
+- (void)deleteGoods:(NSString *)cartids{
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=cart&a=delete"] parameters:@{@"cartid":cartids,@"uid":@([ZWUserStatus sharedStatus].uid)} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        //NSLog(@"%@",responseObject);
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        
     }];
 }
 
@@ -132,6 +153,7 @@
     self.navigationController.toolbarHidden = NO;
     ZWNavigationController *nav = (ZWNavigationController *)self.navigationController;
     [nav setStyle:ZWNavigationStyleDefault];
+    [self refresh];
     [super viewWillAppear:animated];
 }
 
@@ -152,18 +174,17 @@
 }
 
 - (void)loadData{
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=cart&ac=showlist&uid=%ld&page=%d",(long)[[ZWUserStatus sharedStatus] uid],_page] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            [self reloadTableViewWithArray:array];
+    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=cart&a=showlist&uid=%ld&page=%d",(long)[[ZWUserStatus sharedStatus] uid],_page] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            [self reloadTableViewWithArray:responseObject];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        
+        NSLog(@"%@", error);
     }];
 }
 
 - (void)reloadTableViewWithArray:(NSArray *)array{
-    if ([array count] > 0) {
+    //if ([array count] > 0) {
         if (_isRefreshing) {
             [_cartList removeAllObjects];
             [_tableView reloadData];
@@ -179,18 +200,19 @@
             [_shopBoxs addObject:shopBox];
             NSDictionary *goodsDict = _cartList[i];
             CartInfoModel *goodsModel = [[CartInfoModel alloc] init];
-            goodsModel.cartID = [[goodsDict objectForKey:@"cartid"] integerValue];
-            goodsModel.goodsID = [[goodsDict objectForKey:@"goods_id"] integerValue];
+            goodsModel.cartID     = [[goodsDict objectForKey:@"cartid"] integerValue];
+            goodsModel.goodsID    = [[goodsDict objectForKey:@"goods_id"] integerValue];
             goodsModel.goodsImage = [goodsDict objectForKey:@"goods_pic"];
             goodsModel.goodsName  = [goodsDict objectForKey:@"goods_name"];
             goodsModel.goodsPrice = [[goodsDict objectForKey:@"goods_price"] floatValue];
-            goodsModel.shopName = [goodsDict objectForKey:@"shopname"];
-            goodsModel.goodsNum = [[goodsDict objectForKey:@"buynum"] integerValue];
+            goodsModel.shopName   = [goodsDict objectForKey:@"shopname"];
+            goodsModel.goodsNum   = [[goodsDict objectForKey:@"buynum"] integerValue];
+            goodsModel.goodsFrom  = [goodsDict objectForKey:@"goods_from"];
             [_goodsModelArray addObject:goodsModel];
         }
         [_tableView reloadData];
         [_checkAll setSelected:NO];
-    }
+    //}
     if ([array count] < 20) {
         _pullUpView.hidden = YES;
     }else{
@@ -290,14 +312,15 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     NSDictionary *cart = [_cartList objectAtIndex:indexPath.section];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=cart&ac=delete&cartid=%@&uid=%ld",[cart objectForKey:@"cartid"],(long)[ZWUserStatus sharedStatus].uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            if ([returns isKindOfClass:[NSDictionary class]]) {
-                if ([[returns objectForKey:@"affects"] integerValue] > 0) {
+        [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=cart&a=delete&cartid=%@&uid=%ld",[cart objectForKey:@"cartid"],(long)[ZWUserStatus sharedStatus].uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                     [_cartList removeObjectAtIndex:indexPath.section];
                     [_goodsModelArray removeObjectAtIndex:indexPath.section];
                     [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationFade];
                 }
+            }else {
+                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"删除失败"];
             }
             
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
@@ -320,9 +343,8 @@
 
 - (void)cell:(CartCustomCell *)cell didEndEditing:(UIButton *)button goodsModel:(CartInfoModel *)model{
     [self total];
-    [_afmanager GET:[SITEAPI stringByAppendingFormat:@"&mod=cart&ac=modify&uid=%ld&cartid=%ld&buynum=%ld",(long)[[ZWUserStatus sharedStatus] uid],(long)model.cartID,(long)model.goodsNum] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
+    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=cart&a=modify&uid=%ld&cartid=%ld&buynum=%ld",(long)[[ZWUserStatus sharedStatus] uid],(long)model.cartID,(long)model.goodsNum] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
             
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {

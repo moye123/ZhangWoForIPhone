@@ -16,7 +16,6 @@
     AddToCartView *_addCartView;
     GoodsBottomView *_bottomView;
     DSXDropDownMenu *_popMenu;
-    AFHTTPRequestOperationManager *_afmanager;
 }
 
 @property(nonatomic,assign)NSInteger goodsid;

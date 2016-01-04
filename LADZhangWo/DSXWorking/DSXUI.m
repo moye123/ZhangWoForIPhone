@@ -28,7 +28,7 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
 }
 
 - (UIBarButtonItem *)barButtonWithImage:(NSString *)imageName target:(id)target action:(SEL)action{
-    UIImage *image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    UIImage *image = [UIImage imageNamed:imageName];
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:target action:action];
     return barButtonItem;
 }
@@ -36,35 +36,35 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
 - (UIBarButtonItem *)barButtonWithStyle:(DSXBarButtonStyle)style target:(id)target action:(SEL)action{
     NSString *imageName;
     switch (style) {
+        case DSXBarButtonStyleAdd:
+            imageName = @"icon-add.png";
+            break;
         case DSXBarButtonStyleBack:
             imageName = @"icon-back.png";
             break;
-        case DSXBarButtonStyleBackWhite:
-            imageName = @"icon-back-white.png";
+        case DSXBarButtonStyleClose:
+            imageName = @"icon-close.png";
             break;
-        case DSXBarButtonStyleFavorite:
-            imageName = @"icon-favorite.png";
+        case DSXBarButtonStyleDelete:
+            imageName = @"icon-delete.png";
+            break;
+        case DSXBarButtonStyleFavor:
+            imageName = @"icon-favor.png";
             break;
         case DSXBarButtonStyleLike:
             imageName = @"icon-like.png";
             break;
-        case DSXBarButtonStyleShare:
-            imageName = @"icon-share.png";
+        case DSXBarButtonStyleMore:
+            imageName = @"icon-more.png";
             break;
-        case DSXBarButtonStyleAdd:
-            imageName = @"icon-add.png";
+        case DSXBarButtonStyleMessage:
+            imageName = @"icon-message.png";
             break;
         case DSXBarButtonStyleRefresh:
             imageName = @"icon-refresh.png";
             break;
-        case DSXBarButtonStyleMore:
-            imageName = @"icon-more.png";
-            break;
-        case DSXBarButtonStyleMoreWhite:
-            imageName = @"icon-more-white.png";
-            break;
-        case DSXBarButtonStyleClose:
-            imageName = @"icon-close.png";
+        case DSXBarButtonStyleShare:
+            imageName = @"icon-share.png";
             break;
         default:
             break;
@@ -97,17 +97,17 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
 - (void)showPopViewWithStyle:(DSXPopViewStyle)style Message:(NSString *)message{
     NSString *imageName;
     switch (style) {
-        case DSXPopViewStyleDone:
-            imageName = @"icon-done.png";
+        case DSXPopViewStyleSuccess:
+            imageName = @"icon-success.png";
             break;
         case DSXPopViewStyleError:
             imageName = @"icon-error.png";
             break;
         case DSXPopViewStyleWarning:
-            imageName = @"icon-warn.png";
+            imageName = @"icon-warning.png";
             break;
         default:
-            imageName = @"icon-info.png";
+            imageName = @"icon-infomation.png";
             break;
     }
     

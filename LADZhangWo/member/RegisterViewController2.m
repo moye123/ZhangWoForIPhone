@@ -16,7 +16,7 @@
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     [self setTitle:@"邮箱注册"];
     
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBackWhite target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"手机注册" style:UIBarButtonItemStylePlain target:self action:@selector(back)];
     
     //邮箱输入框

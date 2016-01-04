@@ -25,12 +25,9 @@
     if (self) {
         _itemWith = SWIDTH/4-1;
         _categoryList = [NSMutableArray array];
-        _afmanager = [AFHTTPRequestOperationManager manager];
-        _afmanager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        [_afmanager GET:[SITEAPI stringByAppendingString:@"&c=chaoshi&a=showcategory"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            id array = [NSJSONSerialization JSONObjectWithData:(NSData *)responseObject options:NSJSONReadingAllowFragments error:nil];
-            if ([array isKindOfClass:[NSArray class]]) {
-                _categoryList = array;
+        [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=chaoshi&a=showcategory"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            if ([responseObject isKindOfClass:[NSArray class]]) {
+                _categoryList = responseObject;
                 [self.collectionView reloadData];
             }
             
