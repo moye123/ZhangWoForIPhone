@@ -18,6 +18,7 @@
 @property(nonatomic)NSString *goodsImage;
 @property(nonatomic)float goodsPrice;
 @property(nonatomic)NSInteger goodsNum;
+@property(nonatomic)NSInteger shopID;
 @property(nonatomic)NSString *shopName;
 @property(nonatomic)NSString *goodsFrom;
 @property(nonatomic)BOOL selectState;

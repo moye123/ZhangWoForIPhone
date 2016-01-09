@@ -203,4 +203,24 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
     return label;
 }
 
++ (UIView *)noAccessView{
+    UIView *view = [[UIView alloc] init];
+    UIImageView *imageView = [[UIImageView alloc] init];
+    imageView.image = [UIImage imageNamed:@"icon-sand.png"];
+    [view addSubview:imageView];
+    
+    UILabel *label = [[UILabel alloc] init];
+    label.text = @"没有找到你要的信息";
+    label.textColor = [UIColor grayColor];
+    label.font = [UIFont systemFontOfSize:14.0];
+    label.textAlignment = NSTextAlignmentCenter;
+    [label sizeToFit];
+    [view addSubview:label];
+    
+    view.frame = CGRectMake(0, 0, label.frame.size.width, 80);
+    imageView.frame = CGRectMake((view.frame.size.width-50)/2, 0, 50, 50);
+    label.frame = CGRectMake(0, 60, label.frame.size.width, label.frame.size.height);
+    return view;
+}
+
 @end

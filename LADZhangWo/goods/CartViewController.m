@@ -10,16 +10,16 @@
 #import "LoginViewController.h"
 #import "GoodsDetailViewController.h"
 #import "PayViewController.h"
+#import "ShopDetailViewController.h"
 
 @implementation CartViewController
-@synthesize cartList = _cartList;
+@synthesize cartList  = _cartList;
 @synthesize tableView = _tableView;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self setTitle:@"我的购物车"];
     _cartList = [NSMutableArray array];
-    _shopBoxs = [NSMutableArray array];
     _goodsModelArray = [NSMutableArray array];
     
     CGRect frame = self.view.bounds;
@@ -29,6 +29,8 @@
     _tableView.dataSource = self;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:_tableView];
+    [_tableView registerClass:[CartTitleCell class] forCellReuseIdentifier:@"titleCell"];
+    [_tableView registerClass:[CartCustomCell class] forCellReuseIdentifier:@"goodsCell"];
     
     _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
@@ -145,7 +147,7 @@
     [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=cart&a=delete"] parameters:@{@"cartid":cartids,@"uid":@([ZWUserStatus sharedStatus].uid)} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         //NSLog(@"%@",responseObject);
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        
+        NSLog(@"%@", error);
     }];
 }
 
@@ -184,35 +186,28 @@
 }
 
 - (void)reloadTableViewWithArray:(NSArray *)array{
-    //if ([array count] > 0) {
-        if (_isRefreshing) {
-            [_cartList removeAllObjects];
-            [_tableView reloadData];
-        }
-        
-        for (id item in array) {
-            [_cartList addObject:item];
-        }
-        [_shopBoxs removeAllObjects];
+    if (_isRefreshing) {
+        [_cartList removeAllObjects];
         [_goodsModelArray removeAllObjects];
-        for (int i=0; i<[_cartList count]; i++) {
-            UIButton *shopBox = [self checkBox];
-            [_shopBoxs addObject:shopBox];
-            NSDictionary *goodsDict = _cartList[i];
-            CartInfoModel *goodsModel = [[CartInfoModel alloc] init];
-            goodsModel.cartID     = [[goodsDict objectForKey:@"cartid"] integerValue];
-            goodsModel.goodsID    = [[goodsDict objectForKey:@"goods_id"] integerValue];
-            goodsModel.goodsImage = [goodsDict objectForKey:@"goods_pic"];
-            goodsModel.goodsName  = [goodsDict objectForKey:@"goods_name"];
-            goodsModel.goodsPrice = [[goodsDict objectForKey:@"goods_price"] floatValue];
-            goodsModel.shopName   = [goodsDict objectForKey:@"shopname"];
-            goodsModel.goodsNum   = [[goodsDict objectForKey:@"buynum"] integerValue];
-            goodsModel.goodsFrom  = [goodsDict objectForKey:@"goods_from"];
-            [_goodsModelArray addObject:goodsModel];
-        }
         [_tableView reloadData];
-        [_checkAll setSelected:NO];
-    //}
+    }
+    
+    for (NSDictionary *dict in array) {
+        [_cartList addObject:dict];
+        CartInfoModel *goodsModel = [[CartInfoModel alloc] init];
+        goodsModel.cartID     = [[dict objectForKey:@"cartid"] integerValue];
+        goodsModel.goodsID    = [[dict objectForKey:@"goods_id"] integerValue];
+        goodsModel.goodsImage = [dict objectForKey:@"goods_pic"];
+        goodsModel.goodsName  = [dict objectForKey:@"goods_name"];
+        goodsModel.goodsPrice = [[dict objectForKey:@"goods_price"] floatValue];
+        goodsModel.goodsNum   = [[dict objectForKey:@"buynum"] integerValue];
+        goodsModel.goodsFrom  = [dict objectForKey:@"goods_from"];
+        goodsModel.shopID     = [[dict objectForKey:@"shopid"] integerValue];
+        goodsModel.shopName   = [dict objectForKey:@"shopname"];
+        [_goodsModelArray addObject:goodsModel];
+    }
+    [_tableView reloadData];
+    [_checkAll setSelected:NO];
     if ([array count] < 20) {
         _pullUpView.hidden = YES;
     }else{
@@ -253,43 +248,35 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     CartInfoModel *model = [_goodsModelArray objectAtIndex:indexPath.section];
     if (indexPath.row == 0) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ShopCell"];
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ShopCell"];
-        }else {
-            for (UIView *subview in cell.subviews) {
-                [subview removeFromSuperview];
-            }
-        }
+        CartTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell" forIndexPath:indexPath];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        UIButton *checkBox = _shopBoxs[indexPath.section];
-        [checkBox setSelected:model.selectState];
-        [checkBox addTarget:self action:@selector(checkShop:) forControlEvents:UIControlEventTouchUpInside];
-        [cell addSubview:checkBox];
-        
-        UILabel *shopname = [[UILabel alloc] initWithFrame:CGRectMake(45, 0, SWIDTH-90, 45)];
-        shopname.textColor = [UIColor colorWithHexString:@"0x555555"];
-        if ([model.shopName isEqualToString:@""]) {
-            shopname.text = @"店铺名称";
-        }else {
-            
-            shopname.text = model.shopName;
-        }
-        [cell addSubview:shopname];
+        cell.title = model.shopName;
+        cell.isChecked = model.selectState;
+        cell.delegate = self;
+        cell.textLabel.tag = model.shopID;
         return cell;
     }else {
-        CartCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"GoodsCell"];
-        if (cell == nil) {
-            cell = [[CartCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"GoodsCell"];
-            cell.delegate = self;
-        }
+        CartCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell" forIndexPath:indexPath];
+        cell.delegate = self;
         [cell setBackgroundColor:[UIColor colorWithHexString:@"0xf8f8f8"]];
         [cell setGoodsModel:model];
         [cell setSelectSate:model.selectState];
         [cell setTag:indexPath.section];
         [cell.picView setTag:model.goodsID];
         return cell;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.row == 0) {
+        /*
+        NSDictionary *cartData = [_cartList objectAtIndex:indexPath.section];
+        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+        shopView.shopid = [[cartData objectForKey:@"shopid"] integerValue];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
+        [nav setStyle:ZWNavigationStyleGray];
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+         */
     }
 }
 
@@ -312,7 +299,8 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     NSDictionary *cart = [_cartList objectAtIndex:indexPath.section];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=cart&a=delete&cartid=%@&uid=%ld",[cart objectForKey:@"cartid"],(long)[ZWUserStatus sharedStatus].uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=cart&a=delete&cartid=%@&uid=%ld",[cart objectForKey:@"cartid"],(long)[ZWUserStatus sharedStatus].uid];
+        [[AFHTTPRequestOperationManager sharedManager] GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
                 if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                     [_cartList removeObjectAtIndex:indexPath.section];
@@ -330,20 +318,46 @@
     }
 }
 
-#pragma mark - cell delegate
-- (void)cell:(CartCustomCell *)cell didChecked:(UIButton *)checkBox goodsModel:(CartInfoModel *)model{
-    UIButton *shopBox = [_shopBoxs objectAtIndex:cell.tag];
-    shopBox.selected = cell.selectSate;
+#pragma mark - titleCell delegate
+- (void)titleCell:(CartTitleCell *)cell didClickedAtCheckBox:(UIButton *)checkBox{
+    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+    CartInfoModel *model = [_goodsModelArray objectAtIndex:indexPath.section];
+    model.selectState = checkBox.isSelected;
+    [_tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
     [self total];
 }
 
-- (void)cell:(CartCustomCell *)cell didStartEditing:(UIButton *)editButton goodsModel:(CartInfoModel *)model{
+- (void)titleCell:(CartTitleCell *)cell didClickedAtTitleView:(UILabel *)titleView{
+    ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+    shopView.shopid = titleView.tag;
+    ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
+    [nav setStyle:ZWNavigationStyleGray];
+    [self.navigationController presentViewController:nav animated:YES completion:nil];
+}
+#pragma mark - customCell delegate
+- (void)customCell:(CartCustomCell *)cell didClickedItemAtCheckBox:(UIButton *)checkBox model:(CartInfoModel *)model{
+    model.selectState = checkBox.isSelected;
+    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+    [_tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+    [self total];
+}
+
+- (void)customCell:(CartCustomCell *)cell didClickedItemAtImageView:(UIImageView *)imageView model:(CartInfoModel *)model{
+    GoodsDetailViewController *detailView = [[GoodsDetailViewController alloc] init];
+    detailView.goodsid = model.goodsID;
+    ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:detailView];
+    [nav setStyle:ZWNavigationStyleGray];
+    [self.navigationController presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)customCell:(CartCustomCell *)cell didStartEditing:(UIButton *)editButton goodsModel:(CartInfoModel *)model{
     
 }
 
-- (void)cell:(CartCustomCell *)cell didEndEditing:(UIButton *)button goodsModel:(CartInfoModel *)model{
+- (void)customCell:(CartCustomCell *)cell didEndEditing:(UIButton *)button goodsModel:(CartInfoModel *)model{
     [self total];
-    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=cart&a=modify&uid=%ld&cartid=%ld&buynum=%ld",(long)[[ZWUserStatus sharedStatus] uid],(long)model.cartID,(long)model.goodsNum] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=cart&a=modify&uid=%ld&cartid=%ld&buynum=%ld",(long)[[ZWUserStatus sharedStatus] uid],(long)model.cartID,(long)model.goodsNum];
+    [[AFHTTPRequestOperationManager sharedManager] GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             
         }
@@ -352,24 +366,7 @@
     }];
 }
 
-- (void)cell:(CartCustomCell *)cell picViewClicked:(UIImageView *)picView goodsModel:(CartInfoModel *)model{
-    GoodsDetailViewController *detailView = [[GoodsDetailViewController alloc] init];
-    detailView.goodsid = model.goodsID;
-    ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:detailView];
-    [nav setStyle:ZWNavigationStyleGray];
-    [self.navigationController presentViewController:nav animated:YES completion:nil];
-}
-
-- (void)cell:(CartCustomCell *)cell checkBoxClicked:(UIButton *)checkBox{
-    cell.selectSate = checkBox.selected;
-    CartInfoModel *model = [_goodsModelArray objectAtIndex:cell.tag];
-    model.selectState = cell.selectSate;
-    UIButton *shopBox = [_shopBoxs objectAtIndex:cell.tag];
-    shopBox.selected = cell.selectSate;
-    [self total];
-}
-
-#pragma mark ---
+#pragma mark - checkAll
 - (void)checkAll:(UIButton *)sender{
     sender.selected = !sender.isSelected;
     for (int i=0; i<[_cartList count]; i++) {
@@ -377,16 +374,6 @@
         model.selectState = sender.isSelected;
     }
     [_tableView reloadData];
-    [self total];
-}
-
-- (void)checkShop:(UIButton *)sender{
-    sender.selected = !sender.isSelected;
-    NSInteger index = [_shopBoxs indexOfObject:sender];
-    CartCustomCell *cell = [_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:index]];
-    cell.selectSate = sender.isSelected;
-    CartInfoModel *model = [_goodsModelArray objectAtIndex:index];
-    model.selectState = sender.isSelected;
     [self total];
 }
 

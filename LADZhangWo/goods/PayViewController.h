@@ -14,6 +14,7 @@
     @private
     NSString *_billID;
     NSString *_billAmount;
+    BOOL _hasSubmitPay;
 }
 
 @property(nonatomic,strong)NSString *orderID;

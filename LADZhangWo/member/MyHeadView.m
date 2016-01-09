@@ -18,6 +18,7 @@
         self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"top-bg-orange.png"]];
         self.imageView = [[UIImageView alloc] init];
         self.textLabel = [[UILabel alloc] init];
+        self.textLabel.textColor = [UIColor whiteColor];
     }
     return self;
 }

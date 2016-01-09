@@ -7,6 +7,7 @@
 //
 
 #import "DSXUtil.h"
+#import <CoreLocation/CoreLocation.h>
 
 @implementation DSXUtil
 
@@ -73,6 +74,19 @@
         }
     }
     return dictionary;
+}
+
++ (NSDictionary *)getLocation{
+    NSString *longitude = @"0";
+    NSString *latitude  = @"0";
+    if ([CLLocationManager locationServicesEnabled]) {
+        CLLocationManager *locationManager = [[CLLocationManager alloc] init];
+        CLLocation *location = [locationManager location];
+        CLLocationCoordinate2D coordinate = [location coordinate];
+        longitude = [NSString stringWithFormat:@"%f",coordinate.longitude];
+        latitude  = [NSString stringWithFormat:@"%f",coordinate.latitude];
+    }
+    return @{@"longitude":longitude,@"latitude":latitude};
 }
 
 @end

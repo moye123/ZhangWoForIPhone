@@ -14,6 +14,7 @@
     UITextField *_amountField;
     NSInteger _index;
     NSString *_payType;
+    BOOL _hasSubmitPay;
 }
 
 @property(nonatomic,retain)UITableView *tableView;

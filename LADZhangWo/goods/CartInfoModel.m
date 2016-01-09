@@ -21,6 +21,7 @@
         self.goodsNum    = [[dict objectForKey:@"goodsNum"] integerValue];
         self.goodsFrom   = [dict objectForKey:@"goodsFrom"];
         self.selectState = [[dict objectForKey:@"selectSate"] boolValue];
+        self.shopID      = [[dict objectForKey:@"shopid"] integerValue];
         self.shopName    = [dict objectForKey:@"shopName"];
     }
     return self;

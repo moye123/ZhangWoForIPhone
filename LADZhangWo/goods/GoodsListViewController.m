@@ -30,6 +30,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    [self.tableView registerClass:[GoodsItemCell class] forCellReuseIdentifier:@"goodsCell"];
     
     _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
@@ -92,7 +93,7 @@
 }
 - (void)loadData{
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=goods&a=showlist&catid=%ld&page=%d",(long)_catid,_page];
-    [[AFHTTPRequestOperationManager sharedManager] GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [[AFHTTPRequestOperationManager sharedManager] GET:urlString parameters:[DSXUtil getLocation] success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         if ([responseObject isKindOfClass:[NSArray class]]) {
             if ([responseObject count] > 0) {
                 if (_isRefreshing) {
@@ -140,18 +141,14 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return SWIDTH*0.37+20;
+    return SWIDTH*0.35+10;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSDictionary *goodsData = [_goodsList objectAtIndex:indexPath.row];
     GoodsItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell"];
-    if (cell == nil) {
-        cell = [[GoodsItemCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"goodsCell"];
-    }
-    [cell setGoodsData:goodsData];
-    cell.selectionStyle = UITableViewCellSelectionStyleGray;
-    cell.contentView.backgroundColor = [UIColor whiteColor];
+    cell.imageWidth = SWIDTH*0.35;
+    cell.goodsData  = goodsData;
     return cell;
 }
 

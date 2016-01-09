@@ -27,7 +27,9 @@
 - (void)payManager:(DSXPayManager *)manager didFinishedWithCode:(int)errCode;
 @end
 
-@interface DSXPayManager : NSObject<WXApiDelegate>
+@interface DSXPayManager : NSObject<WXApiDelegate,UIAlertViewDelegate>{
+    int _errCode;
+}
 - (instancetype)init;
 + (instancetype)sharedManager;
 @property(nonatomic)NSString *orderNO;

@@ -11,6 +11,7 @@
 #import "PayViewController.h"
 #import "MyFavoriteViewController.h"
 #import "MyMessageViewController.h"
+#import "OrderDetailViewController.h"
 
 @implementation MyOrderViewController
 @synthesize orderList      = _orderList;
@@ -25,6 +26,9 @@
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
+    if (!self.title) {
+        self.title = @"我的订单";
+    }
     
     //pop菜单
     _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
@@ -262,16 +266,17 @@
                     [refundButton setFrame:CGRectMake(SWIDTH-160, 10, 80, 30)];
                     [cell addSubview:refundButton];
                 }else {
-                    UIButton *evalButton = [self buttonWithTitle:@"评价"];
+                    UIButton *evalButton = [self buttonWithTitle:@"查看详情"];
                     evalButton.tag = [[orderData objectForKey:@"orderid"] integerValue];
-                    [evalButton setFrame:CGRectMake(SWIDTH-70, 10, 60, 30)];
+                    [evalButton setFrame:CGRectMake(SWIDTH-90, 10, 80, 30)];
                     [evalButton addTarget:self action:@selector(evaluate:) forControlEvents:UIControlEventTouchUpInside];
                     [cell addSubview:evalButton];
-                    
+                    /**
                     UIButton *refundButton = [self buttonWithTitle:@"申请退货"];
                     refundButton.tag = indexPath.section + 1000;
                     [refundButton setFrame:CGRectMake(SWIDTH-160, 10, 80, 30)];
                     [cell addSubview:refundButton];
+                     */
                 }
                 
             }else {
@@ -360,7 +365,9 @@
 }
 
 - (void)evaluate:(UIButton *)button{
-    
+    OrderDetailViewController *detailView = [[OrderDetailViewController alloc] init];
+    detailView.orderid = button.tag;
+    [self.navigationController pushViewController:detailView animated:YES];
 }
 
 - (void)notice:(UIButton *)button{

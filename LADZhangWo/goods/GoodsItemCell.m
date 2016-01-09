@@ -9,44 +9,74 @@
 #import "GoodsItemCell.h"
 
 @implementation GoodsItemCell
-@synthesize picView = _picView;
-@synthesize titleLabel = _titleLabel;
-@synthesize starView = _starView;
-@synthesize priceLabel = _priceLabel;
+@synthesize backView      = _backView;
+@synthesize picView       = _picView;
+@synthesize nameLabel     = _nameLabel;
+@synthesize starView      = _starView;
+@synthesize soldLabel     = _soldLabel;
+@synthesize priceLabel    = _priceLabel;
 @synthesize locationLabel = _locationLabel;
-@synthesize goodsData = _goodsData;
-
+@synthesize goodsData     = _goodsData;
+@synthesize imageWidth    = _imageWidth;
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-        _picWidth = SWIDTH * 0.37;
-        _picView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, _picWidth, _picWidth)];
-        _picView.layer.masksToBounds = YES;
+        _imageWidth = 100;
+        [self.contentView removeFromSuperview];
+        _backView = [[UIView alloc] init];
+        _backView.backgroundColor = [UIColor whiteColor];
+        
+        _picView = [[UIImageView alloc] init];
         _picView.contentMode = UIViewContentModeScaleAspectFill;
-        [self addSubview:_picView];
+        _picView.layer.masksToBounds = YES;
+        [_backView addSubview:_picView];
         
-        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(_picWidth+25, 10, SWIDTH-_picWidth-30, 40)];
-        _titleLabel.numberOfLines = 2;
-        _titleLabel.font = [UIFont systemFontOfSize:18.0];
-        _titleLabel.textAlignment = NSTextAlignmentJustified;
-        [self addSubview:_titleLabel];
+        _nameLabel = [[UILabel alloc] init];
+        _nameLabel.font = [UIFont systemFontOfSize:16.0];
+        [_backView addSubview:_nameLabel];
         
-        _starView = [[DSXStarView alloc] initWithStarNum:0 position:CGPointMake(_picWidth+25, 50)];
-        [self addSubview:_starView];
+        _soldLabel = [[UILabel alloc] init];
+        _soldLabel.font = [UIFont systemFontOfSize:14.0];
+        _soldLabel.textColor = [UIColor grayColor];
+        [_backView addSubview:_soldLabel];
         
-        _priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(_picWidth+25, _picWidth-10, 100, 20)];
-        _priceLabel.font = [UIFont systemFontOfSize:15.0];
-        _priceLabel.textColor = [UIColor colorWithHexString:@"0x3DC0AD"];
-        [self addSubview:_priceLabel];
+        _starView = [[DSXStarView alloc] init];
+        [_backView addSubview:_starView];
+        
+        _priceLabel = [[UILabel alloc] init];
+        _priceLabel.font = [UIFont systemFontOfSize:14.0];
+        _priceLabel.textColor = [UIColor colorWithRed:0.97 green:0.47 blue:0.29 alpha:1];
+        [_backView addSubview:_priceLabel];
+        
+        _locationLabel = [[UILabel alloc] init];
+        _locationLabel.font = [UIFont systemFontOfSize:12.0];
+        _locationLabel.textColor = [UIColor grayColor];
+        [_backView addSubview:_locationLabel];
+        [self addSubview:_backView];
     }
     return self;
 }
 
 - (void)setGoodsData:(NSDictionary *)goodsData{
     _goodsData = goodsData;
+    
     [_picView sd_setImageWithURL:[NSURL URLWithString:[goodsData objectForKey:@"pic"]]];
-    [_titleLabel setText:[goodsData objectForKey:@"name"]];
-    [_starView setStarNum:[[goodsData objectForKey:@"score"] integerValue]];
-    [_priceLabel setText:[NSString stringWithFormat:@"￥:%.2f",[[goodsData objectForKey:@"price"] floatValue]]];
+    [_starView setStarNum:[[goodsData objectForKey:@"score"] intValue]];
+    [_priceLabel setText:[NSString stringWithFormat:@"￥:%@",[goodsData objectForKey:@"price"]]];
+    [_nameLabel setText:[goodsData objectForKey:@"name"]];
+    [_soldLabel setText:[NSString stringWithFormat:@"已售%@",[goodsData objectForKey:@"sold"]]];
+    [_locationLabel setText:[goodsData objectForKey:@"distance"]];
+    [_locationLabel sizeToFit];
+}
+
+- (void)layoutSubviews{
+    [super layoutSubviews];
+    _backView.frame      = CGRectMake(10, 5, SWIDTH-20, _imageWidth);
+    _picView.frame       = CGRectMake(0, 0, _imageWidth, _imageWidth);
+    _nameLabel.frame     = CGRectMake(_imageWidth+10, 0, SWIDTH-_imageWidth-20, 35);
+    _starView.position   = CGPointMake(_imageWidth+10, 35);
+    _soldLabel.frame     = CGRectMake(_imageWidth+10, 52, 80, 30);
+    _priceLabel.frame    = CGRectMake(_imageWidth+10, _imageWidth-25, 100, 20);
+    _locationLabel.frame = CGRectMake(_backView.frame.size.width-_locationLabel.frame.size.width-5, _imageWidth-22, _locationLabel.frame.size.width, _locationLabel.frame.size.height);
 }
 
 @end

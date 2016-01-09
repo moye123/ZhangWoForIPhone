@@ -14,12 +14,15 @@
 #import "localView.h"
 #import "searchBar.h"
 #import "DistrictViewController.h"
+#import "HomeTitleCell.h"
+#import "HomeGoodsCell.h"
 
 @interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,RecommendDelegate,LocationChangeDelegate,DSXSliderViewDelegate,ChannelViewDelegate,UITextFieldDelegate>{
     @private
     DSXDropDownMenu *_popMenu;
     DSXSliderView *_slideView;
     DSXSliderView *_shopSlideView;
+    NSArray *_goodsList;
 }
 
 - (instancetype)init;

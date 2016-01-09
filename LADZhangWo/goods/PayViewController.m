@@ -7,6 +7,7 @@
 //
 
 #import "PayViewController.h"
+#import "MyOrderViewController.h"
 
 @implementation PayViewController
 @synthesize orderID     = _orderID;
@@ -27,6 +28,7 @@
     _tableView.hidden = YES;
     [self.view addSubview:_tableView];
     
+    _hasSubmitPay = NO;
     //生成支付账单
     NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
                              @"username":[ZWUserStatus sharedStatus].username,
@@ -139,19 +141,24 @@
         if (indexPath.row == 0) {
             return;
         }
+        if (_hasSubmitPay) {
+            return;
+        }
         if (!_billID || !_billAmount) {
             return;
         }
+        //调起支付
         DSXPayManager *payManager = [DSXPayManager sharedManager];
         payManager.delegate    = self;
         payManager.orderNO     = [NSString stringWithFormat:@"zw%@",_billID];
         payManager.orderName   = _orderName;
         payManager.orderDetail = _orderDetail;
-        //payManager.orderAmount = _billAmount;
-        payManager.orderAmount = @"0.01";
+        payManager.orderAmount = _billAmount;
+        //payManager.orderAmount = @"0.01";
         payManager.payID   = _billID;
         payManager.payType = @"payment";
         if (indexPath.row == 1) {
+            _hasSubmitPay = YES;
             [payManager WechatPay];
         }else {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"敬请期待" message:@"暂未开通此支付方式" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil];
@@ -168,21 +175,29 @@
     return 15.0;
 }
 
-#pragma mark
+#pragma mark - payment delegate
 - (void)payManager:(DSXPayManager *)manager didFinishedWithCode:(int)errCode{
     if (errCode == 0) {
         NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
                                  @"username":[ZWUserStatus sharedStatus].username,
                                  @"orderid":_orderID};
-        [[AFHTTPRequestOperationManager sharedManager] setResponseSerializer:[AFHTTPResponseSerializer serializer]];
         [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=order&a=updatepaystatus"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            [DSXUtil nslogData:responseObject];
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
-                NSLog(@"支付成功");
+                /*
+                if (![self.navigationController popViewControllerAnimated:YES]) {
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                }
+                 */
+                MyOrderViewController *myOrderView = [[MyOrderViewController alloc] init];
+                [self.navigationController pushViewController:myOrderView animated:YES];
+            }else {
+                NSLog(@"%@",responseObject);
             }
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
             NSLog(@"%@", error);
         }];
+    }else {
+        _hasSubmitPay = NO;
     }
 }
 

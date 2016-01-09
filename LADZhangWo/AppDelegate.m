@@ -15,9 +15,9 @@
 #import "DSXPayManager.h"
 
 @implementation AppDelegate
-@synthesize scrollView = _scrollView;
+@synthesize scrollView  = _scrollView;
 @synthesize pageControl = _pageControl;
-@synthesize hideButton = _hideButton;
+@synthesize hideButton  = _hideButton;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //微信注册
@@ -98,8 +98,8 @@
     
     [tabBarController setViewControllers:@[navHome,navIncome,navCart,navMy]];
     [tabBarController.tabBar setBackgroundColor:[UIColor tabBarColor]];
-    CLLocationManager *clmanager = [[CLLocationManager alloc] init];
     if ([CLLocationManager locationServicesEnabled]) {
+        CLLocationManager *clmanager = [[CLLocationManager alloc] init];
         CLLocation *location = [clmanager location];
         CLGeocoder *geocoder = [[CLGeocoder alloc] init];
         [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {

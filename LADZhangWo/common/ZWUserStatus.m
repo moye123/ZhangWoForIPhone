@@ -113,20 +113,17 @@ NSString *const UserImageChangedNotification = @"userImageChanged";
 }
 
 - (void)login:(NSMutableDictionary *)params success:(void (^)(id responseObject))success failure:(void (^)(NSString *errorMsg))failure{
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager POST:[SITEAPI stringByAppendingString:@"&mod=member&ac=login"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if ([returns isKindOfClass:[NSDictionary class]]) {
-            [self setUid:[[returns objectForKey:@"uid"] integerValue]];
-            [self setUsername:[returns objectForKey:@"username"]];
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=member&a=login"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            [self setUid:[[responseObject objectForKey:@"uid"] integerValue]];
+            [self setUsername:[responseObject objectForKey:@"username"]];
             if (_uid > 0 && [_username length] > 0) {
-                [self saveData:returns];
+                [self saveData:responseObject];
                 [self reloadData];
                 [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
-                success(returns);
+                success(responseObject);
             }else {
-                NSInteger errorCode = [[returns objectForKey:@"errno"] integerValue];
+                NSInteger errorCode = [[responseObject objectForKey:@"errno"] integerValue];
                 NSString *errorMsg = nil;
                 switch (errorCode) {
                     case -1 :
@@ -156,20 +153,17 @@ NSString *const UserImageChangedNotification = @"userImageChanged";
 }
 
 - (void)register:(NSMutableDictionary *)params success:(void (^)(id))success failure:(void (^)(NSString *))failure{
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager POST:[SITEAPI stringByAppendingString:@"&mod=member&ac=register"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        if([returns isKindOfClass:[NSDictionary class]]){
-            [self setUid:[[returns objectForKey:@"uid"] integerValue]];
-            [self setUsername:[returns objectForKey:@"username"]];
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=member&a=register"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if([responseObject isKindOfClass:[NSDictionary class]]){
+            [self setUid:[[responseObject objectForKey:@"uid"] integerValue]];
+            [self setUsername:[responseObject objectForKey:@"username"]];
             if (_uid > 0 && [_username length] > 0) {
-                [self saveData:returns];
+                [self saveData:responseObject];
                 [[ZWUserStatus sharedStatus] reloadData];
                 [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
-                success(returns);
+                success(responseObject);
             }else {
-                int errorCode = [[returns objectForKey:@"errno"] intValue];
+                int errorCode = [[responseObject objectForKey:@"errno"] intValue];
                 NSString *errorMsg = nil;
                 switch (errorCode) {
                     case -1 :

@@ -16,6 +16,7 @@
     UILabel *_totalLabel;
 }
 
+- (instancetype)init;
 @property(nonatomic,strong)NSDictionary *walletData;
 
 @end

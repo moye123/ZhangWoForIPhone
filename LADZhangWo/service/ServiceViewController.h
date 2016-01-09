@@ -7,16 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ZWCommon.h"
+#import "CategoryView.h"
+#import "ShopItemCell.h"
+#import "HomeTitleCell.h"
 
-@interface ServiceViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout,DSXSliderViewDelegate>{
+@interface ServiceViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,DSXSliderViewDelegate,CategoryViewDelegate,DSXDropDownMenuDelegate>{
     @private
-    CGFloat _cellWidth;
-    CGFloat _cellHeight;
     DSXSliderView *_slideView;
+    CategoryView *_categoryView;
+    NSArray *_shopList;
+    DSXDropDownMenu *_popMenu;
 }
 
-- (instancetype)init;
 @property(nonatomic,strong)NSMutableArray *serviceList;
+@property(nonatomic,retain)UITableView *tableView;
 
 @end

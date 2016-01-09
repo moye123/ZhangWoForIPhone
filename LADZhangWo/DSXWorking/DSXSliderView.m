@@ -73,7 +73,7 @@
     }
     _scrollView.contentSize = CGSizeMake(self.frame.size.width*[_slideData count], 0);
     _pageControl.numberOfPages = [_slideData count];
-    [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(autoPlay) userInfo:nil repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(autoPlay) userInfo:nil repeats:YES];
 }
 
 - (void)imageViewTap:(UITapGestureRecognizer *)tap{
@@ -86,24 +86,31 @@
 }
 
 - (void)pageControlClick:(UIPageControl *)sender{
-    CGFloat x = sender.currentPage * self.frame.size.width;
-    [self.scrollView setContentOffset:CGPointMake(x, 0) animated:YES];
+    [self scrollTo:sender.currentPage];
 }
 
 - (void)autoPlay{
     NSInteger index = _pageControl.currentPage;
     index++;
+    [self scrollTo:index];
+}
+
+- (void)scrollTo:(NSInteger)index{
+    BOOL animated = YES;
     if (index >= _pageControl.numberOfPages) {
         index = 0;
+        animated = NO;
+    }else {
+        animated = YES;
     }
     _pageControl.currentPage = index;
-    [_scrollView setContentOffset:CGPointMake(self.frame.size.width*index, 0) animated:YES];
+    [_scrollView setContentOffset:CGPointMake(self.frame.size.width*index, 0) animated:animated];
 }
 
 #pragma mark - scrollView delegate
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     NSInteger index = self.scrollView.contentOffset.x/self.frame.size.width;
-    self.pageControl.currentPage = index;
+    [self scrollTo:index];
 }
 
 @end

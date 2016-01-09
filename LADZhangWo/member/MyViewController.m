@@ -22,6 +22,7 @@
     [self.view setBackgroundColor:[UIColor backColor]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStatusChanged) name:UserStatusChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setHeadView) name:UserImageChangedNotification object:nil];
+    
     CGRect frame = self.view.frame;
     frame.origin.y = frame.origin.y - 30;
     frame.size.height+= 30;
@@ -30,6 +31,13 @@
     _tableView.dataSource = self;
     [self.view addSubview:_tableView];
     [self setHeadView];
+    
+    _orderCatView = [[OrderCatView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 70)];
+    _orderCatView.touchDelegate = self;
+    
+    _loginout = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _loginout.textAlignment = NSTextAlignmentCenter;
+    _loginout.font = [UIFont systemFontOfSize:16.0];
 }
 
 - (void)setHeadView{
@@ -74,20 +82,39 @@
     self.navigationController.navigationBar.hidden = NO;
 }
 
-- (UIButton *)buttonWithTitle:(NSString *)title image:(NSString *)imageName{
-    CGFloat width = SWIDTH / 5;
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, -1, width, 72)];
-    button.layer.borderWidth = 0.6;
-    button.layer.borderColor = [UIColor colorWithHexString:@"0xd5d5d5"].CGColor;
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake((width-20)/2, 10, 22, 22)];
-    imageView.image = [UIImage imageNamed:imageName];
-    [button addSubview:imageView];
-    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, width, 20)];
-    textLabel.text = title;
-    textLabel.font = [UIFont systemFontOfSize:14.0];
-    textLabel.textAlignment = NSTextAlignmentCenter;
-    [button addSubview:textLabel];
-    return button;
+#pragma mark - ordercateview delegate
+- (void)orderCatView:(OrderCatView *)catView didSelectedAtItem:(NSDictionary *)data{
+   NSInteger tag = [[data objectForKey:@"tag"] intValue];
+    if ([[ZWUserStatus sharedStatus] isLogined]) {
+        MyOrderViewController *orderView = [[MyOrderViewController alloc] init];
+        switch (tag) {
+            case 1:
+                orderView.shippingStatus = @"1";
+                orderView.title = @"待发货";
+                break;
+            case 2:
+                orderView.shippingStatus = @"4";
+                orderView.title = @"待使用";
+                break;
+            case 3:
+                orderView.shippingStatus = @"2";
+                orderView.title = @"待收货";
+                break;
+            case 4:
+                orderView.evaluateStatus = @"1";
+                orderView.title = @"待评价";
+                break;
+            case 5:
+                orderView.orderStatus = @"2";
+                orderView.title = @"申请退款";
+                break;
+            default: orderView.title = @"全部订单";
+                break;
+        }
+        [self.navigationController pushViewController:orderView animated:YES];
+    }else {
+        [self showLogin];
+    }
 }
 
 #pragma mark - tableView delegate
@@ -116,19 +143,14 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"myCell"];
-    
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"myCell"];
+    cell.textLabel.font = [UIFont systemFontOfSize:16.0];
+    cell.detailTextLabel.font = [UIFont systemFontOfSize:14.0];
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
             cell.textLabel.text = @"我的钱包";
             cell.textLabel.textAlignment = NSTextAlignmentLeft;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            UILabel *totalIncomeLabel = [[UILabel alloc] init];
-            totalIncomeLabel.text = @"0.00元";
-            totalIncomeLabel.textColor = [UIColor grayColor];
-            totalIncomeLabel.font = [UIFont systemFontOfSize:14.0];
-            [totalIncomeLabel sizeToFit];
-            cell.accessoryView = totalIncomeLabel;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
     }
@@ -137,61 +159,18 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (indexPath.row == 0) {
             cell.textLabel.text = @"我的订单";
-            
-            UILabel *tipLabel = [[UILabel alloc] init];
-            tipLabel.text = @"查看全部订单";
-            tipLabel.textColor = [UIColor grayColor];
-            tipLabel.font = [UIFont systemFontOfSize:16.0];
-            [tipLabel sizeToFit];
-            cell.accessoryView = tipLabel;
+            cell.detailTextLabel.text = @"查看全部订单";
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
         
         //按钮
         if (indexPath.row == 1) {
-            for (UIView *subview in cell.subviews) {
-                [subview removeFromSuperview];
-            }
-            UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 70)];
-            contentView.layer.masksToBounds = YES;
-            
-            CGFloat width = SWIDTH / 5;
-            cell.contentView.layer.masksToBounds = YES;
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            UIButton *buttonPay = [self buttonWithTitle:@"待付款" image:@"icon-wating-pay.png"];
-            buttonPay.tag = 101;
-            buttonPay.frame = CGRectMake(-1, -1, width+1, 72);
-            [buttonPay addTarget:self action:@selector(showOrder:) forControlEvents:UIControlEventTouchUpInside];
-            [contentView addSubview:buttonPay];
-            
-            UIButton *buttonUse = [self buttonWithTitle:@"待使用" image:@"icon-wating-use.png"];
-            buttonUse.tag = 102;
-            buttonUse.frame = CGRectMake(width-1, -1, width+1, 72);
-            [buttonUse addTarget:self action:@selector(showOrder:) forControlEvents:UIControlEventTouchUpInside];
-            [contentView addSubview:buttonUse];
-            
-            UIButton *buttonReceipt = [self buttonWithTitle:@"待收货" image:@"icon-wating-receipt.png"];
-            buttonReceipt.tag = 103;
-            buttonReceipt.frame = CGRectMake(width*2-1, -1, width+1, 72);
-            [buttonReceipt addTarget:self action:@selector(showOrder:) forControlEvents:UIControlEventTouchUpInside];
-            [contentView addSubview:buttonReceipt];
-            
-            UIButton *buttonComment = [self buttonWithTitle:@"待评价" image:@"icon-wating-comment.png"];
-            buttonComment.tag = 104;
-            buttonComment.frame = CGRectMake(width*3-1, -1, width+1, 72);
-            [buttonComment addTarget:self action:@selector(showOrder:) forControlEvents:UIControlEventTouchUpInside];
-            [contentView addSubview:buttonComment];
-            
-            UIButton *buttonReturn = [self buttonWithTitle:@"退货" image:@"icon-wating-return.png"];
-            buttonReturn.tag = 105;
-            buttonReturn.frame = CGRectMake(width*4-1, -1, width+1, 72);
-            [buttonReturn addTarget:self action:@selector(showOrder:) forControlEvents:UIControlEventTouchUpInside];
-            [contentView addSubview:buttonReturn];
-            [cell addSubview:contentView];
+            [cell addSubview:_orderCatView];
         }
     }
     
     if (indexPath.section == 2) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         if (indexPath.row == 0) {
             cell.textLabel.text = @"我的收藏";
         }
@@ -203,30 +182,24 @@
             cell.textLabel.text = @"评分";
         }
         if (indexPath.row == 3) {
-            cell.textLabel.text = @"清除缓存";
             float cacheSize = (float)[[SDImageCache sharedImageCache] getSize]/1048576;
-            UILabel *cacheSizeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 50)];
-            cacheSizeLabel.text = [NSString stringWithFormat:@"%.2fMB",cacheSize];
-            cacheSizeLabel.textColor = [UIColor grayColor];
-            cacheSizeLabel.font = [UIFont systemFontOfSize:14.0];
-            [cacheSizeLabel sizeToFit];
+            cell.textLabel.text = @"清除缓存";
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%.2fMB",cacheSize];
             cell.accessoryType = UITableViewCellAccessoryNone;
-            cell.accessoryView = cacheSizeLabel;
         }
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
     }
     
     if (indexPath.section == 3) {
+        [cell addSubview:_loginout];
         if (indexPath.row == 0) {
             if ([[ZWUserStatus sharedStatus] isLogined]) {
-                cell.textLabel.text = @"退出登录";
-                cell.textLabel.textColor = [UIColor redColor];
+                _loginout.text = @"退出登录";
+                _loginout.textColor = [UIColor redColor];
             }else {
-                cell.textLabel.text = @"登录";
-                cell.textLabel.textColor = [UIColor blackColor];
+                _loginout.text = @"登录";
+                _loginout.textColor = [UIColor blackColor];
             }
-            cell.textLabel.textAlignment = NSTextAlignmentCenter;
-            cell.textLabel.font = [UIFont systemFontOfSize:16.0];
         }
         
     }
@@ -318,40 +291,6 @@
     [[DSXUI sharedUI] showLoginFromViewController:self];
 }
 
-- (void)showOrder:(UIButton *)sender{
-    if ([[ZWUserStatus sharedStatus] isLogined]) {
-        MyOrderViewController *orderView = [[MyOrderViewController alloc] init];
-        switch (sender.tag) {
-            case 101:
-                orderView.shippingStatus = @"1";
-                orderView.title = @"待发货";
-                break;
-            case 102:
-                orderView.shippingStatus = @"4";
-                orderView.title = @"待使用";
-                break;
-            case 103:
-                orderView.shippingStatus = @"2";
-                orderView.title = @"待收货";
-                break;
-            case 104:
-                orderView.evaluateStatus = @"1";
-                orderView.title = @"待评价";
-                break;
-            case 105:
-                orderView.orderStatus = @"2";
-                orderView.title = @"申请退款";
-                break;
-            default: orderView.title = @"我的订单";
-                break;
-        }
-        [self.navigationController pushViewController:orderView animated:YES];
-    }else {
-        [self showLogin];
-    }
-    
-}
-
 - (void)showSetting{
     if ([[ZWUserStatus sharedStatus] isLogined]) {
         SettingViewController *setttingView = [[SettingViewController alloc] init];
@@ -359,7 +298,6 @@
     }else {
         [self showLogin];
     }
-    
 }
 
 - (void)showMessage{

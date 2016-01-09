@@ -23,16 +23,15 @@
         [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"channelCell"];
         [self addSubview:_collectionView];
         
-        _cellWidth = (frame.size.width/4)-1;
-        _cellHeight = 90;
-        //_channelList = [[NSUserDefaults standardUserDefaults] arrayForKey:@"channelList"];
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        [manager GET:[SITEAPI stringByAppendingString:@"&c=channel"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            id array = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            if ([array isKindOfClass:[NSArray class]]) {
-                if ([array count] > 0) {
-                    _channelList = array;
+        _cellWidth   = (frame.size.width/4)-1;
+        _cellHeight  = 90;
+        _channelList = [[NSUserDefaults standardUserDefaults] arrayForKey:@"channelList"];
+        [_collectionView reloadData];
+        
+        [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=channel"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            if ([responseObject isKindOfClass:[NSArray class]]) {
+                if ([responseObject count] > 0) {
+                    _channelList = responseObject;
                     [[NSUserDefaults standardUserDefaults] setObject:_channelList forKey:@"channelList"];
                     [_collectionView reloadData];
                 }

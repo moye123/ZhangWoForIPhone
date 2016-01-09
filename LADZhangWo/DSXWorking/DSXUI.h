@@ -48,5 +48,6 @@ UIKIT_EXTERN NSString *const DSXFontStyleBlack;
 - (UIView *)showLoadingViewWithMessage:(NSString *)message;
 - (void)showLoginFromViewController:(UIViewController *)controller;
 - (UILabel *)tipsViewWithTitle:(NSString *)title;
++ (UIView *)noAccessView;
 
 @end

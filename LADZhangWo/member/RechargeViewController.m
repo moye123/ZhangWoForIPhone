@@ -18,7 +18,7 @@
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf0f0f0"]];
     
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"确定" style:UIBarButtonItemStylePlain target:self action:@selector(submit)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"确定" style:UIBarButtonItemStylePlain target:self action:@selector(done)];
     
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
     _tableView.delegate = self;
@@ -41,24 +41,33 @@
     _amountField.clearButtonMode = UITextFieldViewModeWhileEditing;
     _index = 0;
     _payType = @"wechat";
+    _hasSubmitPay = NO;
 }
 
 - (void)back{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)done{
+    [self.view endEditing:YES];
+}
+
 - (void)submit{
     [_amountField resignFirstResponder];
+    if (_hasSubmitPay == YES) {
+        return;
+    }
     DSXPayManager *pay = [DSXPayManager sharedManager];
     pay.delegate = self;
     pay.orderName = @"账号充值";
     pay.orderDetail = @"长沃账号充值";
-    pay.orderAmount = @"0.01";
+    //pay.orderAmount = @"0.01";
+    pay.orderAmount = _amountField.text;
     if (!(pay.orderAmount.floatValue > 0)) {
         [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleWarning Message:@"请输入有效金额"];
         return;
     }
-    UIView *loading = [[DSXUI sharedUI] showLoadingViewWithMessage:@"正在处理.."];
+    _hasSubmitPay = YES;
     [[AFHTTPRequestOperationManager manager] POST:[SITEAPI stringByAppendingString:@"&c=bill&a=create"] parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"username":[ZWUserStatus sharedStatus].username,@"billname":pay.orderName,@"detail":pay.orderDetail,@"amount":pay.orderAmount} success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         //NSLog(@"%@",responseObject);
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
@@ -68,20 +77,24 @@
                 pay.payType = @"recharge";
                 if ([_payType isEqualToString:@"wechat"]) {
                     [pay WechatPay];
+                }else{
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"尽请期待" message:@"此支付方式暂未开通" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                    [alert show];
                 }
             }
-            [loading removeFromSuperview];
         }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         NSLog(@"%@",error);
     }];
 }
 
-#pragma mark --
+#pragma mark - paymanager delegate
 - (void)payManager:(DSXPayManager *)manager didFinishedWithCode:(int)errCode{
-    NSLog(@"%d",errCode);
-    MyWalletViewController *walletView = [[MyWalletViewController alloc] init];
-    [self.navigationController pushViewController:walletView animated:YES];
+    if (errCode == 0) {
+        [self back];
+    }else {
+        _hasSubmitPay = NO;
+    }
 }
 
 #pragma mark --
@@ -97,6 +110,7 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"rechargeCell"];
     
     if (indexPath.row == 0) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
         cell.imageView.image = [UIImage imageNamed:@"icon-wechat.png"];
         cell.textLabel.text = @"微信支付";
     }
@@ -121,6 +135,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [cell setSelected:NO animated:YES];
     if (indexPath.row < 3) {
         // 取消前一个选中的，就是单选啦
         NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:_index inSection:0];

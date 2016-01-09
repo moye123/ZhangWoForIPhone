@@ -20,6 +20,7 @@
 #import "WebViewController.h"
 #import "SearchViewController.h"
 #import "MyMessageViewController.h"
+#import "CommunityViewController.h"
 
 @implementation HomeViewController
 @synthesize local;
@@ -65,6 +66,11 @@
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:_tableView];
     
+    [_tableView registerClass:[HomeTitleCell class] forCellReuseIdentifier:@"titleCell"];
+    [_tableView registerClass:[HomeGoodsCell class] forCellReuseIdentifier:@"goodsCell"];
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"homeCell"];
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"channelCell"];
+    
     //轮播广告
     _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, 150)];
     _slideView.groupid = 5;
@@ -79,7 +85,7 @@
     
     //推荐商家
     CGFloat height = SWIDTH*0.30;
-    _shopSlideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, height)];
+    _shopSlideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, height)];
     _shopSlideView.delegate = self;
     _shopSlideView.groupid = 1;
     _shopSlideView.num = 5;
@@ -115,6 +121,16 @@
     _foodView.dataCount = 6;
     _foodView.contentSize = CGSizeMake((SWIDTH-20)*2, 0);
     [_foodView loadData];
+    
+    //猜你喜欢
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=goods&a=showlist&pagesize=10"] parameters:[DSXUtil getLocation] success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            _goodsList = responseObject;
+            [_tableView reloadSections:[NSIndexSet indexSetWithIndex:5] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
 }
 
 - (void)viewWillLayoutSubviews{
@@ -142,12 +158,14 @@
 
 #pragma mark - tableView delegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 5;
+    return 6;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (section == 0 || section == 1) {
         return 1;
+    }else if (section == 5){
+        return [_goodsList count]+1;
     }else {
         return 2;
     }
@@ -170,60 +188,154 @@
         }else {
             return ((SWIDTH - 30)/3) + 10;
         }
-    }else {
+    }else if(indexPath.section == 4){
         if (indexPath.row == 0) {
             return 45;
         }else {
             return (SWIDTH-30)/2;
         }
+    }else if (indexPath.section == 5){
+        if (indexPath.row == 0) {
+            return 45;
+        }else {
+            return SWIDTH*0.30+10;
+        }
+    }else {
+        return 0;
     }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [[UITableViewCell alloc] init];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     if (indexPath.section == 0) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"channelCell"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (indexPath.row == 0) {
             [cell addSubview:_channelView];
         }
+        return cell;
     }
     if (indexPath.section == 1) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"homeCell"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (indexPath.row == 0) {
             [cell addSubview:_shopSlideView];
         }
+        return cell;
     }
     
     if (indexPath.section == 2) {
         if (indexPath.row == 0) {
-            cell.textLabel.text = @"旅游景点推荐";
+            HomeTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
+            cell.title = @"旅游景点推荐";
+            cell.detail = @"查看更多";
+            return cell;
         }
         if (indexPath.row == 1) {
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"homeCell"];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             [cell addSubview:_travelView];
+            return cell;
         }
     }
     
     if (indexPath.section == 3) {
         if (indexPath.row == 0) {
-            cell.textLabel.text = @"本地特产";
+            HomeTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
+            cell.title = @"本地特产";
+            cell.detail = @"查看更多";
+            return cell;
         }
         if (indexPath.row == 1) {
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"homeCell"];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             [cell addSubview:_productView];
+            return cell;
         }
     }
     if (indexPath.section == 4) {
         if (indexPath.row == 0) {
-            cell.textLabel.text = @"特色美食推荐";
+            HomeTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
+            cell.title = @"特色美食推荐";
+            cell.detail = @"查看更多";
+            return cell;
         }
         if (indexPath.row == 1) {
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"homeCell"];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             [cell addSubview:_foodView];
+            return cell;
         }
     }
-    return cell;
+    if (indexPath.section == 5) {
+        if (indexPath.row == 0) {
+            HomeTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
+            cell.title = @"猜你喜欢";
+            cell.detail = @"查看更多";
+            return cell;
+        }else {
+            NSDictionary *goodsData = [_goodsList objectAtIndex:(indexPath.row - 1)];
+            HomeGoodsCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell"];
+            cell.imageWidth = SWIDTH*0.30;
+            [cell setGoodsData:goodsData];
+            return cell;
+        }
+    }
+    return nil;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
+    
+    if (indexPath.section == 2) {
+        if (indexPath.row == 0) {
+            TravelViewController *travelView = [[TravelViewController alloc] init];
+            ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
+            nav.style = ZWNavigationStyleGray;
+            [self.navigationController presentViewController:nav animated:YES  completion:nil];
+        }
+    }
+    
+    if (indexPath.section == 3) {
+        if (indexPath.row == 0) {
+            GoodsListViewController *listView = [[GoodsListViewController alloc] init];
+            listView.catid = 17;
+            listView.title = @"本地特产";
+            ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:listView];
+            nav.style = ZWNavigationStyleGray;
+            [self.navigationController presentViewController:nav animated:YES  completion:nil];
+        }
+    }
+    
+    if (indexPath.section == 4) {
+        if (indexPath.row == 0) {
+            GoodsListViewController *listView = [[GoodsListViewController alloc] init];
+            listView.catid = 1;
+            listView.title = @"本地美食";
+            ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:listView];
+            nav.style = ZWNavigationStyleGray;
+            [self.navigationController presentViewController:nav animated:YES  completion:nil];
+        }
+    }
+    
+    if (indexPath.section == 5) {
+        if (indexPath.row == 0) {
+            GoodsListViewController *listView = [[GoodsListViewController alloc] init];
+            listView.catid = 0;
+            listView.title = @"本地热卖";
+            ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:listView];
+            nav.style = ZWNavigationStyleGray;
+            [self.navigationController presentViewController:nav animated:YES  completion:nil];
+            
+        }else {
+            NSDictionary *goodsData = [_goodsList objectAtIndex:(indexPath.row - 1)];
+            GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
+            goodsView.goodsid = [[goodsData objectForKey:@"id"] intValue];
+            ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
+            nav.style = ZWNavigationStyleGray;
+            [self.navigationController presentViewController:nav animated:YES  completion:nil];
+        }
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -317,10 +429,8 @@
     
     //外卖
     if ([tag isEqualToString:@"takeout"]) {
-        GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
-        goodsListController.catid = 19;
-        goodsListController.title = @"我要外卖";
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
+        CommunityViewController *communityView = [[CommunityViewController alloc] init];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:communityView];
         nav.style = ZWNavigationStyleGray;
         [self.navigationController presentViewController:nav animated:YES completion:nil];
     }

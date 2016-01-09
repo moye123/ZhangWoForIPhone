@@ -25,11 +25,12 @@
         if (!_payID) {
             _payID = @"0";
         }
+        _errCode = 0;
     }
     return self;
 }
 
-+(instancetype)sharedManager{
++ (instancetype)sharedManager{
     static id instance;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
@@ -47,9 +48,11 @@
                              @"paytype":_payType,
                              @"payid":_payID};
     NSString *urlString = [SITEAPI stringByAppendingString:@"&c=weixin&a=sign"];
+    UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"交易处理中.."];
     [[AFHTTPRequestOperationManager sharedManager] POST:urlString parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                [loadingView removeFromSuperview];
                 PayReq *request   = [[PayReq alloc] init];
                 request.partnerId = [responseObject  objectForKey:@"partnerid"];
                 request.prepayId  = [responseObject  objectForKey:@"prepayid"];
@@ -134,7 +137,7 @@
         NSString *strMsg,*strTitle = [NSString stringWithFormat:@"支付结果"];
         switch (resp.errCode) {
             case WXSuccess:
-                strMsg = @"支付结果：成功！";
+                strMsg = @"支付成功!";
                 NSLog(@"支付成功－PaySuccess，retcode = %d", resp.errCode);
                 break;
             case WXErrCodeCommon:
@@ -154,17 +157,20 @@
                 NSLog(@"错误，retcode = %d, retstr = %@", resp.errCode,resp.errStr);
                 break;
         }
-        if (resp.errCode == WXSuccess) {
-            if (_delegate && [_delegate respondsToSelector:@selector(payManager:didFinishedWithCode:)]) {
-                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"支付成功"];
-                [_delegate payManager:self didFinishedWithCode:resp.errCode];
-            }
-        }else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
-            [alert show];
-        }
+        _errCode = resp.errCode;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:strTitle message:strMsg delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alert setTag:101];
+        [alert show];
     }
     
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.tag == 101) {
+        if (_delegate && [_delegate respondsToSelector:@selector(payManager:didFinishedWithCode:)]) {
+            [_delegate payManager:self didFinishedWithCode:_errCode];
+        }
+    }
 }
 
 - (void)onReq:(BaseReq *)req {

@@ -13,10 +13,11 @@
 @protocol CartCustomCellDelegate <NSObject>
 
 @optional
-- (void)cell:(CartCustomCell *)cell didChecked:(UIButton *)checkBox goodsModel:(CartInfoModel *)model;
-- (void)cell:(CartCustomCell *)cell picViewClicked:(UIImageView *)picView goodsModel:(CartInfoModel *)model;
-- (void)cell:(CartCustomCell *)cell didStartEditing:(UIButton *)editButton goodsModel:(CartInfoModel *)model;
-- (void)cell:(CartCustomCell *)cell didEndEditing:(UIButton *)button goodsModel:(CartInfoModel *)model;
+- (void)customCell:(CartCustomCell *)cell didClickedItemAtCheckBox:(UIButton *)checkBox model:(CartInfoModel *)model;
+- (void)customCell:(CartCustomCell *)cell didClickedItemAtImageView:(UIImageView *)imageView model:(CartInfoModel *)model;
+- (void)customCell:(CartCustomCell *)cell didClickedItemAtEditButton:(UIButton *)editButton model:(CartInfoModel *)model;
+- (void)customCell:(CartCustomCell *)cell didStartEditing:(UIButton *)editButton goodsModel:(CartInfoModel *)model;
+- (void)customCell:(CartCustomCell *)cell didEndEditing:(UIButton *)button goodsModel:(CartInfoModel *)model;
 
 @end
 

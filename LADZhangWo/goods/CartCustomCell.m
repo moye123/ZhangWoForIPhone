@@ -10,21 +10,22 @@
 #import "UIImageView+WebCache.h"
 
 @implementation CartCustomCell
-@synthesize infoView = _infoView;
+@synthesize infoView    = _infoView;
 @synthesize editingView = _editingView;
-@synthesize goodsModel = _goodsModel;
-@synthesize picView = _picView;
-@synthesize nameLabel = _nameLabel;
-@synthesize priceLabel = _priceLabel;
-@synthesize numLabel = _numLabel;
-@synthesize checkBox = _checkBox;
-@synthesize selectSate = _selectSate;
-@synthesize editButton = _editButton;
-@synthesize delegate = _delegate;
+@synthesize goodsModel  = _goodsModel;
+@synthesize picView     = _picView;
+@synthesize nameLabel   = _nameLabel;
+@synthesize priceLabel  = _priceLabel;
+@synthesize numLabel    = _numLabel;
+@synthesize checkBox    = _checkBox;
+@synthesize selectSate  = _selectSate;
+@synthesize editButton  = _editButton;
+@synthesize delegate    = _delegate;
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        _selectSate = NO;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         _infoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CELLWIDTH, 100)];
         [self addSubview:_infoView];
@@ -32,19 +33,21 @@
         _checkBox = [[UIButton alloc] initWithFrame:CGRectMake(12, 39, 22, 22)];
         [_checkBox setBackgroundImage:[UIImage imageNamed:@"icon-round.png"] forState:UIControlStateNormal];
         [_checkBox setBackgroundImage:[UIImage imageNamed:@"icon-roundcheckfill.png"] forState:UIControlStateSelected];
-        [_checkBox addTarget:self action:@selector(btnClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [_checkBox addTarget:self action:@selector(checkBoxClicked:) forControlEvents:UIControlEventTouchUpInside];
         [_checkBox setUserInteractionEnabled:YES];
         [_infoView addSubview:_checkBox];
         
         _picView = [[UIImageView alloc] initWithFrame:CGRectMake(45, 15, 70, 70)];
+        _picView.layer.masksToBounds = YES;
+        _picView.contentMode = UIViewContentModeScaleAspectFill;
         [_infoView addSubview:_picView];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageClicked:)];
         [_picView addGestureRecognizer:tap];
         [_picView setUserInteractionEnabled:YES];
         
-        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(125, 10, 160, 40)];
-        _nameLabel.numberOfLines = 2;
-        _nameLabel.font = [UIFont systemFontOfSize:16.0];
+        _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(125, 10, 160, 30)];
+        _nameLabel.numberOfLines = 1;
+        _nameLabel.font = [UIFont systemFontOfSize:14.0];
         [_infoView addSubview:_nameLabel];
         
         _priceLabel = [[UILabel alloc] initWithFrame:CGRectMake(125, 40, 100, 20)];
@@ -137,6 +140,7 @@
 
 - (void)setGoodsModel:(CartInfoModel *)goodsModel{
     _goodsModel = goodsModel;
+    _selectSate = _goodsModel.selectState;
     [_picView sd_setImageWithURL:[NSURL URLWithString:goodsModel.goodsImage]];
     [_nameLabel setText:goodsModel.goodsName];
     [_priceLabel setText:[NSString stringWithFormat:@"￥:%.2f", goodsModel.goodsPrice]];
@@ -153,26 +157,26 @@
     _checkBox.selected = selectSate;
 }
 
-- (void)btnClicked:(UIButton *)sender{
-    sender.selected = !sender.selected;
+- (void)checkBoxClicked:(UIButton *)sender{
+    sender.selected = !sender.isSelected;
     _selectSate = sender.isSelected;
-    _goodsModel.selectState = _selectSate;
-    if ([_delegate respondsToSelector:@selector(cell:didChecked:goodsModel:)]) {
-        [_delegate cell:self didChecked:sender goodsModel:_goodsModel];
+    _goodsModel.selectState = sender.isSelected;;
+    if ([_delegate respondsToSelector:@selector(customCell:didClickedItemAtCheckBox:model:)]) {
+        [_delegate customCell:self didClickedItemAtCheckBox:sender model:_goodsModel];
     }
 }
 
 - (void)imageClicked:(UITapGestureRecognizer *)tap{
-    if ([_delegate respondsToSelector:@selector(cell:picViewClicked:goodsModel:)]) {
-        [_delegate cell:self picViewClicked:_picView goodsModel:_goodsModel];
+    if ([_delegate respondsToSelector:@selector(customCell:didClickedItemAtImageView:model:)]) {
+        [_delegate customCell:self didClickedItemAtImageView:(UIImageView *)tap.view model:_goodsModel];
     }
 }
 
 - (void)editBtnClicked:(UIButton *)sender{
     _infoView.hidden = YES;
     _editingView.hidden = NO;
-    if ([_delegate respondsToSelector:@selector(cell:didStartEditing:goodsModel:)]) {
-        [_delegate cell:self didStartEditing:sender goodsModel:_goodsModel];
+    if ([_delegate respondsToSelector:@selector(customCell:didStartEditing:goodsModel:)]) {
+        [_delegate customCell:self didStartEditing:sender goodsModel:_goodsModel];
     }
 }
 
@@ -195,8 +199,8 @@
     _editingView.hidden = YES;
     _infoView.hidden = NO;
     [self setGoodsModel:_goodsModel];
-    if ([_delegate respondsToSelector:@selector(cell:didEndEditing:goodsModel:)]) {
-        [_delegate cell:self didEndEditing:sender goodsModel:_goodsModel];
+    if ([_delegate respondsToSelector:@selector(customCell:didEndEditing:goodsModel:)]) {
+        [_delegate customCell:self didEndEditing:sender goodsModel:_goodsModel];
     }
 }
 

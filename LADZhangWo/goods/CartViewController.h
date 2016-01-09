@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
+#import "CartTitleCell.h"
 #import "CartCustomCell.h"
 
-@interface CartViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CartCustomCellDelegate>{
+@interface CartViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CartCustomCellDelegate,CartTitleCellDelegate>{
     @private
     int _page;
     BOOL _isRefreshing;
@@ -21,7 +22,6 @@
     float _totalValue;
     NSInteger _totalNum;
     UIButton *_settlement;
-    NSMutableArray *_shopBoxs;
     NSMutableArray *_goodsModelArray;
 }
 

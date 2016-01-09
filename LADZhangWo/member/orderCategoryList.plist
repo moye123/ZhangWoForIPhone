@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>title</key>
+		<string>待付款</string>
+		<key>icon</key>
+		<string>icon-wating-pay.png</string>
+		<key>tag</key>
+		<string>1</string>
+	</dict>
+	<dict>
+		<key>title</key>
+		<string>待使用</string>
+		<key>icon</key>
+		<string>icon-wating-use.png</string>
+		<key>tag</key>
+		<string>2</string>
+	</dict>
+	<dict>
+		<key>title</key>
+		<string>待收货</string>
+		<key>icon</key>
+		<string>icon-wating-receipt.png</string>
+		<key>tag</key>
+		<string>3</string>
+	</dict>
+	<dict>
+		<key>title</key>
+		<string>待评价</string>
+		<key>icon</key>
+		<string>icon-wating-comment.png</string>
+		<key>tag</key>
+		<string>4</string>
+	</dict>
+	<dict>
+		<key>title</key>
+		<string>退货</string>
+		<key>icon</key>
+		<string>icon-wating-return.png</string>
+		<key>tag</key>
+		<string>5</string>
+	</dict>
+</array>
+</plist>

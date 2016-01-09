@@ -7,14 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ZWCommon.h"
+#import "OrderCatView.h"
 #import "MyHeadView.h"
 
-@interface MyViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>{
+@interface MyViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,OrderCatViewDelegate>{
     @private
     UIButton *_buttonMessage;
     UIButton *_buttonSetting;
     MyHeadView *_headerView;
+    OrderCatView *_orderCatView;
+    UILabel *_loginout;
 }
 
 @property(nonatomic,retain)UIView *topView;

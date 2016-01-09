@@ -123,6 +123,7 @@
     if ([idType isEqualToString:@"aid"]) {
         NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
         newsView.newsID = [[favorItem objectForKey:@"dataid"] integerValue];
+        newsView.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:newsView animated:YES];
     }
     
@@ -135,6 +136,7 @@
     if ([idType isEqualToString:@"goodsid"]) {
         GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
         goodsView.goodsid = [[favorItem objectForKey:@"dataid"] integerValue];
+        goodsView.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:goodsView animated:YES];
     }
     
@@ -147,6 +149,7 @@
     if ([idType isEqualToString:@"csgoodsid"]) {
         ChaoshiDetailViewController *csdetailView = [[ChaoshiDetailViewController alloc] init];
         csdetailView.goodsid = [[favorItem objectForKey:@"dataid"] integerValue];
+        csdetailView.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:csdetailView animated:YES];
     }
     

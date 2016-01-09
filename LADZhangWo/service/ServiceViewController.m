@@ -11,41 +11,38 @@
 #import "TravelDetailViewController.h"
 #import "ShopDetailViewController.h"
 #import "GoodsDetailViewController.h"
+#import "ServiceListViewController.h"
+#import "MyMessageViewController.h"
+#import "MyFavoriteViewController.h"
+#import "ShopListViewController.h"
+
 
 @implementation ServiceViewController
 @synthesize serviceList = _serviceList;
-
-- (instancetype)init{
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    self = [super initWithCollectionViewLayout:layout];
-    if (self) {
-        _cellWidth = SWIDTH/4 - 0.5;
-        _cellHeight = 90;
-    }
-    return self;
-}
+@synthesize tableView   = _tableView;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self setTitle:@"生活服务"];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
     
-    self.collectionView.delegate = self;
-    self.collectionView.dataSource = self;
-    self.collectionView.backgroundColor = [UIColor backColor];
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"serviceCell"];
-    [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"slideView"];
+    //pop菜单
+    _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
+    _popMenu.delegate = self;
+    [self.navigationController.view addSubview:_popMenu];
     
-    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=service&a=showlist"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _serviceList = [NSMutableArray arrayWithArray:responseObject];
-            [self.collectionView reloadData];
-        }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        NSLog(@"%@", error);
-    }];
+    CGRect frame = self.view.bounds;
+    frame.size.height-= 60;
+    _tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.view addSubview:_tableView];
+    [_tableView registerClass:[ShopItemCell class] forCellReuseIdentifier:@"shopItemCell"];
+    [_tableView registerClass:[HomeTitleCell class] forCellReuseIdentifier:@"titleCell"];
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"categoryCell"];
     
     //轮播广告
     _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 180)];
@@ -53,6 +50,34 @@
     _slideView.num = 3;
     _slideView.delegate = self;
     [_slideView loaddata];
+    [_tableView setTableHeaderView:_slideView];
+    
+    _categoryView = [[CategoryView alloc] initWithFrame:CGRectMake(0, 10, SWIDTH, 270)];
+    _categoryView.cellSize  = CGSizeMake(SWIDTH/4, 90);
+    _categoryView.imageSize = CGSizeMake(50, 50);
+    _categoryView.isRemoteImage = YES;
+    _categoryView.scrollEnabled = NO;
+    _categoryView.touchDelegate = self;
+    
+    _serviceList = [NSMutableArray array];
+    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=service&a=category"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            _serviceList = responseObject;
+            _categoryView.categoryData = _serviceList;
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
+    
+    //加载商家列表
+    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=shop&a=showlist&pagesize=10"] parameters:[DSXUtil getLocation] success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            _shopList = responseObject;
+            [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
 }
 
 - (void)back{
@@ -61,92 +86,148 @@
     }
 }
 
-#pragma mark - collectionView delegate
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-    return 1;
+- (void)showPopMenu{
+    [_popMenu toggle];
 }
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return [_serviceList count];
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section{
-    return 0.5;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section{
-    return 1.0;
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    return CGSizeMake(_cellWidth, _cellHeight);
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"serviceCell" forIndexPath:indexPath];
-    if (cell) {
-        //cell.backgroundColor = [UIColor colorWithHexString:@"0xe5e5e5"];
-        for (UIView *subview in cell.subviews) {
-            [subview removeFromSuperview];
-        }
-        NSDictionary *service = [_serviceList objectAtIndex:indexPath.row];
-        UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _cellWidth, _cellHeight)];
-        contentView.backgroundColor = [UIColor whiteColor];
-        [cell addSubview:contentView];
-        
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake((_cellWidth-35)/2, 15, 35, 35)];
-        [imageView sd_setImageWithURL:[NSURL URLWithString:[service objectForKey:@"pic"]]];
-        [cell addSubview:imageView];
-        
-        UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 70, _cellWidth, 20)];
-        nameLabel.text = [service objectForKey:@"name"];
-        nameLabel.font = [UIFont systemFontOfSize:16.0];
-        nameLabel.textAlignment = NSTextAlignmentCenter;
-        [cell addSubview:nameLabel];
+- (void)dropDownMenu:(DSXDropDownMenu *)dropDownMenu didSelectedAtCellItem:(UITableViewCell *)cellItem withData:(NSDictionary *)data{
+    [dropDownMenu slideUp];
+    NSString *action = [data objectForKey:@"action"];
+    if ([action isEqualToString:@"shownotice"]) {
+        MyMessageViewController *messageView = [[MyMessageViewController alloc] init];
+        [self.navigationController pushViewController:messageView animated:YES];
     }
-    return cell;
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
-    return CGSizeMake(SWIDTH, 180);
-}
-
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-    UICollectionReusableView *reuseableView;
-    if (kind == UICollectionElementKindSectionHeader) {
-        reuseableView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"slideView" forIndexPath:indexPath];
-        for (UIView *subview in reuseableView.subviews) {
-            [subview removeFromSuperview];
-        }
-        [reuseableView addSubview:_slideView];
+    
+    if ([action isEqualToString:@"showfavorite"]) {
+        MyFavoriteViewController *favorView = [[MyFavoriteViewController alloc] init];
+        [self.navigationController pushViewController:favorView animated:YES];
     }
-    return reuseableView;
+    
+    if ([action isEqualToString:@"showhome"]) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [self.tabBarController setSelectedIndex:0];
+    }
 }
 
-#pragma mark - dsxslideview delegate
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [_popMenu slideUp];
+}
+
+- (void)categoryView:(CategoryView *)categoryView didSelectedItemAt:(NSIndexPath *)indexPath data:(NSDictionary *)data{
+    ServiceListViewController *listView = [[ServiceListViewController alloc] init];
+    listView.catid = [[data objectForKey:@"catid"] integerValue];
+    listView.title = [data objectForKey:@"cname"];
+    [self.navigationController pushViewController:listView animated:YES];
+}
+
+#pragma mark - tableView delegate
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return 2;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    if (section == 0) {
+        return 1;
+    }else {
+        return [_shopList count]+1;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.section == 0) {
+        return 290;
+    }else if (indexPath.section == 1){
+        if (indexPath.row == 0) {
+            return 45;
+        }else {
+            return 110;
+        }
+    }else {
+        return 45;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 5;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 0.0001;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.section == 0) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"categoryCell"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        [cell addSubview:_categoryView];
+        return cell;
+    }
+    
+    if (indexPath.section == 1) {
+        if (indexPath.row == 0) {
+            HomeTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
+            cell.textLabel.text = @"附近商家";
+            cell.detailTextLabel.text = @"查看更多信息";
+            return cell;
+        }else {
+            ShopItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"shopItemCell"];
+            NSDictionary *shopData = [_shopList objectAtIndex:(indexPath.row-1)];
+            [cell setShopData:shopData];
+            return cell;
+        }
+    }
+    return nil;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [cell setSelected:NO animated:YES];
+    
+    if (indexPath.section == 1) {
+        if (indexPath.row == 0) {
+            ShopListViewController *shopView = [[ShopListViewController alloc] init];
+            [self.navigationController pushViewController:shopView animated:YES];
+        }else {
+            NSDictionary *shopData = [_shopList objectAtIndex:(indexPath.row-1)];
+            ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+            shopView.shopid = [[shopData objectForKey:@"shopid"] integerValue];
+            [self.navigationController pushViewController:shopView animated:YES];
+        }
+    }
+}
+
+#pragma mark - sliderView delegate
 - (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
     if ([idType isEqualToString:@"goodsid"]) {
         GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
         goodsView.goodsid = dataID;
-        [self.navigationController pushViewController:goodsView animated:YES];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:NO completion:nil];
     }
     
     if ([idType isEqualToString:@"aid"]) {
         NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
         newsView.newsID = dataID;
-        [self.navigationController pushViewController:newsView animated:YES];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
     
     if ([idType isEqualToString:@"shopid"]) {
         ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
         shopView.shopid = dataID;
-        [self.navigationController pushViewController:shopView animated:YES];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
     
     if ([idType isEqualToString:@"travelid"]) {
         TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
         travelView.travelID = dataID;
-        [self.navigationController pushViewController:travelView animated:YES];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
 }
 
