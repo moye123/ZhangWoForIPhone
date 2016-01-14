@@ -37,14 +37,17 @@
 - (void)loaddata{
     NSString *keyName = [NSString stringWithFormat:@"slider_%d",_groupid];
     [self showImageWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:keyName]];
-    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=homepage&a=showlist&groupid=%d&num=%d",_groupid,_num] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=homepage&a=showlist&groupid=%d&num=%d",_groupid,_num];
+    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSArray class]]) {
             if ([responseObject count] > 0) {
                 [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:keyName];
                 [self showImageWithArray:responseObject];
             }
         }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
 }

@@ -23,8 +23,8 @@
     [self setTitle:@"新闻资讯"];
     [self.view setBackgroundColor:[UIColor backColor]];
     
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    UIBarButtonItem *moreButton = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
+    self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    UIBarButtonItem *moreButton = [DSXUI barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
     self.navigationItem.rightBarButtonItem = moreButton;
     
     //菜单栏

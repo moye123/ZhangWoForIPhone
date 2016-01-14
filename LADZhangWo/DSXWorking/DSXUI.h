@@ -5,7 +5,6 @@
 //  Created by songdewei on 15/9/15.
 //  Copyright (c) 2015年 yushuihepan. All rights reserved.
 //
-
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
@@ -37,17 +36,16 @@ UIKIT_EXTERN NSString *const DSXFontStyleBold;
 UIKIT_EXTERN NSString *const DSXFontStyleBlack;
 
 @interface DSXUI : NSObject
++ (instancetype)standardUI;
 
-+ (instancetype)sharedUI;
++ (UIBarButtonItem *)barButtonWithImage:(NSString *)imageName target:(id)target action:(SEL)action;
++ (UIBarButtonItem *)barButtonWithStyle:(DSXBarButtonStyle)style target:(id)target action:(SEL)action;
 
-- (UIBarButtonItem *)barButtonWithImage:(NSString *)imageName target:(id)target action:(SEL)action;
-- (UIBarButtonItem *)barButtonWithStyle:(DSXBarButtonStyle)style target:(id)target action:(SEL)action;
-- (UIButton *)longButtonWithTitle:(NSString *)title;
-- (UIButton *)whiteButtonWithTitle:(NSString *)title;
++ (UIButton *)longButtonWithTitle:(NSString *)title;
++ (UIButton *)whiteButtonWithTitle:(NSString *)title;
++ (UILabel *)tipsViewWithTitle:(NSString *)title;
+
 - (void)showPopViewWithStyle:(DSXPopViewStyle)style Message:(NSString *)message;
 - (UIView *)showLoadingViewWithMessage:(NSString *)message;
-- (void)showLoginFromViewController:(UIViewController *)controller;
-- (UILabel *)tipsViewWithTitle:(NSString *)title;
-+ (UIView *)noAccessView;
 
 @end

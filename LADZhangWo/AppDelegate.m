@@ -141,7 +141,7 @@
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController{
     if (![[ZWUserStatus sharedStatus] isLogined]) {
         if ([viewController isEqual:tabBarController.viewControllers[1]] || [viewController isEqual:tabBarController.viewControllers[2]]) {
-            [[DSXUI sharedUI] showLoginFromViewController:tabBarController];
+            [[ZWUserStatus sharedStatus] showLoginFromViewController:tabBarController];
             return NO;
             
         }else {

@@ -15,7 +15,7 @@
     [super viewDidLoad];
     [self setTitle:@"联系我们"];
     
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     _mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
     [self.view addSubview:_mapView];

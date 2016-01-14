@@ -20,8 +20,8 @@
     [super viewDidLoad];
     [self setTitle:@"宝贝详情"];
     [self.view setBackgroundColor:[UIColor backColor]];
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
+    self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.rightBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
     
     //pop菜单
     _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
@@ -37,21 +37,24 @@
     _webView.scrollView.delegate = self;
     [self.view addSubview:_webView];
     
-    _loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:nil];
+    _loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:nil];
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=chaoshi&a=showdetail&id=%ld",(long)_goodsid];
     [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
-    [[AFHTTPRequestOperationManager sharedManager] GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    
+    [[AFHTTPSessionManager sharedManager] GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                 _goodsData = responseObject;
                 _webView.hidden = NO;
                 [_loadingView removeFromSuperview];
             }else{
-                [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"商品已下架"];
+                [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"商品已下架"];
                 [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
             }
         }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
     
@@ -100,15 +103,17 @@
                                      @"dataid":@(_goodsid),
                                      @"idtype":@"csgoodsid",
                                      @"title":[_goodsData objectForKey:@"name"]};
-            [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
+                
+            } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if ([responseObject isKindOfClass:[NSDictionary class]]) {
-                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"收藏成功"];
+                    [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"收藏成功"];
                 }
-            } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 NSLog(@"%@", error);
             }];
         }else {
-            [[DSXUI sharedUI] showLoginFromViewController:self];
+            [[ZWUserStatus sharedStatus] showLoginFromViewController:self];
         }
     }
     
@@ -132,7 +137,7 @@
         }
     }
     else {
-        [[DSXUI sharedUI] showLoginFromViewController:self];
+        [[ZWUserStatus sharedStatus] showLoginFromViewController:self];
     }
 }
 
@@ -144,7 +149,7 @@
         [self.navigationController pushViewController:buyView animated:YES];
     }
     else {
-        [[DSXUI sharedUI] showLoginFromViewController:self];
+        [[ZWUserStatus sharedStatus] showLoginFromViewController:self];
     }
 }
 
@@ -154,7 +159,7 @@
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
-    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleWarning Message:@"请检查网络链接"];
+    [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleWarning Message:@"请检查网络链接"];
     //NSLog(@"%@",error);
 }
 

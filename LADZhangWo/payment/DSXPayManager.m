@@ -48,8 +48,10 @@
                              @"paytype":_payType,
                              @"payid":_payID};
     NSString *urlString = [SITEAPI stringByAppendingString:@"&c=weixin&a=sign"];
-    UIView *loadingView = [[DSXUI sharedUI] showLoadingViewWithMessage:@"交易处理中.."];
-    [[AFHTTPRequestOperationManager sharedManager] POST:urlString parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    UIView *loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:@"交易处理中.."];
+    [[AFHTTPSessionManager sharedManager] POST:urlString parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                 [loadingView removeFromSuperview];
@@ -66,7 +68,7 @@
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"支付结果" message:@"网络连接失败,请稍候再试" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
             [alert show];
         }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
     

@@ -14,7 +14,7 @@
     [super viewDidLoad];
     [self setTitle:@"关于我们"];
     
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
     webView.backgroundColor = [UIColor backColor];
     [self.view addSubview:webView];

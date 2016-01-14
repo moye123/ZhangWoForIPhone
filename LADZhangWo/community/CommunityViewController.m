@@ -18,7 +18,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self setTitle:@"智慧社区"];
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     CGRect frame = self.view.bounds;
     frame.size.height-= 50;
@@ -44,14 +44,15 @@
     _categoryView.categoryData = [NSArray arrayWithContentsOfFile:path];
     _categoryView.touchDelegate = self;
     
-    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=shop&a=showlist&pagesize=10"] parameters:[DSXUtil getLocation] success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    NSDictionary *coordinateParam = [DSXUtil getLocation];
+    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=shop&a=showlist&pagesize=10"] parameters:coordinateParam progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSArray class]]) {
             _shopList = responseObject;
-            //NSLog(@"%@",_shopList);
             [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
-            //[_tableView reloadData];
         }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
 }

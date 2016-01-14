@@ -7,8 +7,6 @@
 //
 
 #import "DSXUI.h"
-#import "LoginViewController.h"
-#import "ZWNavigationController.h"
 
 NSString *const DSXFontStyleThin = @"Noto-Sans-S-Chinese-Thin";
 NSString *const DSXFontStyleLight = @"Noto-Sans-S-Chinese-Light";
@@ -16,9 +14,9 @@ NSString *const DSXFontStyleDemilight = @"Noto-Sans-S-Chinese-DemiLight";
 NSString *const DSXFontStyleMedinum = @"Noto-Sans-S-Chinese-Medium";
 NSString *const DSXFontStyleBold = @"Noto-Sans-S-Chinese-Bold";
 NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
-@implementation DSXUI
 
-+ (instancetype)sharedUI{
+@implementation DSXUI
++ (instancetype)standardUI{
     static dispatch_once_t once;
     static id instance;
     dispatch_once(&once, ^{
@@ -27,13 +25,13 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
     return instance;
 }
 
-- (UIBarButtonItem *)barButtonWithImage:(NSString *)imageName target:(id)target action:(SEL)action{
++ (UIBarButtonItem *)barButtonWithImage:(NSString *)imageName target:(id)target action:(SEL)action{
     UIImage *image = [UIImage imageNamed:imageName];
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:target action:action];
     return barButtonItem;
 }
 
-- (UIBarButtonItem *)barButtonWithStyle:(DSXBarButtonStyle)style target:(id)target action:(SEL)action{
++ (UIBarButtonItem *)barButtonWithStyle:(DSXBarButtonStyle)style target:(id)target action:(SEL)action{
     NSString *imageName;
     switch (style) {
         case DSXBarButtonStyleAdd:
@@ -69,10 +67,10 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
         default:
             break;
     }
-    return [self barButtonWithImage:imageName target:target action:action];
+    return [DSXUI barButtonWithImage:imageName target:target action:action];
 }
 
-- (UIButton *)longButtonWithTitle:(NSString *)title{
++ (UIButton *)longButtonWithTitle:(NSString *)title{
     UIButton *button = [[UIButton alloc] init];
     [button.layer setMasksToBounds:YES];
     [button setBackgroundColor:[UIColor whiteColor]];
@@ -83,7 +81,7 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
     return button;
 }
 
-- (UIButton *)whiteButtonWithTitle:(NSString *)title{
++ (UIButton *)whiteButtonWithTitle:(NSString *)title{
     UIButton *button = [[UIButton alloc] init];
     [button.layer setMasksToBounds:YES];
     [button setBackgroundColor:[UIColor whiteColor]];
@@ -92,6 +90,15 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
     [button setBackgroundImage:[UIImage imageNamed:@"button-selected.png"] forState:UIControlStateHighlighted];
     return button;
+}
+
++ (UILabel *)tipsViewWithTitle:(NSString *)title{
+    UILabel *label = [[UILabel alloc] init];
+    label.text = title;
+    label.font = [UIFont systemFontOfSize:14.0];
+    label.textColor = [UIColor grayColor];
+    [label sizeToFit];
+    return label;
 }
 
 - (void)showPopViewWithStyle:(DSXPopViewStyle)style Message:(NSString *)message{
@@ -112,7 +119,12 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
     }
     
     UIView *popView = [[UIView alloc] init];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
+    popView.backgroundColor = [UIColor blackColor];
+    popView.layer.cornerRadius = 5.0;
+    popView.layer.masksToBounds = YES;
+    
+    UIImageView *imageView = [[UIImageView alloc] init];
+    [imageView setImage:[UIImage imageNamed:imageName]];
     [imageView setContentMode:UIViewContentModeScaleToFill];
     [popView addSubview:imageView];
     
@@ -123,19 +135,16 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
     label.font = [UIFont systemFontOfSize:14.0];
     [label sizeToFit];
     [popView addSubview:label];
-    popView.backgroundColor = [UIColor blackColor];
-    popView.layer.cornerRadius = 5.0;
-    popView.layer.masksToBounds = YES;
-    popView.frame = CGRectMake(0, 0, label.frame.size.width+30, label.frame.size.height+67);
+    
+    CGRect frame = popView.frame;
+    frame.size.width = label.frame.size.width < 30 ? 60 : label.frame.size.width+30;
+    frame.size.height = label.frame.size.height + 70;
+    popView.frame  = frame;
     popView.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2, [UIScreen mainScreen].bounds.size.height/2);
     
-    [imageView setFrame:CGRectMake((popView.frame.size.width-32)/2, 10, 32, 32)];
+    imageView.frame = CGRectMake((frame.size.width-30)/2, 15, 30, 30);
+    label.frame = CGRectMake((frame.size.width-label.frame.size.width)/2, 55, label.frame.size.width, label.frame.size.height);
     
-    CGRect frame;
-    frame = label.frame;
-    frame.origin.x = 15;
-    frame.origin.y = 52;
-    [label setFrame:frame];
     UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
     [window addSubview:popView];
     [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hidePopView:) userInfo:popView repeats:NO];
@@ -188,39 +197,5 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
     return popView;
 }
 
-- (void)showLoginFromViewController:(UIViewController *)controller{
-    LoginViewController *loginController = [[LoginViewController alloc] init];
-    ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:loginController];
-    [controller presentViewController:nav animated:YES completion:nil];
-}
-
-- (UILabel *)tipsViewWithTitle:(NSString *)title{
-    UILabel *label = [[UILabel alloc] init];
-    label.text = title;
-    label.font = [UIFont systemFontOfSize:14.0];
-    label.textColor = [UIColor grayColor];
-    [label sizeToFit];
-    return label;
-}
-
-+ (UIView *)noAccessView{
-    UIView *view = [[UIView alloc] init];
-    UIImageView *imageView = [[UIImageView alloc] init];
-    imageView.image = [UIImage imageNamed:@"icon-sand.png"];
-    [view addSubview:imageView];
-    
-    UILabel *label = [[UILabel alloc] init];
-    label.text = @"没有找到你要的信息";
-    label.textColor = [UIColor grayColor];
-    label.font = [UIFont systemFontOfSize:14.0];
-    label.textAlignment = NSTextAlignmentCenter;
-    [label sizeToFit];
-    [view addSubview:label];
-    
-    view.frame = CGRectMake(0, 0, label.frame.size.width, 80);
-    imageView.frame = CGRectMake((view.frame.size.width-50)/2, 0, 50, 50);
-    label.frame = CGRectMake(0, 60, label.frame.size.width, label.frame.size.height);
-    return view;
-}
 
 @end

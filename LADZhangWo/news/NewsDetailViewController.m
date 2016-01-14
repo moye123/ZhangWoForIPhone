@@ -22,8 +22,8 @@
     [self.view setBackgroundColor:[UIColor backColor]];
     [self setTitle:@"正文"];
     
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
+    self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.rightBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showPopMenu)];
     
     //pop菜单
     _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
@@ -51,7 +51,9 @@
     request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     [_contentWebView loadRequest:request];
     
-    [[AFHTTPRequestOperationManager sharedManager] GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             _articleData = responseObject;
             _contentWebView.hidden = NO;
@@ -59,7 +61,7 @@
             [commButton setTitle:stringNum forState:UIControlStateNormal];
             commentNum = [stringNum intValue];
         }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
     
@@ -130,11 +132,13 @@
                                      @"dataid":@(_newsID),
                                      @"idtype":@"aid",
                                      @"title":title};
-            [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
+                
+            } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if ([responseObject isKindOfClass:[NSDictionary class]]) {
-                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"收藏成功"];
+                    [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"收藏成功"];
                 }
-            } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 NSLog(@"%@", error);
             }];
         }else {
@@ -165,7 +169,7 @@
 }
 
 - (void)showLogin{
-    [[DSXUI sharedUI] showLoginFromViewController:self];
+    [[ZWUserStatus sharedStatus] showLoginFromViewController:self];
 }
 
 - (void)showCommentView{
@@ -198,7 +202,7 @@
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
-    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"网络连接失败"];
+    [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"网络连接失败"];
 }
 
 - (void)sendComment{
@@ -210,7 +214,10 @@
         [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
         [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
         [params setObject:message forKey:@"message"];
-        [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=comment&a=save"] parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        
+        [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=comment&a=save"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
+            
+        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
                 if ([responseObject objectForKey:@"cid"]) {
                     commentNum++;
@@ -219,17 +226,17 @@
                     
                     _commentView.textView.text = @"";
                     [_commentWebView reload];
-                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"评论发表成功"];
+                    [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"评论发表成功"];
                 }else {
-                    [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"内部系统错误"];
+                    [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"内部系统错误"];
                 }
             }
             [_commentView hide];
-        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"%@",error);
         }];
     }else{
-        [[DSXUI sharedUI] showPopViewWithStyle:DSXPopViewStyleWarning Message:@"不能发表空评论"];
+        [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleWarning Message:@"不能发表空评论"];
     }
 }
 

@@ -30,13 +30,16 @@
     [self.scrollView addSubview:myIncomeView];
     
     //下载个人收益数据
-    [[AFHTTPRequestOperationManager sharedManager] GET:[SITEAPI stringByAppendingFormat:@"&c=income&a=getdata&uid=%ld",(long)[ZWUserStatus sharedStatus].uid] parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=income&a=getdata&uid=%ld",(long)[ZWUserStatus sharedStatus].uid];
+    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             self.income = [responseObject objectForKey:@"income"];
             float income = [[responseObject objectForKey:@"income"] floatValue];
             myIncomeView.incomeLabel.text = [NSString stringWithFormat:@"￥: %.2f",income];
         }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@",error);
     }];
     

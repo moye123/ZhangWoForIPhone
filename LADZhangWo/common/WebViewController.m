@@ -15,7 +15,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:_url]];
     _webView = [[UIWebView alloc] initWithFrame:self.view.bounds];

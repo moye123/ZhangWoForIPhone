@@ -15,7 +15,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     _serviceList = [NSMutableArray array];
     self.tableView.delegate = self;
@@ -31,7 +31,6 @@
     self.tableView.tableFooterView = _pullUpView;
     [self refresh];
     
-    _noaccessView = [DSXUI noAccessView];
     _noaccessView.hidden = YES;
     _noaccessView.center = CGPointMake(self.view.center.x, 200);
     [self.view addSubview:_noaccessView];
@@ -60,11 +59,13 @@
 
 - (void)downloadData{
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=service&a=showlist&catid=%ld&page=%d",(long)_catid,_page];
-    [[AFHTTPRequestOperationManager sharedManager] GET:urlString parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSArray class]]) {
             [self reloadTableViewWithArray:responseObject];
         }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
 }

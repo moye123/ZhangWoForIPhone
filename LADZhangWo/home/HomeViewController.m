@@ -52,7 +52,7 @@
     search.textField.delegate = self;
     self.navigationItem.titleView = search;
     
-    UIBarButtonItem *moreButton = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showMessage)];
+    UIBarButtonItem *moreButton = [DSXUI barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showMessage)];
     self.navigationItem.rightBarButtonItem = moreButton;
     _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 64, 100, 140)];
     [self.navigationController.view addSubview:_popMenu];
@@ -123,12 +123,15 @@
     [_foodView loadData];
     
     //猜你喜欢
-    [[AFHTTPRequestOperationManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=goods&a=showlist&pagesize=10"] parameters:[DSXUtil getLocation] success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    NSDictionary *coordinateParams = [DSXUtil getLocation];
+    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=goods&a=showlist&pagesize=10"] parameters:coordinateParams progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSArray class]]) {
             _goodsList = responseObject;
             [_tableView reloadSections:[NSIndexSet indexSetWithIndex:5] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
 }
@@ -144,7 +147,7 @@
         [nav setStyle:ZWNavigationStyleGray];
         [self.navigationController presentViewController:nav animated:YES completion:nil];
     }else{
-        [[DSXUI sharedUI] showLoginFromViewController:self];
+        [[ZWUserStatus sharedStatus] showLoginFromViewController:self];
     }
 }
 

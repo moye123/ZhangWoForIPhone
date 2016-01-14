@@ -28,7 +28,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self setTitle:@"地图"];
-    self.navigationItem.leftBarButtonItem = [[DSXUI sharedUI] barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     if (!_address) {
         _address = @"金水港湾 力爱迪科技";
