@@ -48,7 +48,9 @@
     _scrollView = [[UIScrollView alloc] initWithFrame:frame];
     _scrollView.pagingEnabled = YES;
     _scrollView.showsVerticalScrollIndicator = NO;
+    _scrollView.showsHorizontalScrollIndicator = NO;
     _scrollView.delegate = self;
+    _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     
     //导航栏
     _navView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, self.toolbar.frame.size.height)];

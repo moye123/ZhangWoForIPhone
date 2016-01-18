@@ -64,7 +64,7 @@
         [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"请输入原密码"];
         return;
     }
-    if (![DSXValidate validatePassword:oldpass]) {
+    if (![oldpass isPassword]) {
         [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"原密码输入错误"];
         return;
     }
@@ -74,7 +74,7 @@
         return;
     }
     
-    if (![DSXValidate validatePassword:password]) {
+    if (![password isPassword]) {
         [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"新密码输入错误"];
         return;
     }

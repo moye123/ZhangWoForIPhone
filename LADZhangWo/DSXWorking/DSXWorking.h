@@ -14,11 +14,11 @@
 
 #import "DSXUI.h"
 #import "DSXUtil.h"
-#import "DSXValidate.h"
 #import "DSXModalView.h"
 #import "DSXSliderView.h"
 #import "DSXStarView.h"
 #import "DSXDropDownMenu.h"
 #import "DSXSandboxHelper.h"
 #import "NSString+Encryption.h"
+#import "NSString+Validate.h"
 #import "UIScrollView+Touch.h"

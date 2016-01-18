@@ -41,7 +41,7 @@
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:_tableView];
     [_tableView registerClass:[ShopItemCell class] forCellReuseIdentifier:@"shopItemCell"];
-    [_tableView registerClass:[HomeTitleCell class] forCellReuseIdentifier:@"titleCell"];
+    [_tableView registerClass:[TitleCell class] forCellReuseIdentifier:@"titleCell"];
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"categoryCell"];
     
     //轮播广告
@@ -55,7 +55,6 @@
     _categoryView = [[CategoryView alloc] initWithFrame:CGRectMake(0, 10, SWIDTH, 270)];
     _categoryView.cellSize  = CGSizeMake(SWIDTH/4, 90);
     _categoryView.imageSize = CGSizeMake(50, 50);
-    _categoryView.isRemoteImage = YES;
     _categoryView.scrollEnabled = NO;
     _categoryView.touchDelegate = self;
     
@@ -65,7 +64,7 @@
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSArray class]]) {
             _serviceList = responseObject;
-            _categoryView.categoryData = _serviceList;
+            _categoryView.dataList = _serviceList;
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
@@ -118,11 +117,13 @@
     [_popMenu slideUp];
 }
 
-- (void)categoryView:(CategoryView *)categoryView didSelectedItemAt:(NSIndexPath *)indexPath data:(NSDictionary *)data{
+#pragma mark - categoryView delegate
+- (void)categoryView:(CategoryView *)categoryView didSelectedAtItemWithData:(NSDictionary *)data{
     ServiceListViewController *listView = [[ServiceListViewController alloc] init];
     listView.catid = [[data objectForKey:@"catid"] integerValue];
     listView.title = [data objectForKey:@"cname"];
     [self.navigationController pushViewController:listView animated:YES];
+    
 }
 
 #pragma mark - tableView delegate
@@ -170,9 +171,10 @@
     
     if (indexPath.section == 1) {
         if (indexPath.row == 0) {
-            HomeTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
+            TitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
             cell.textLabel.text = @"附近商家";
             cell.detailTextLabel.text = @"查看更多信息";
+            cell.image  = [UIImage imageNamed:@"icon-hot.png"];
             return cell;
         }else {
             ShopItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"shopItemCell"];

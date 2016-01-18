@@ -18,6 +18,7 @@
 @property(nonatomic,readonly)UILabel *nameLabel;
 @property(nonatomic,readonly)UILabel *soldLabel;
 @property(nonatomic,readonly)UILabel *priceLabel;
+@property(nonatomic,readonly)UILabel *shopLabel;
 @property(nonatomic,readonly)UILabel *locationLabel;
 @property(nonatomic,strong)NSDictionary *goodsData;
 @property(nonatomic,assign)CGFloat imageWidth;

@@ -21,55 +21,45 @@
 #import "SearchViewController.h"
 #import "MyMessageViewController.h"
 #import "CommunityViewController.h"
+#import "TechanViewController.h"
 
 @implementation HomeViewController
-@synthesize local;
 @synthesize tableView   = _tableView;
-@synthesize channelView = _channelView;
-@synthesize travelView  = _travelView;
-@synthesize productView = _productView;
-@synthesize foodView    = _foodView;
-
-- (instancetype)init{
-    self = [super init];
-    if (self) {
-
-    }
-    return self;
-}
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     
     UITapGestureRecognizer *localTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showDistrict)];
-    self.local = [[localView alloc] initWithFrame:CGRectMake(0, 29, 60, 29)];
-    [self.local addGestureRecognizer:localTap];
-    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithCustomView:self.local];
+    _localView = [[localView alloc] initWithFrame:CGRectMake(0, 29, 60, 29)];
+    [_localView addGestureRecognizer:localTap];
+    UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithCustomView:_localView];
     self.navigationItem.leftBarButtonItem = leftButton;
     
-    searchBar *search = [[searchBar alloc] initWithFrame:CGRectMake(0, 0, 280, 29)];
-    search.textField.delegate = self;
-    self.navigationItem.titleView = search;
+    _searchView = [[HomeSearchView alloc] initWithFrame:CGRectMake(0, 0, 280, 29)];
+    _searchView.textField.delegate = self;
+    self.navigationItem.titleView = _searchView;
     
     UIBarButtonItem *moreButton = [DSXUI barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showMessage)];
     self.navigationItem.rightBarButtonItem = moreButton;
     _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 64, 100, 140)];
     [self.navigationController.view addSubview:_popMenu];
     
-    CGRect frame = self.view.bounds;
-    frame.size.height = frame.size.height - 54;
-    _tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _tableView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:_tableView];
     
-    [_tableView registerClass:[HomeTitleCell class] forCellReuseIdentifier:@"titleCell"];
-    [_tableView registerClass:[HomeGoodsCell class] forCellReuseIdentifier:@"goodsCell"];
-    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"homeCell"];
+    [_tableView registerClass:[TitleCell class] forCellReuseIdentifier:@"titleCell"];
+    [_tableView registerClass:[GoodsItemCell class] forCellReuseIdentifier:@"goodsCell"];
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"channelCell"];
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"shopCell"];
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"travelCell"];
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"specialCell"];
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"foodCell"];
     
     //轮播广告
     _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, 150)];
@@ -80,8 +70,23 @@
     [_tableView setTableHeaderView:_slideView];
     
     //分类列表
-    _channelView = [[ChannelListView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 180)];
-    _channelView.delegate = self;
+    _channelView = [[CategoryView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 180)];
+    _channelView.contentSize = CGSizeMake(SWIDTH, 0);
+    _channelView.cellSize = CGSizeMake(SWIDTH/4, 90);
+    _channelView.imageSize = CGSizeMake(50, 50);
+    _channelView.touchDelegate = self;
+    _channelView.dataList = [[NSUserDefaults standardUserDefaults] arrayForKey:@"channellist"];
+    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=channel"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            _channelView.dataList = responseObject;
+            [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:@"channellist"];
+            
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
     
     //推荐商家
     CGFloat height = SWIDTH*0.30;
@@ -92,35 +97,57 @@
     _shopSlideView.pageControl.hidden = YES;
     [_shopSlideView loaddata];
     
-    //旅游推荐
-    height = (SWIDTH - 30)/2;
-    _travelView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, height)];
-    _travelView.tapDelegate = self;
-    _travelView.groupid = 2;
-    _travelView.dataCount = 6;
-    _travelView.imgWidth = (SWIDTH-30)/2;
-    _travelView.imgHeight = height;
-    _travelView.contentSize = CGSizeMake((SWIDTH-20)*3, 0);
-    [_travelView loadData];
+    //本地旅游
+    _travelSliderView = [[TravelSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 900)];
+    _travelSliderView.touchDelegate = self;
+    _travelSliderView.cellSize = CGSizeMake(SWIDTH-0.001, 300);
+    _travelSliderView.contentSize = CGSizeMake(SWIDTH*2, 0);
+    _travelSliderView.collectionView.frame = CGRectMake(0, 0, SWIDTH*2, 900);
+    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=homepage&a=showlist&groupid=2&num=9"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            _travelSliderView.dataList = responseObject;
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
     
     //特色产品推荐
-    height = (SWIDTH - 30)/3;
-    _productView = [[RecommendSliderView alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, height)];
-    _productView.tapDelegate = self;
-    _productView.groupid = 3;
-    _productView.dataCount = 6;
-    _productView.imgWidth = (SWIDTH-20)/2;
-    _productView.imgHeight = height;
-    _productView.contentSize = CGSizeMake((SWIDTH-20)*3, 0);
-    [_productView loadData];
+    CGSize goodsCellSize = CGSizeMake((SWIDTH-10)/3, (SWIDTH-40)/3);
+    _specialGoodsView = [[SliderView alloc] initWithFrame:CGRectMake(5, 0, SWIDTH-10, goodsCellSize.height)];
+    _specialGoodsView.touchDelegate = self;
+    _specialGoodsView.cellSize = goodsCellSize;
+    _specialGoodsView.imageSize = CGSizeMake(goodsCellSize.width-10, goodsCellSize.height);
+    _specialGoodsView.contentSize = CGSizeMake((SWIDTH-10)*3, 0);
+    _specialGoodsView.collectionView.frame = CGRectMake(0, 0, _specialGoodsView.frame.size.width*3, goodsCellSize.height);
+    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=homepage&a=showlist&groupid=3&num=6"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            _specialGoodsView.dataList = responseObject;
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
     
-    //特色美食推荐
-    _foodView = [[RecommendSliderView2 alloc] initWithFrame:CGRectMake(10, 0, SWIDTH-20, 140)];
-    _foodView.tapDelegate = self;
-    _foodView.groupid = 4;
-    _foodView.dataCount = 6;
-    _foodView.contentSize = CGSizeMake((SWIDTH-20)*2, 0);
-    [_foodView loadData];
+    //特色美食
+    CGSize cellSize = CGSizeMake((SWIDTH-10)/3, (SWIDTH-10)/3);
+    _foodGalleryView = [[GalleryView alloc] initWithFrame:CGRectMake(5, 0, SWIDTH-10, cellSize.height*2)];
+    _foodGalleryView.cellSize = cellSize;
+    _foodGalleryView.imageSize = CGSizeMake(cellSize.width-10, cellSize.height-10);
+    _foodGalleryView.scrollEnabled = NO;
+    _foodGalleryView.touchDelegate = self;
+    
+    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=homepage&a=showlist&groupid=4&num=6"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            _foodGalleryView.dataList = responseObject;
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@", error);
+    }];
     
     //猜你喜欢
     NSDictionary *coordinateParams = [DSXUtil getLocation];
@@ -137,7 +164,9 @@
 }
 
 - (void)viewWillLayoutSubviews{
-    
+    [super viewWillLayoutSubviews];
+    _tableView.separatorInset = UIEdgeInsetsZero;
+    _tableView.layoutMargins  = UIEdgeInsetsZero;
 }
 
 - (void)showMessage{
@@ -157,6 +186,181 @@
     [nav setStyle:ZWNavigationStyleGray];
     [self presentViewController:nav animated:NO completion:nil];
     return NO;
+}
+
+- (void)showDetailWithData:(NSDictionary *)data{
+    NSString *idType = [data objectForKey:@"idtype"];
+    NSInteger dataID = [[data objectForKey:@"dataid"] integerValue];
+    if ([idType isEqualToString:@"goodsid"]) {
+        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
+        goodsView.goodsid = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:NO completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"aid"]) {
+        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
+        newsView.newsID = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"shopid"]) {
+        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+        shopView.shopid = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"travelid"]) {
+        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
+        travelView.travelID = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+}
+
+#pragma mark - slider view delegate
+- (void)sliderView:(SliderView *)sliderView didSelectedItemWithData:(NSDictionary *)data{
+    [self showDetailWithData:data];
+}
+
+#pragma mark - travel view delegate
+- (void)travelView:(TravelSliderView *)travelView didSelectedItemWithData:(NSDictionary *)data{
+    [self showDetailWithData:data];
+}
+
+#pragma mark - gallery view delegate
+- (void)galleryView:(GalleryView *)galleryView didSelectedItemWithData:(NSDictionary *)data{
+    [self showDetailWithData:data];
+}
+
+#pragma mark - sliderView delegate
+- (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
+    if ([idType isEqualToString:@"goodsid"]) {
+        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
+        goodsView.goodsid = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:NO completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"aid"]) {
+        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
+        newsView.newsID = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"shopid"]) {
+        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+        shopView.shopid = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([idType isEqualToString:@"travelid"]) {
+        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
+        travelView.travelID = dataID;
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+}
+
+#pragma mark - categoryView delegate
+
+- (void)categoryView:(CategoryView *)categoryView didSelectedAtItemWithData:(NSDictionary *)data{
+    NSString *catid = [data objectForKey:@"catid"];
+    //旅游
+    if ([catid isEqualToString:@"travel"]) {
+        TravelViewController *travelController = [[TravelViewController alloc] init];
+        ZWNavigationController *travelNav = [[ZWNavigationController alloc] initWithRootViewController:travelController];
+        travelNav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:travelNav animated:YES completion:nil];
+    }
+    
+    //资讯
+    if ([catid isEqualToString:@"news"]) {
+        NewsViewController *newsController = [[NewsViewController alloc] init];
+        ZWNavigationController *newsNav = [[ZWNavigationController alloc] initWithRootViewController:newsController];
+        newsNav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:newsNav animated:YES completion:nil];
+    }
+    
+    //超市
+    if ([catid isEqualToString:@"market"]) {
+        //ChaoshiIndexViewController *chaoshiController = [[ChaoshiIndexViewController alloc] init];
+        ChaoshiCatViewController *chaoshiView = [[ChaoshiCatViewController alloc] init];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:chaoshiView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+    
+    //名优特产
+    if ([catid isEqualToString:@"product"]) {
+        TechanViewController *techanView = [[TechanViewController alloc] init];
+        [self.navigationController pushViewController:techanView animated:YES];
+    }
+    
+    //特色小吃
+    if ([catid isEqualToString:@"snack"]) {
+        GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
+        goodsListController.catid = 18;
+        goodsListController.title = @"特色小吃";
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+    
+    //外卖
+    if ([catid isEqualToString:@"takeout"]) {
+        CommunityViewController *communityView = [[CommunityViewController alloc] init];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:communityView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([catid isEqualToString:@"food"]) {
+        GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
+        goodsListController.catid = 1;
+        goodsListController.title = @"美食";
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+    
+    if ([catid isEqualToString:@"service"]) {
+        ServiceViewController *serviceView = [[ServiceViewController alloc] init];
+        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:serviceView];
+        nav.style = ZWNavigationStyleGray;
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [self.view resignFirstResponder];
+    [self.navigationController.view resignFirstResponder];
+}
+
+
+- (void)showDistrict{
+    DistrictViewController *districtController = [[DistrictViewController alloc] init];
+    districtController.delegate = self;
+    ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:districtController];
+    nav.style = ZWNavigationStyleGray;
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+#pragma mark -
+- (void)locationChangeWithName:(NSString *)name{
+    _localView.textLabel.text = name;
 }
 
 #pragma mark - tableView delegate
@@ -183,19 +387,20 @@
         if (indexPath.row == 0) {
             return 45;
         }else {
-            return (SWIDTH-30)/2+10;
+            return 902;
         }
     }else if (indexPath.section == 3){
         if (indexPath.row == 0) {
             return 45;
         }else {
-            return ((SWIDTH - 30)/3) + 10;
+            //特色产品
+            return _specialGoodsView.frame.size.height+5;
         }
     }else if(indexPath.section == 4){
         if (indexPath.row == 0) {
             return 45;
         }else {
-            return (SWIDTH-30)/2;
+            return _foodGalleryView.frame.size.height+5;
         }
     }else if (indexPath.section == 5){
         if (indexPath.row == 0) {
@@ -210,15 +415,16 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 0) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"channelCell"];
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"channelCell" forIndexPath:indexPath];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (indexPath.row == 0) {
             [cell addSubview:_channelView];
         }
         return cell;
     }
+    
     if (indexPath.section == 1) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"homeCell"];
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"shopCell" forIndexPath:indexPath];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (indexPath.row == 0) {
             [cell addSubview:_shopSlideView];
@@ -228,58 +434,62 @@
     
     if (indexPath.section == 2) {
         if (indexPath.row == 0) {
-            HomeTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
-            cell.title = @"旅游景点推荐";
+            TitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell" forIndexPath:indexPath];
+            cell.title  = @"旅游景点推荐";
             cell.detail = @"查看更多";
+            cell.image  = [UIImage imageNamed:@"icon-hot.png"];
             return cell;
         }
         if (indexPath.row == 1) {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"homeCell"];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"travelCell" forIndexPath:indexPath];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            [cell addSubview:_travelView];
+            [cell addSubview:_travelSliderView];
             return cell;
         }
     }
     
     if (indexPath.section == 3) {
         if (indexPath.row == 0) {
-            HomeTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
-            cell.title = @"本地特产";
+            TitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell" forIndexPath:indexPath];
+            cell.title  = @"本地特产";
             cell.detail = @"查看更多";
+            cell.image  = [UIImage imageNamed:@"icon-hot.png"];
             return cell;
         }
         if (indexPath.row == 1) {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"homeCell"];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"specialCell" forIndexPath:indexPath];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            [cell addSubview:_productView];
+            [cell addSubview:_specialGoodsView];
             return cell;
         }
     }
     if (indexPath.section == 4) {
         if (indexPath.row == 0) {
-            HomeTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
-            cell.title = @"特色美食推荐";
+            TitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell" forIndexPath:indexPath];
+            cell.title  = @"特色美食推荐";
             cell.detail = @"查看更多";
+            cell.image  = [UIImage imageNamed:@"icon-hot.png"];
             return cell;
         }
         if (indexPath.row == 1) {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"homeCell"];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"foodCell" forIndexPath:indexPath];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            [cell addSubview:_foodView];
+            [cell addSubview:_foodGalleryView];
             return cell;
         }
     }
     if (indexPath.section == 5) {
         if (indexPath.row == 0) {
-            HomeTitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
-            cell.title = @"猜你喜欢";
+            TitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"titleCell"];
+            cell.title  = @"猜你喜欢";
             cell.detail = @"查看更多";
+            cell.image  = [UIImage imageNamed:@"icon-hot.png"];
             return cell;
         }else {
             NSDictionary *goodsData = [_goodsList objectAtIndex:(indexPath.row - 1)];
-            HomeGoodsCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell"];
+            GoodsItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell"];
             cell.imageWidth = SWIDTH*0.30;
-            [cell setGoodsData:goodsData];
+            cell.goodsData  = goodsData;
             return cell;
         }
     }
@@ -347,176 +557,6 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 10;
-}
-
-#pragma mark - sliderView delegate
-- (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
-    if ([idType isEqualToString:@"goodsid"]) {
-        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
-        goodsView.goodsid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:NO completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"aid"]) {
-        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
-        newsView.newsID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"shopid"]) {
-        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
-        shopView.shopid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"travelid"]) {
-        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
-        travelView.travelID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-}
-
-- (void)channelView:(ChannelListView *)channelView didSelectItemAtTag:(NSString *)tag{
-    //旅游
-    if ([tag isEqualToString:@"travel"]) {
-        TravelViewController *travelController = [[TravelViewController alloc] init];
-        ZWNavigationController *travelNav = [[ZWNavigationController alloc] initWithRootViewController:travelController];
-        travelNav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:travelNav animated:YES completion:nil];
-    }
-    
-    //资讯
-    if ([tag isEqualToString:@"news"]) {
-        NewsViewController *newsController = [[NewsViewController alloc] init];
-        ZWNavigationController *newsNav = [[ZWNavigationController alloc] initWithRootViewController:newsController];
-        newsNav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:newsNav animated:YES completion:nil];
-    }
-    
-    //超市
-    if ([tag isEqualToString:@"market"]) {
-        //ChaoshiIndexViewController *chaoshiController = [[ChaoshiIndexViewController alloc] init];
-        ChaoshiCatViewController *chaoshiView = [[ChaoshiCatViewController alloc] init];
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:chaoshiView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    //名优特产
-    if ([tag isEqualToString:@"product"]) {
-        GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
-        goodsListController.catid = 17;
-        goodsListController.title = @"名优特产";
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    //特色小吃
-    if ([tag isEqualToString:@"snack"]) {
-        GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
-        goodsListController.catid = 18;
-        goodsListController.title = @"特色小吃";
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    //外卖
-    if ([tag isEqualToString:@"takeout"]) {
-        CommunityViewController *communityView = [[CommunityViewController alloc] init];
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:communityView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([tag isEqualToString:@"food"]) {
-        GoodsListViewController *goodsListController = [[GoodsListViewController alloc] init];
-        goodsListController.catid = 1;
-        goodsListController.title = @"美食";
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsListController];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([tag isEqualToString:@"service"]) {
-        ServiceViewController *serviceView = [[ServiceViewController alloc] init];
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:serviceView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-}
-
-#pragma mark - recommend delegate
-- (void)showDetailWithID:(NSInteger)ID andIdType:(NSString *)idtype{
-    if ([idtype isEqualToString:@"shopid"]) {
-        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
-        shopView.shopid = ID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idtype isEqualToString:@"goodsid"]) {
-        GoodsDetailViewController *goodsDetailView = [[GoodsDetailViewController alloc] init];
-        goodsDetailView.goodsid = ID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsDetailView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idtype isEqualToString:@"travelid"]) {
-        TravelDetailViewController *travelDetailView = [[TravelDetailViewController alloc] init];
-        travelDetailView.travelID = ID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelDetailView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idtype isEqualToString:@"aid"]) {
-        NewsDetailViewController *newsDetailView = [[NewsDetailViewController alloc] init];
-        newsDetailView.newsID = ID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsDetailView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idtype isEqualToString:@"url"]) {
-        WebViewController *webViewController = [[WebViewController alloc] init];
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:webViewController];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-}
-
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    [self.view resignFirstResponder];
-    [self.navigationController.view resignFirstResponder];
-}
-
-- (void)clickShowMore{
-    //[[DSXUI sharedUI] showLoginFromViewController:self];
-}
-
-- (void)showDistrict{
-    DistrictViewController *districtController = [[DistrictViewController alloc] init];
-    districtController.delegate = self;
-    ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:districtController];
-    nav.style = ZWNavigationStyleGray;
-    [self presentViewController:nav animated:YES completion:nil];
-}
-
-#pragma mark - 
-- (void)locationChangeWithName:(NSString *)name{
-    self.local.textLabel.text = name;
 }
 
 @end

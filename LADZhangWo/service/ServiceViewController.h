@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "CategoryView.h"
 #import "ShopItemCell.h"
-#import "HomeTitleCell.h"
+#import "TitleCell.h"
 
 @interface ServiceViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,DSXSliderViewDelegate,CategoryViewDelegate,DSXDropDownMenuDelegate>{
     @private

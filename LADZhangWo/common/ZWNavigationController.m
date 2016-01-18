@@ -44,7 +44,7 @@
     CATransition *animation = [CATransition animation];
     animation.duration = 0.3;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
-    animation.type = kCATransitionMoveIn;
+    animation.type = kCATransitionPush;
     animation.subtype = kCATransitionFromRight;
     [self.view.window.layer addAnimation:animation forKey:nil];
     [super pushViewController:viewController animated:NO];
@@ -64,7 +64,7 @@
     CATransition *animation = [CATransition animation];
     animation.duration = 0.3;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
-    animation.type = kCATransitionMoveIn;
+    animation.type = kCATransitionPush;
     animation.subtype = kCATransitionFromRight;
     [self.view.window.layer addAnimation:animation forKey:nil];
     [super presentViewController:viewControllerToPresent animated:NO completion:completion];

@@ -57,13 +57,13 @@
 
 - (void)submit{
     NSString *email = _emailField.text;
-    if (![DSXValidate validateEmail:email]) {
+    if (![email isEmail]) {
         [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"邮箱格式错误"];
         return;
     }
     
     NSString *password = _passwordField.text;
-    if (![DSXValidate validatePassword:password]) {
+    if (![password isPassword]) {
         [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"密码输入错误"];
         return;
     }

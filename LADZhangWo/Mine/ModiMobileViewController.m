@@ -70,7 +70,7 @@
 
 - (void)sendSecCode{
     NSString *phone = _mobileField.text;
-    if ([DSXValidate validateMobile:phone]) {
+    if ([phone isMobile]) {
         NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=member&a=sendseccode&phone=%@",phone];
         [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
             
@@ -116,7 +116,7 @@
         return;
     }
     
-    if (![DSXValidate validateMobile:mobilenew]) {
+    if (![mobilenew isMobile]) {
         [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"新手机号输入错误"];
         return;
     }

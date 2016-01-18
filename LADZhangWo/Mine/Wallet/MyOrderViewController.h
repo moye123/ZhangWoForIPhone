@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "OrderItemCell.h"
+#import "OrderCommonCell.h"
 
 @interface MyOrderViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,DSXDropDownMenuDelegate>{
     @private

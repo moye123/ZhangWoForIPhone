@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "OrderCatView.h"
 #import "MyHeadView.h"
+#import "TitleCell.h"
 
 @interface MyViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,OrderCatViewDelegate>{
     @private

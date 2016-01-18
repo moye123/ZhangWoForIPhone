@@ -8,30 +8,30 @@
 
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
-#import "ChannelListView.h"
-#import "RecommendSliderView.h"
-#import "RecommendSliderView2.h"
 #import "localView.h"
-#import "searchBar.h"
+#import "HomeSearchView.h"
+#import "CategoryView.h"
+#import "TitleCell.h"
+#import "GoodsItemCell.h"
+#import "TravelSliderView.h"
+#import "GalleryView.h"
+#import "SliderView.h"
 #import "DistrictViewController.h"
-#import "HomeTitleCell.h"
-#import "HomeGoodsCell.h"
 
-@interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,RecommendDelegate,LocationChangeDelegate,DSXSliderViewDelegate,ChannelViewDelegate,UITextFieldDelegate>{
+@interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,LocationChangeDelegate,DSXSliderViewDelegate,CategoryViewDelegate,TravelSliderViewDelegate,SliderViewDelegate,GalleryViewDelegate,UITextFieldDelegate>{
     @private
+    localView *_localView;
+    HomeSearchView *_searchView;
     DSXDropDownMenu *_popMenu;
     DSXSliderView *_slideView;
     DSXSliderView *_shopSlideView;
     NSArray *_goodsList;
+    
+    CategoryView *_channelView;
+    TravelSliderView *_travelSliderView;
+    SliderView *_specialGoodsView;
+    GalleryView *_foodGalleryView;
 }
 
-- (instancetype)init;
-
-@property(nonatomic,retain)localView *local;
 @property(nonatomic,retain)UITableView *tableView;
-@property(nonatomic,retain)ChannelListView *channelView;
-@property(nonatomic,retain)RecommendSliderView *travelView;
-@property(nonatomic,retain)RecommendSliderView *productView;
-@property(nonatomic,retain)RecommendSliderView2 *foodView;
-
 @end

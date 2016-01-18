@@ -49,4 +49,10 @@
     [_numLabel setText:[NSString stringWithFormat:@"x%@",[goodsData objectForKey:@"buynum"]]];
 }
 
+- (void)layoutSubviews{
+    [super layoutSubviews];
+    self.separatorInset = UIEdgeInsetsZero;
+    self.layoutMargins  = UIEdgeInsetsZero;
+}
+
 @end

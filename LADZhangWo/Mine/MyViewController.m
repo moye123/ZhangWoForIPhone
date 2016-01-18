@@ -29,6 +29,10 @@
     _tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
+    _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    [_tableView registerClass:[TitleCell class] forCellReuseIdentifier:@"listCell"];
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"categoryCell"];
+    [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"loginCell"];
     [self.view addSubview:_tableView];
     [self setHeadView];
     
@@ -38,6 +42,12 @@
     _loginout = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _loginout.textAlignment = NSTextAlignmentCenter;
     _loginout.font = [UIFont systemFontOfSize:16.0];
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    _tableView.separatorInset = UIEdgeInsetsZero;
+    _tableView.layoutMargins  = UIEdgeInsetsZero;
 }
 
 - (void)setHeadView{
@@ -136,41 +146,40 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 1 && indexPath.row == 1) {
-        return 70;
+        return 72;
     }else {
         return 50;
     }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"myCell"];
-    cell.textLabel.font = [UIFont systemFontOfSize:16.0];
-    cell.detailTextLabel.font = [UIFont systemFontOfSize:14.0];
     if (indexPath.section == 0) {
-        if (indexPath.row == 0) {
-            cell.textLabel.text = @"我的钱包";
-            cell.textLabel.textAlignment = NSTextAlignmentLeft;
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        }
+        TitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"listCell" forIndexPath:indexPath];
+        cell.title = @"我的钱包";
+        cell.detail = @"查看详情";
+        return cell;
     }
     
     if (indexPath.section == 1) {
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (indexPath.row == 0) {
-            cell.textLabel.text = @"我的订单";
-            cell.detailTextLabel.text = @"查看全部订单";
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            TitleCell *cell = [tableView dequeueReusableCellWithIdentifier:@"listCell" forIndexPath:indexPath];
+            cell.title = @"我的订单";
+            cell.detail = @"查看全部订单";
+            return cell;
         }
         
         //按钮
         if (indexPath.row == 1) {
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"categoryCell" forIndexPath:indexPath];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             [cell addSubview:_orderCatView];
+            return cell;
         }
     }
     
     if (indexPath.section == 2) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"listCell" forIndexPath:indexPath];
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         if (indexPath.row == 0) {
             cell.textLabel.text = @"我的收藏";
         }
@@ -179,7 +188,7 @@
         }
         
         if (indexPath.row == 2) {
-            cell.textLabel.text = @"评分";
+            cell.textLabel.text = @"打赏好评";
         }
         if (indexPath.row == 3) {
             float cacheSize = (float)[[SDImageCache sharedImageCache] getSize]/1048576;
@@ -187,10 +196,11 @@
             cell.detailTextLabel.text = [NSString stringWithFormat:@"%.2fMB",cacheSize];
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
-        
+        return cell;
     }
     
     if (indexPath.section == 3) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"loginCell" forIndexPath:indexPath];
         [cell addSubview:_loginout];
         if (indexPath.row == 0) {
             if ([[ZWUserStatus sharedStatus] isLogined]) {
@@ -201,9 +211,9 @@
                 _loginout.textColor = [UIColor blackColor];
             }
         }
-        
+        return cell;
     }
-    return cell;
+    return [[UITableViewCell alloc] init];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

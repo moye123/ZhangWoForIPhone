@@ -3,18 +3,24 @@
 <plist version="1.0">
 <array>
 	<dict>
+		<key>catid</key>
+		<string>1</string>
 		<key>cname</key>
 		<string>智能E家</string>
 		<key>pic</key>
 		<string>ejia.png</string>
 	</dict>
 	<dict>
+		<key>catid</key>
+		<string>2</string>
 		<key>cname</key>
 		<string>物业管理</string>
 		<key>pic</key>
 		<string>wuye.png</string>
 	</dict>
 	<dict>
+		<key>catid</key>
+		<string>3</string>
 		<key>cname</key>
 		<string>社区服务</string>
 		<key>pic</key>

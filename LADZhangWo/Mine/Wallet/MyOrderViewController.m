@@ -36,13 +36,16 @@
     [self.navigationController.view addSubview:_popMenu];
     
     _orderList = [NSMutableArray array];
-    CGRect tableFrame = self.view.bounds;
-    tableFrame.size.height = tableFrame.size.height - 50;
-    self.tableView = [[UITableView alloc] initWithFrame:tableFrame style:UITableViewStyleGrouped];
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
+    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    
+    [_tableView registerClass:[OrderItemCell class] forCellReuseIdentifier:@"orderGoodsCell"];
+    [_tableView registerClass:[OrderCommonCell class] forCellReuseIdentifier:@"Cell1"];
+    [_tableView registerClass:[OrderCommonCell class] forCellReuseIdentifier:@"Cell2"];
+    [_tableView registerClass:[OrderCommonCell class] forCellReuseIdentifier:@"Cell3"];
     [self.view addSubview:self.tableView];
-    [self.tableView registerClass:[OrderItemCell class] forCellReuseIdentifier:@"orderGoodsCell"];
     
     _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
@@ -63,6 +66,12 @@
     [_tipsView sizeToFit];
     [_tipsView setCenter:CGPointMake(self.view.center.x, 200)];
     [self.view addSubview:_tipsView];
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    _tableView.separatorInset = UIEdgeInsetsZero;
+    _tableView.layoutMargins  = UIEdgeInsetsZero;
 }
 
 - (void)back{
@@ -117,7 +126,9 @@
     [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingFormat:@"&c=order&a=showlist&page=%d",_page] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
+        if ([responseObject isKindOfClass:[NSArray class]]) {
+            [self reloadTableViewWithArray:responseObject];
+        }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
     }];
@@ -201,24 +212,18 @@
     
     if (indexPath.row >0 && indexPath.row <= goodsCount) {
         NSDictionary *goodsData = [goodsArray objectAtIndex:(indexPath.row-1)];
-        OrderItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"orderGoodsCell"];
+        OrderItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"orderGoodsCell" forIndexPath:indexPath];
         [cell setGoodsData:goodsData];
         return cell;
     }else {
-        /*
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"orderCell"];
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"orderCell"];
-        }
-         */
-        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"orderCell"];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         NSString *order_status    = [orderData objectForKey:@"order_status"];//订单状态
         NSString *pay_status      = [orderData objectForKey:@"pay_status"];//支付状态
         NSString *shipping_status = [orderData objectForKey:@"shipping_status"];//运输状态
         NSString *evaluate_status = [orderData objectForKey:@"evaluate_status"];//评价状态
         
         if (indexPath.row == 0) {
+            OrderCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell1" forIndexPath:indexPath];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             if ([[orderData objectForKey:@"shopname"] length] > 0) {
                 cell.textLabel.text = [orderData objectForKey:@"shopname"];
             }else {
@@ -247,17 +252,26 @@
                     cell.detailTextLabel.text = @"等待付款";
                 }
             }
+            return cell;
         }
         
         if (indexPath.row == (goodsCount+1)) {
             float totalValue = [self totalValue:goodsArray];
+            OrderCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell2" forIndexPath:indexPath];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.textLabel.text = [NSString stringWithFormat:@"时间:%@",[orderData objectForKey:@"addtime"]];
             cell.textLabel.font = [UIFont systemFontOfSize:16.0];
             cell.detailTextLabel.text = [NSString stringWithFormat:@"小计:%.2f",totalValue];
             cell.detailTextLabel.textColor = [UIColor blackColor];
             cell.detailTextLabel.font = [UIFont systemFontOfSize:16.0];
+            return cell;
         }
         if (indexPath.row == (goodsCount+2)) {
+            OrderCommonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell3" forIndexPath:indexPath];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            for (UIView *subview in cell.subviews) {
+                [subview removeFromSuperview];
+            }
             if ([order_status isEqualToString:@"1"]) {
                 if ([evaluate_status isEqualToString:@"1"]) {
                     UIButton *refundButton = [self buttonWithTitle:@"申请退货"];
@@ -307,9 +321,9 @@
                     [cell addSubview:payButton];
                 }
             }
-            
+            return cell;
         }
-        return cell;
+        return [[UITableViewCell alloc] init];
     }
 }
 

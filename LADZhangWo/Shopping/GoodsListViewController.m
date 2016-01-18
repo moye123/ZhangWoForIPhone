@@ -145,13 +145,13 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return SWIDTH*0.35+10;
+    return SWIDTH*0.30+10;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSDictionary *goodsData = [_goodsList objectAtIndex:indexPath.row];
-    GoodsItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell"];
-    cell.imageWidth = SWIDTH*0.35;
+    GoodsItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell" forIndexPath:indexPath];
+    cell.imageWidth = SWIDTH*0.30;
     cell.goodsData  = goodsData;
     return cell;
 }
@@ -182,6 +182,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewDidLayoutSubviews{
+    self.tableView.separatorInset = UIEdgeInsetsZero;
+    self.tableView.layoutMargins  = UIEdgeInsetsZero;
 }
 
 @end

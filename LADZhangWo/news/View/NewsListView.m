@@ -16,6 +16,8 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame style:UITableViewStylePlain];
     if (self) {
+        [self registerClass:[NewsItemCell class] forCellReuseIdentifier:@"newsCell"];
+        
         _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
         UITableViewController *tableViewController = [[UITableViewController alloc] init];
         tableViewController.tableView = self;
@@ -103,63 +105,8 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"newsCell"];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"newsCell"];
-    }else{
-        for (UIView *subview in cell.contentView.subviews) {
-            [subview removeFromSuperview];
-        }
-    }
-    NSDictionary *newsItem = [self.newsArray objectAtIndex:indexPath.row];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 8, SWIDTH-16, 140)];
-    imageView.layer.cornerRadius = 3.0;
-    imageView.layer.masksToBounds = YES;
-    [imageView sd_setImageWithURL:[NSURL URLWithString:[newsItem objectForKey:@"pic"]] placeholderImage:[UIImage imageNamed:@"placeholder.png"]];
-    [imageView setContentMode:UIViewContentModeScaleAspectFill];
-    [cell.contentView addSubview:imageView];
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 155, SWIDTH-16, 32)];
-    titleLabel.text = [newsItem objectForKey:@"title"];
-    titleLabel.font = [UIFont systemFontOfSize:16.0];
-    titleLabel.numberOfLines = 2;
-    [titleLabel sizeToFit];
-    [cell.contentView addSubview:titleLabel];
-    
-    UILabel *summaryLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 200, SWIDTH-16, 40)];
-    summaryLabel.text = [newsItem objectForKey:@"summary"];
-    summaryLabel.textColor = [UIColor grayColor];
-    summaryLabel.font = [UIFont systemFontOfSize:14.0];
-    summaryLabel.numberOfLines = 2;
-    [summaryLabel sizeToFit];
-    [cell.contentView addSubview:summaryLabel];
-    
-    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 238, 100, 20)];
-    timeLabel.text = [newsItem objectForKey:@"pubtime"];
-    timeLabel.font = [UIFont systemFontOfSize:12.0];
-    timeLabel.textColor = [UIColor grayColor];
-    [cell.contentView addSubview:timeLabel];
-    
-    UIImageView *browseView = [[UIImageView alloc] initWithFrame:CGRectMake(SWIDTH-100, 240, 16, 16)];
-    [browseView setImage:[UIImage imageNamed:@"icon-browse.png"]];
-    [cell.contentView addSubview:browseView];
-    
-    UILabel *viewnum = [[UILabel alloc] initWithFrame:CGRectMake(SWIDTH-80, 238, 30, 20)];
-    viewnum.text = [newsItem objectForKey:@"viewnum"];
-    viewnum.textColor = [UIColor grayColor];
-    viewnum.font = [UIFont systemFontOfSize:12.0];
-    [cell.contentView addSubview:viewnum];
-    
-    UIImageView *commentView = [[UIImageView alloc] initWithFrame:CGRectMake(SWIDTH-50, 242, 14, 14)];
-    [commentView setImage:[UIImage imageNamed:@"icon-comments.png"]];
-    [cell.contentView addSubview:commentView];
-    
-    UILabel *commentLabel = [[UILabel alloc] initWithFrame:CGRectMake(SWIDTH-30, 238, 30, 20)];
-    commentLabel.text = [newsItem objectForKey:@"commentnum"];
-    commentLabel.textColor = [UIColor grayColor];
-    commentLabel.font = [UIFont systemFontOfSize:12.0];
-    [cell.contentView addSubview:commentLabel];
-    
+    NewsItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"newsCell" forIndexPath:indexPath];
+    cell.newsData = [self.newsArray objectAtIndex:indexPath.row];
     return cell;
 }
 
@@ -182,6 +129,12 @@
         }
         
     }
+}
+
+- (void)layoutSubviews{
+    [super layoutSubviews];
+    self.separatorInset = UIEdgeInsetsZero;
+    self.layoutMargins  = UIEdgeInsetsZero;
 }
 
 @end

@@ -1,24 +1,24 @@
 //
-//  HomeTitleCell.m
+//  TitleCell.m
 //  LADZhangWo
 //
-//  Created by Apple on 16/1/5.
+//  Created by Apple on 16/1/18.
 //  Copyright © 2016年 Apple. All rights reserved.
 //
 
-#import "HomeTitleCell.h"
+#import "TitleCell.h"
 
-@implementation HomeTitleCell
+@implementation TitleCell
+@synthesize image  = _image;
 @synthesize title  = _title;
 @synthesize detail = _detail;
-@synthesize image  = _image;
+
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier]) {
         self.textLabel.font = [UIFont systemFontOfSize:16.0];
         self.detailTextLabel.font = [UIFont systemFontOfSize:14.0];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.accessoryType  = UITableViewCellAccessoryDisclosureIndicator;
-        self.imageView.image = [UIImage imageNamed:@"icon-hot.png"];
     }
     return self;
 }
@@ -40,8 +40,14 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
-    self.imageView.frame = CGRectMake(10, 10, 20, 20);
-    self.textLabel.frame = CGRectMake(35, 12, self.textLabel.frame.size.width, self.textLabel.frame.size.height);
+    if (_image) {
+        self.imageView.frame = CGRectMake(10, (self.frame.size.height-20)/2, 20, 20);
+        self.textLabel.frame = CGRectMake(35, 0, self.textLabel.frame.size.width, self.frame.size.height);
+    }else {
+        self.textLabel.frame = CGRectMake(10, 0, self.textLabel.frame.size.width, self.frame.size.height);
+    }
+    self.separatorInset = UIEdgeInsetsZero;
+    self.layoutMargins  = UIEdgeInsetsZero;
 }
 
 @end

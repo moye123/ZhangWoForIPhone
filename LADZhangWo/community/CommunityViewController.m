@@ -41,7 +41,7 @@
     _categoryView = [[CategoryView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 100)];
     _categoryView.cellSize  = CGSizeMake(SWIDTH/3, 100);
     _categoryView.imageSize = CGSizeMake(50, 50);
-    _categoryView.categoryData = [NSArray arrayWithContentsOfFile:path];
+    _categoryView.dataList  = [NSArray arrayWithContentsOfFile:path];
     _categoryView.touchDelegate = self;
     
     NSDictionary *coordinateParam = [DSXUtil getLocation];

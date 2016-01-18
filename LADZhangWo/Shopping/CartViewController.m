@@ -22,12 +22,11 @@
     _cartList = [NSMutableArray array];
     _goodsModelArray = [NSMutableArray array];
     
-    CGRect frame = self.view.bounds;
-    frame.size.height = frame.size.height - 60;
-    _tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:_tableView];
     [_tableView registerClass:[CartTitleCell class] forCellReuseIdentifier:@"titleCell"];
     [_tableView registerClass:[CartCustomCell class] forCellReuseIdentifier:@"goodsCell"];

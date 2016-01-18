@@ -12,7 +12,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame;
 
-@property(nonatomic,retain)UILabel *textLabel;
-@property(nonatomic,retain)UIImageView *imageView;
+@property(nonatomic,readonly)UILabel *textLabel;
+@property(nonatomic,readonly)UIImageView *imageView;
 
 @end
