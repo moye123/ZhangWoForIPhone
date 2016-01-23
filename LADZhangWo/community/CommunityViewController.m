@@ -20,16 +20,15 @@
     [self setTitle:@"智慧社区"];
     self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
-    CGRect frame = self.view.bounds;
-    frame.size.height-= 50;
-    _tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];
+    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
+    _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"categoryCell"];
     [_tableView registerClass:[ShopItemCell class] forCellReuseIdentifier:@"shopItemCell"];
     [self.view addSubview:_tableView];
     
-    _sliderView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
+    _sliderView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, SWIDTH*0.33)];
     _sliderView.num = 3;
     _sliderView.groupid = 1;
     _sliderView.delegate = self;
@@ -44,17 +43,28 @@
     _categoryView.dataList  = [NSArray arrayWithContentsOfFile:path];
     _categoryView.touchDelegate = self;
     
-    NSDictionary *coordinateParam = [DSXUtil getLocation];
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=shop&a=showlist&pagesize=10"] parameters:coordinateParam progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _shopList = responseObject;
-            [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [[DSXHttpManager sharedManager] GET:@"&c=shop&a=showlist&pagesize=10"
+                             parameters:nil
+                               progress:nil
+                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            _shopList = [responseObject objectForKey:@"data"];
+            [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 - (void)back{
@@ -82,7 +92,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 0) {
-        return 100;
+        return 102;
     }else if (indexPath.section == 1){
         if (indexPath.row == 0) {
             return 50;

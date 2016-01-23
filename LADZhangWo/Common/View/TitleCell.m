@@ -46,8 +46,13 @@
     }else {
         self.textLabel.frame = CGRectMake(10, 0, self.textLabel.frame.size.width, self.frame.size.height);
     }
-    self.separatorInset = UIEdgeInsetsZero;
-    self.layoutMargins  = UIEdgeInsetsZero;
+    
+    if ([self respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 @end

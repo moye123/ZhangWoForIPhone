@@ -32,17 +32,16 @@
     self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     UIView *loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:@"正在加载.."];
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=profile&a=showdetail&uid=%ld",(long)[ZWUserStatus sharedStatus].uid];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    NSString *urlString = [NSString stringWithFormat:@"&c=profile&a=showdetail&uid=%ld",(long)[ZWUserStatus sharedStatus].uid];
+    [[DSXHttpManager sharedManager] GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [loadingView removeFromSuperview];
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            _profile = [NSMutableDictionary dictionaryWithDictionary:responseObject];
+            _profile = [NSMutableDictionary dictionaryWithDictionary:[responseObject objectForKey:@"data"]];
             _tableView.hidden = NO;
             [_tableView reloadData];
-            [loadingView removeFromSuperview];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [loadingView removeFromSuperview];
         NSLog(@"%@", error);
     }];
 }
@@ -167,11 +166,9 @@
     [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
     [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:[formater stringFromDate:date] forKey:@"profilenew[birthday]"];
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=profile&a=update"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=profile&a=update" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            if ([[responseObject objectForKey:@"uid"] integerValue] == [ZWUserStatus sharedStatus].uid) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                 [_profile setObject:[formater stringFromDate:date] forKey:@"birthday"];
                 [_datePickerView hide];
                 [_tableView reloadData];
@@ -187,12 +184,9 @@
     [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
     [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:@(sex) forKey:@"profilenew[usersex]"];
-    
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=profile&a=update"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=profile&a=update" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            if ([[responseObject objectForKey:@"uid"] intValue] == [ZWUserStatus sharedStatus].uid) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                 [_profile setObject:@(sex) forKey:@"usersex"];
                 [_tableView reloadData];
             }
@@ -240,19 +234,21 @@
     if ([imageData writeToFile:filePath atomically:YES]) {
         NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
                                  @"username":[ZWUserStatus sharedStatus].username};
-        [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=profile&a=setavatar"] parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        [[DSXHttpManager sharedManager] POST:@"&c=profile&a=setavatar" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
             [formData appendPartWithFileURL:fileURL name:@"filedata" error:nil];
         } progress:^(NSProgress * _Nonnull uploadProgress) {
             
         } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             [loadingView removeFromSuperview];
             [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-            id returns = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-            if ([returns isKindOfClass:[NSDictionary class]]) {
-                [[ZWUserStatus sharedStatus] setUserpic:[[ZWUserStatus sharedStatus].userpic stringByAppendingFormat:@"?%d",rand()]];
-                [[ZWUserStatus sharedStatus] update];
-                [_tableView reloadData];
-                [[NSNotificationCenter defaultCenter] postNotificationName:UserImageChangedNotification object:nil];
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                    [[ZWUserStatus sharedStatus] setUserpic:[[ZWUserStatus sharedStatus].userpic stringByAppendingFormat:@"?%d",rand()]];
+                    [[ZWUserStatus sharedStatus] update];
+                    [_tableView reloadData];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:UserImageChangedNotification object:nil];
+                }
+                
             }
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             [loadingView removeFromSuperview];

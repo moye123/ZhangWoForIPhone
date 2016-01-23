@@ -47,21 +47,20 @@
                              @"orderamount":_orderAmount,
                              @"paytype":_payType,
                              @"payid":_payID};
-    NSString *urlString = [SITEAPI stringByAppendingString:@"&c=weixin&a=sign"];
+
     UIView *loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:@"交易处理中.."];
-    [[AFHTTPSessionManager sharedManager] POST:urlString parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=weixin&a=sign" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            [loadingView removeFromSuperview];
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
-                [loadingView removeFromSuperview];
+                NSDictionary *returns = [responseObject objectForKey:@"data"];
                 PayReq *request   = [[PayReq alloc] init];
-                request.partnerId = [responseObject  objectForKey:@"partnerid"];
-                request.prepayId  = [responseObject  objectForKey:@"prepayid"];
-                request.nonceStr  = [responseObject  objectForKey:@"noncestr"];
-                request.timeStamp = [[responseObject objectForKey:@"timestamp"] intValue];
-                request.package   = [responseObject  objectForKey:@"package"];
-                request.sign      = [responseObject  objectForKey:@"sign"];
+                request.partnerId = [returns  objectForKey:@"partnerid"];
+                request.prepayId  = [returns  objectForKey:@"prepayid"];
+                request.nonceStr  = [returns  objectForKey:@"noncestr"];
+                request.timeStamp = [[returns objectForKey:@"timestamp"] intValue];
+                request.package   = [returns  objectForKey:@"package"];
+                request.sign      = [returns  objectForKey:@"sign"];
                 [WXApi sendReq:request];
             }
         }else {
@@ -69,6 +68,7 @@
             [alert show];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [loadingView removeFromSuperview];
         NSLog(@"%@", error);
     }];
     

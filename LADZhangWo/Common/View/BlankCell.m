@@ -11,17 +11,19 @@
 @implementation BlankCell
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-        for (UIView *subview in self.subviews) {
-            [subview removeFromSuperview];
-        }
+        [self.contentView removeFromSuperview];
     }
     return self;
 }
 
 - (void)layoutSubviews{
     [super layoutSubviews];
-    self.separatorInset = UIEdgeInsetsZero;
-    self.layoutMargins  = UIEdgeInsetsZero;
+    if ([self respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 @end

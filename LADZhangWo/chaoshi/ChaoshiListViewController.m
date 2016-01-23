@@ -103,11 +103,9 @@
     if (_page) {
         [params setObject:@(_page) forKey:@"page"];
     }
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=chaoshi&a=showlist"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            [self reloadCollectionViewWithArray:responseObject];
+    [[DSXHttpManager sharedManager] GET:@"&c=chaoshi&a=showlist" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            [self reloadCollectionViewWithArray:[responseObject objectForKey:@"data"]];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);

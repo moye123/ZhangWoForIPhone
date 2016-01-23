@@ -70,8 +70,12 @@
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-    _tableView.separatorInset = UIEdgeInsetsZero;
-    _tableView.layoutMargins  = UIEdgeInsetsZero;
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 - (void)back{
@@ -123,14 +127,13 @@
     if (_evaluateStatus) {
         [params setObject:_evaluateStatus forKey:@"evaluate_status"];
     }
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingFormat:@"&c=order&a=showlist&page=%d",_page] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            [self reloadTableViewWithArray:responseObject];
+    [params setObject:@(_page) forKey:@"page"];
+    [[DSXHttpManager sharedManager] POST:@"&c=order&a=showlist" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        
+        NSLog(@"%@", error);
     }];
 }
 
@@ -356,9 +359,7 @@
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
     [params setObject:[_orderList[section] objectForKey:@"orderid"] forKey:@"orderid"];
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=order&a=delete"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=order&a=delete" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             //[_orderList removeObjectAtIndex:section];
             //[_tableView deleteSections:[NSIndexSet indexSetWithIndex:section] withRowAnimation:UITableViewRowAnimationFade];
@@ -395,9 +396,9 @@
     NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
                              @"username":[ZWUserStatus sharedStatus].username,
                              @"orderid":@(orderid)};
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=order&a=takedelivery"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=order&a=takedelivery"
+                              parameters:params progress:nil
+                                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             [self refresh];
         }

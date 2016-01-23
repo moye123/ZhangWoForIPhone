@@ -52,16 +52,17 @@
     [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:message forKey:@"message"];
     if ([message length] > 0) {
-        [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=feedback&a=save"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [[DSXHttpManager sharedManager] POST:@"&c=feedback&a=save" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
-                [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"发送成功，谢谢你的支持"];
-                [self.navigationController popViewControllerAnimated:YES];
+                if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                    [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"发送成功，谢谢你的支持"];
+                    [self.navigationController popViewControllerAnimated:YES];
+                }
             }
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"%@", error);
+             NSLog(@"%@", error);
         }];
+
     }else {
         [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"请输入内容"];
     }

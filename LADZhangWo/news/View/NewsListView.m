@@ -10,86 +10,110 @@
 
 @implementation NewsListView
 @synthesize catid = _catid;
-@synthesize newsArray = _newsArray;
-@synthesize showNewsDelegate = _showNewsDelegate;
+@synthesize sliderView = _sliderView;
+@synthesize showDetailDelegate = _showDetailDelegate;
 
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame style:UITableViewStylePlain];
     if (self) {
+        self.delegate = self;
+        self.dataSource = self;
         [self registerClass:[NewsItemCell class] forCellReuseIdentifier:@"newsCell"];
         
         _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
         UITableViewController *tableViewController = [[UITableViewController alloc] init];
         tableViewController.tableView = self;
         tableViewController.refreshControl = _refreshControl;
-        [_refreshControl addTarget:self action:@selector(reFreshTableView) forControlEvents:UIControlEventValueChanged];
+        [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
         
         _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
         _pullUpView.hidden = YES;
         self.tableFooterView = _pullUpView;
-        self.delegate = self;
-        self.dataSource = self;
-        self.newsArray = [NSMutableArray array];
+        
+        _sliderView = [[NewsSliderView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.width/2)];
+        self.tableHeaderView = _sliderView;
+        
+        _newsList = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
-- (void)showTableView{
-    NSString *key = [NSString stringWithFormat:@"newsList_%d", _catid];
-    [self showTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:key]];
-    [self reFreshTableView];
+- (void)setShowDetailDelegate:(id<NewsSliderViewDelegate,NewsListDelegate>)showDetailDelegate{
+    _showDetailDelegate = showDetailDelegate;
+    _sliderView.delegate = showDetailDelegate;
 }
 
-- (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=post&a=showlist&catid=%d&page=%d",_catid,_page];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            if (_isRefreshing && [responseObject count]>0) {
-                NSString *key = [NSString stringWithFormat:@"newsList_%d",_catid];
-                [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:key];
+- (void)show{
+    NSString *key = [NSString stringWithFormat:@"newsList_%d", _catid];
+    [self showTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:key]];
+    [self refresh];
+}
+
+- (void)refresh{
+    _page = 1;
+    _isRefreshing = YES;
+    [self downloadData];
+}
+
+- (void)loadMore{
+    _page++;
+    _isRefreshing = NO;
+    [self downloadData];
+}
+
+- (void)downloadData{
+    NSDictionary *params = @{@"catid":@(_catid),@"page":@(_page)};
+    if (_isRefreshing) {
+        [[DSXHttpManager sharedManager] GET:@"&c=post&a=showlist&pagesize=3&pic=1" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                    _sliderView.dataList = [responseObject objectForKey:@"data"];
+                }
             }
-            [self showTableViewWithArray:responseObject];
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            NSLog(@"%@", error);
+        }];
+    }
+    
+    [[DSXHttpManager sharedManager] GET:@"&c=post&a=showlist&limit=3&pic=1" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                NSArray *array = [responseObject objectForKey:@"data"];
+                if (_isRefreshing && [array count]>0) {
+                    NSString *key = [NSString stringWithFormat:@"newsList_%d",_catid];
+                    [[NSUserDefaults standardUserDefaults] setObject:array forKey:key];
+                }
+                [self showTableViewWithArray:array];
+            }
             
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-         NSLog(@"%@",error);
+        NSLog(@"%@",error);
     }];
 }
 
 - (void)showTableViewWithArray:(NSArray *)array{
     if ([array count] > 0) {
         if (_isRefreshing) {
-            [self.newsArray removeAllObjects];
+            [_newsList removeAllObjects];
             [self reloadData];
         }
-        for (NSDictionary *newsItem in array) {
-            [self.newsArray addObject:newsItem];
+        for (NSDictionary *dict in array) {
+            [_newsList addObject:dict];
         }
         [self reloadData];
     }
-    if ([array count] >= 20) {
-        _pullUpView.hidden = NO;
-    }else {
+    if ([array count] < 20) {
         _pullUpView.hidden = YES;
+    }else {
+        _pullUpView.hidden = NO;
     }
+    [_pullUpView endLoading];
+    
     if ([_refreshControl isRefreshing]) {
         [_refreshControl endRefreshing];
     }
-    [_pullUpView endLoading];
-}
-
-- (void)reFreshTableView{
-    _page = 1;
-    _isRefreshing = YES;
-    [self loadData];
-}
-
-- (void)loadMore{
-    _page++;
-    _isRefreshing = NO;
-    [self loadData];
+    
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -97,25 +121,25 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [self.newsArray count];
+    return [_newsList count];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 265;
+    return 100;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NewsItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"newsCell" forIndexPath:indexPath];
-    cell.newsData = [self.newsArray objectAtIndex:indexPath.row];
+    cell.newsData = [_newsList objectAtIndex:indexPath.row];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
-    NSInteger newsID = [[[self.newsArray objectAtIndex:indexPath.row] objectForKey:@"id"] intValue];
-    if ([self.showNewsDelegate respondsToSelector:@selector(showNewsDetailWithID:)]) {
-        [self.showNewsDelegate showNewsDetailWithID:newsID];
+    NSDictionary *newsData = [_newsList objectAtIndex:indexPath.row];
+    if ([_showDetailDelegate respondsToSelector:@selector(listView:didSelectedItemAtIndexPath:data:)]) {
+        [_showDetailDelegate listView:self didSelectedItemAtIndexPath:indexPath data:newsData];
     }
 }
 
@@ -133,8 +157,12 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
-    self.separatorInset = UIEdgeInsetsZero;
-    self.layoutMargins  = UIEdgeInsetsZero;
+    if ([self respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 @end

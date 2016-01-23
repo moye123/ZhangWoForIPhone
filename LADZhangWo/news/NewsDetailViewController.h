@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 #import "CommentView.h"
+#import "CommentManager.h"
 
 @interface NewsDetailViewController : UIViewController<UIScrollViewDelegate,UIWebViewDelegate,CommentViewDelegate,DSXDropDownMenuDelegate>{
     UIButton *commButton;

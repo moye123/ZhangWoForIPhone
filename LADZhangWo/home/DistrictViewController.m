@@ -26,12 +26,10 @@
     }else {
         self.title = @"选择城市";
     }
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=district&a=showlist&fid=%d",self.fid];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            self.districtList = responseObject;
+    
+    [[DSXHttpManager sharedManager] GET:@"&c=district&a=showlist" parameters:@{@"fid":@(self.fid)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            self.districtList = [responseObject objectForKey:@"data"];
             [self.tableView reloadData];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -87,6 +85,5 @@
     }
     
 }
-
 
 @end

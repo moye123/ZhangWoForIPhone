@@ -46,8 +46,12 @@
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-    _tableView.separatorInset = UIEdgeInsetsZero;
-    _tableView.layoutMargins  = UIEdgeInsetsZero;
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 - (void)setHeadView{
@@ -263,7 +267,7 @@
         
         //打开评分页面
         if (indexPath.row == 2) {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.apple.com/cn"]];
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/zhang-wo/id1073304502?l=en&mt=8"]];
         }
         
         //清除缓存

@@ -58,12 +58,10 @@
 }
 
 - (void)downloadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=notification&a=showlist&uid=%ld&page=%d",(long)[ZWUserStatus sharedStatus].uid,_page];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            [self reloadTableViewWithArray:responseObject];
+    NSString *urlString = [NSString stringWithFormat:@"&c=notification&a=showlist&uid=%ld&page=%d",(long)[ZWUserStatus sharedStatus].uid,_page];
+    [[DSXHttpManager sharedManager] GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);

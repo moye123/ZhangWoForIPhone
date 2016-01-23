@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
+#import "LoginInputView.h"
 
 @interface LoginViewController : UIViewController<UITextFieldDelegate>
 
-@property(nonatomic,retain)UITextField *usernameField;
-@property(nonatomic,retain)UITextField *passwordField;
+@property(nonatomic,retain)LoginInputView *usernameView;
+@property(nonatomic,retain)LoginInputView *passwordView;
 @property(nonatomic,retain)UIButton *loginButton;
 @end

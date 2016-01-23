@@ -12,7 +12,10 @@
 
 - (instancetype)initWithFrame:(CGRect)frame;
 
-@property(nonatomic,readonly)UIImageView *imageView;
+@property(nonatomic)NSString *leftImage;
+@property(nonatomic)NSString *placeHolder;
+@property(nonatomic)NSString *text;
+@property(nonatomic,readonly)UIImageView *leftView;
 @property(nonatomic,readonly)UITextField *textField;
 
 @end

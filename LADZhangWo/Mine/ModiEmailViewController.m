@@ -73,14 +73,12 @@
     [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:email forKey:@"email"];
     [params setObject:[password md5] forKey:@"password"];
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=member&a=modiemail"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=member&a=modiemail" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            if ([[responseObject objectForKey:@"email"] isEqualToString:email]) {
+            NSDictionary *returns = [responseObject objectForKey:@"data"];
+            if ([[returns objectForKey:@"email"] isEqualToString:email]) {
                 NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[ZWUserStatus sharedStatus].userInfo];
                 [userInfo setObject:email forKey:@"email"];
-                //[_userStatus setUserInfo:userInfo];
                 [[ZWUserStatus sharedStatus] update];
                 [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"邮箱绑定成功"];
                 [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
@@ -96,7 +94,7 @@
             
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-         NSLog(@"%@",error);
+        NSLog(@"%@",error);
     }];
 }
 

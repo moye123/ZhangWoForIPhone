@@ -19,16 +19,17 @@
     self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=service&a=showdetail&id=%ld",(long)_serviceID];
-    [[AFHTTPSessionManager sharedManager] GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] GET:@"&c=service&a=showdetail&datatype=json" parameters:@{@"id":@(_serviceID)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            _serviceData = responseObject;
-            self.title = [_serviceData objectForKey:@"title"];
-            _webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
-            _webView.backgroundColor = [UIColor backColor];
-            [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
-            [self.view addSubview:_webView];
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                _serviceData = [responseObject objectForKey:@"data"];
+                self.title = [_serviceData objectForKey:@"title"];
+                _webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
+                _webView.backgroundColor = [UIColor backColor];
+                [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
+                [self.view addSubview:_webView];
+            }
+            
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);

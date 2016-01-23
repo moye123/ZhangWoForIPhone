@@ -17,8 +17,6 @@
         [self.navigationBar setHidden:NO];
         [self setStyle:ZWNavigationStyleDefault];
         [self.navigationBar setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:18.0]}];
-        
-        self.interactivePopGestureRecognizer.enabled = YES;
     }
     return self;
 }
@@ -42,9 +40,9 @@
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated{
     CATransition *animation = [CATransition animation];
-    animation.duration = 0.3;
+    animation.duration = 0.35;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
-    animation.type = kCATransitionPush;
+    animation.type = kCATransitionMoveIn;
     animation.subtype = kCATransitionFromRight;
     [self.view.window.layer addAnimation:animation forKey:nil];
     [super pushViewController:viewController animated:NO];
@@ -54,7 +52,7 @@
     CATransition *animation = [CATransition animation];
     animation.duration = 0.2;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
-    animation.type = kCATransitionReveal;
+    animation.type = kCATransitionMoveIn;
     animation.subtype = kCATransitionFromLeft;
     [self.view.window.layer addAnimation:animation forKey:nil];
     return [super popViewControllerAnimated:NO];
@@ -62,9 +60,9 @@
 
 - (void)presentViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion{
     CATransition *animation = [CATransition animation];
-    animation.duration = 0.3;
+    animation.duration = 0.35;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
-    animation.type = kCATransitionPush;
+    animation.type = kCATransitionMoveIn;
     animation.subtype = kCATransitionFromRight;
     [self.view.window.layer addAnimation:animation forKey:nil];
     [super presentViewController:viewControllerToPresent animated:NO completion:completion];
@@ -74,7 +72,7 @@
     CATransition *animation = [CATransition animation];
     animation.duration = 0.2;
     animation.timingFunction = UIViewAnimationCurveEaseInOut;
-    animation.type = kCATransitionPush;
+    animation.type = kCATransitionMoveIn;
     animation.subtype = kCATransitionFromLeft;
     [self.view.window.layer addAnimation:animation forKey:nil];
     [super dismissViewControllerAnimated:NO completion:completion];

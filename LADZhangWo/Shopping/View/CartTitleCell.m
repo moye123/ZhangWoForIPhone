@@ -58,6 +58,13 @@
     [super layoutSubviews];
     self.checkBox.frame = CGRectMake(12, 11, 22, 22);
     self.textLabel.frame = CGRectMake(45, 0, self.textLabel.frame.size.width, self.textLabel.frame.size.height);
+    
+    if ([self respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 @end

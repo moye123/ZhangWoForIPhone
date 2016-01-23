@@ -21,6 +21,7 @@
 @property(nonatomic,readonly)UIImageView *picView;
 @property(nonatomic,readonly)UILabel *titleLabel;
 @property(nonatomic,readonly)UILabel *summaryLabel;
+@property(nonatomic,readonly)UILabel *fromLabel;
 @property(nonatomic,readonly)UILabel *timeLabel;
 @property(nonatomic,readonly)UILabel *viewnumLabel;
 @property(nonatomic,readonly)UILabel *commentnumLabel;

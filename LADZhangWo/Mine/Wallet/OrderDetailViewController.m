@@ -33,15 +33,15 @@
     [_tableView registerClass:[OrderItemCell class] forCellReuseIdentifier:@"goodsCell"];
     
     //下载订单数据
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=order&a=showdetail&uid=%ld&orderid=%ld",(long)[ZWUserStatus sharedStatus].uid,(long)_orderid];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] GET:@"&c=order&a=showdetail"
+                             parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"orderid":@(_orderid)}
+                               progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            _orderData = responseObject;
+            _orderData = [responseObject objectForKey:@"data"];
             _tableView.hidden = NO;
             [_tableView reloadData];
         }
+
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];

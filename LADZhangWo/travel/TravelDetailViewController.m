@@ -36,11 +36,9 @@
     [_webView loadRequest:request];
     [self.view addSubview:_webView];
     
-    [[AFHTTPSessionManager sharedManager] GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] GET:@"&c=travel&a=showdetail&datatype=json" parameters:@{@"id":@(_travelID)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            _travelData = responseObject;
+            _travelData = [responseObject objectForKey:@"data"];
             _webView.hidden = NO;
             self.title = [_travelData objectForKey:@"title"];
         }

@@ -37,14 +37,12 @@
 - (void)loaddata{
     NSString *keyName = [NSString stringWithFormat:@"slider_%d",_groupid];
     [self showImageWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:keyName]];
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=homepage&a=showlist&groupid=%d&num=%d",_groupid,_num];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            if ([responseObject count] > 0) {
-                [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:keyName];
-                [self showImageWithArray:responseObject];
+    [[DSXHttpManager sharedManager] GET:@"&c=homepage&a=showlist" parameters:@{@"groupid":@(_groupid),@"num":@(_num)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                NSArray *array = [responseObject objectForKey:@"data"];
+                [[NSUserDefaults standardUserDefaults] setObject:array forKey:keyName];
+                [self showImageWithArray:array];
             }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

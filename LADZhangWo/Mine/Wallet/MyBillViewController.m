@@ -55,11 +55,11 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingFormat:@"&c=bill&a=showlist&page=%d",_page] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            [self reloadTableViewWithArray:responseObject];
+    [[DSXHttpManager sharedManager] POST:@"&c=bill&a=showlist"
+                              parameters:@{@"page":@(_page)}
+                                progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@",error);

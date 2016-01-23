@@ -8,14 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
+#import "LoginInputView.h"
 
 @interface RegisterViewController : UIViewController<UITextFieldDelegate>{
     @private
     int _watingTime;
 }
 
-@property(nonatomic,retain)UITextField *mobileField;
-@property(nonatomic,retain)UITextField *passwordField;
+@property(nonatomic)LoginInputView *usernameView;
+@property(nonatomic)LoginInputView *mobileView;
+@property(nonatomic)LoginInputView *passwordView;
 @property(nonatomic,retain)UIButton *registerButton;
 @property(nonatomic,retain)UITextField *seccodeField;
 @property(nonatomic,retain)UIButton *seccodeButton;

@@ -34,17 +34,16 @@
     
     //从服务器读取商品数据
     if ([_from isEqualToString:@"chaoshi"]) {
-        goodsurl = [SITEAPI stringByAppendingFormat:@"&c=chaoshi&a=showdetail&datatype=json&id=%ld",(long)_goodsid];
+        goodsurl = [NSString stringWithFormat:@"&c=chaoshi&a=showdetail&datatype=json&id=%ld",(long)_goodsid];
     }else {
-        goodsurl = [SITEAPI stringByAppendingFormat:@"&c=goods&a=showdetail&datatype=json&id=%ld",(long)_goodsid];
+        goodsurl = [NSString stringWithFormat:@"&c=goods&a=showdetail&datatype=json&id=%ld",(long)_goodsid];
     }
-    [[AFHTTPSessionManager sharedManager] GET:goodsurl parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    
+    [[DSXHttpManager sharedManager] GET:goodsurl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [loadingView removeFromSuperview];
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
-                _goodsdata  = responseObject;
+                _goodsdata  = [responseObject objectForKey:@"data"];
                 _totalValue = [[_goodsdata objectForKey:@"price"] floatValue];
                 [self showTableView];
             }
@@ -256,15 +255,13 @@
     [params setObject:_from forKey:@"goodsfroms"];
     
     UIView *loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:@"订单处理中.."];
-    
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=order&a=create"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=order&a=create" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [loadingView removeFromSuperview];
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                NSDictionary *returns = [responseObject objectForKey:@"data"];
                 PayViewController *payView = [[PayViewController alloc] init];
-                payView.orderID     = [responseObject objectForKey:@"orderid"];
+                payView.orderID     = [returns objectForKey:@"orderid"];
                 payView.orderName   = [_goodsdata objectForKey:@"name"];
                 payView.orderDetail = [_goodsdata objectForKey:@"shopname"];
                 [self .navigationController pushViewController:payView animated:YES];
@@ -275,6 +272,7 @@
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
+        [loadingView removeFromSuperview];
     }];
 }
 

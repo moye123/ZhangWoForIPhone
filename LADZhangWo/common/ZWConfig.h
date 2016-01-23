@@ -6,10 +6,11 @@
 //  Copyright © 2015年 Apple. All rights reserved.
 //
 
-#define SITEAPI @"http://zhangwoo.cn/app.php?platform=ios&appkey=5a379b5eed8aaae531df5f60b12100cfb6dff2c1"
+#define SITEAPI @"http://app.zhangwoo.cn/app.php?platform=ios&appkey=5a379b5eed8aaae531df5f60b12100cfb6dff2c1&version=2.0"
 
 #define SWIDTH [UIScreen mainScreen].bounds.size.width
 #define SHEIGHT [UIScreen mainScreen].bounds.size.height
+#define TOPHEIGHT [[UIApplication sharedApplication] statusBarFrame].size.height+self.navigationController.navigationBar.frame.size.height
 
 #define ShareAppKey @"bead19631694"
 #define ShareAppSecret @"d60ed5a9a38a04efdf775470eefd5a8f"
@@ -18,4 +19,4 @@
 #define WXAppID @"wx8614522cc7a7a9bf"
 #define WXAppSecret @"0baacd4d79946ec38c2b376697889500"
 
-#define IOS [[[UIDevice currentDevice] systemVersion] floatValue]
+#define IOSVERSION [[[UIDevice currentDevice] systemVersion] floatValue]

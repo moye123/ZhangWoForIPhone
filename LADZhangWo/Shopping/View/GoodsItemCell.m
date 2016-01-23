@@ -18,10 +18,9 @@
 @synthesize shopLabel     = _shopLabel;
 @synthesize locationLabel = _locationLabel;
 @synthesize goodsData     = _goodsData;
-@synthesize imageWidth    = _imageWidth;
+
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-        _imageWidth = 100;
         [self.contentView removeFromSuperview];
         _backView = [[UIView alloc] init];
         _backView.backgroundColor = [UIColor whiteColor];
@@ -29,6 +28,8 @@
         _picView = [[UIImageView alloc] init];
         _picView.contentMode = UIViewContentModeScaleAspectFill;
         _picView.layer.masksToBounds = YES;
+        _picView.layer.cornerRadius = 3.0;
+        _picView.backgroundColor = [UIColor grayColor];
         [_backView addSubview:_picView];
         
         _nameLabel = [[UILabel alloc] init];
@@ -81,17 +82,24 @@
     [_soldLabel sizeToFit];
     [_shopLabel sizeToFit];
     [_locationLabel sizeToFit];
-    CGFloat lineHeight = _imageWidth/4;
-    _backView.frame      = CGRectMake(10, 5, SWIDTH-20, _imageWidth);
-    _picView.frame       = CGRectMake(0, 0, _imageWidth, _imageWidth);
-    _nameLabel.frame     = CGRectMake(_imageWidth+10, 0, SWIDTH-_imageWidth-20, lineHeight);
-    _starView.position   = CGPointMake(_imageWidth+10, lineHeight+3);
-    _priceLabel.frame    = CGRectMake(_imageWidth+10, lineHeight*2, _priceLabel.frame.size.width, lineHeight);
+    CGFloat imageWidth   = self.frame.size.height-20;
+    CGFloat imageHeight  = imageWidth;
+    CGFloat lineHeight   = imageHeight/4;
+    _backView.frame      = CGRectMake(10, 10, SWIDTH-20, imageWidth);
+    _picView.frame       = CGRectMake(0, 0, imageWidth, imageHeight);
+    _nameLabel.frame     = CGRectMake(imageWidth+10, 0, SWIDTH-imageWidth-20, lineHeight);
+    _starView.position   = CGPointMake(imageWidth+10, lineHeight+3);
+    _priceLabel.frame    = CGRectMake(imageWidth+10, lineHeight*2, _priceLabel.frame.size.width, lineHeight);
     _soldLabel.frame     = CGRectMake(_backView.frame.size.width - _soldLabel.frame.size.width, lineHeight*2, _soldLabel.frame.size.width, lineHeight);
-    _shopLabel.frame     = CGRectMake(_imageWidth+10, lineHeight*3, _shopLabel.frame.size.width, lineHeight);
+    _shopLabel.frame     = CGRectMake(imageWidth+10, lineHeight*3, _shopLabel.frame.size.width, lineHeight);
     _locationLabel.frame = CGRectMake(_backView.frame.size.width-_locationLabel.frame.size.width, lineHeight*3, _locationLabel.frame.size.width,lineHeight);
-    self.separatorInset = UIEdgeInsetsZero;
-    self.layoutMargins  = UIEdgeInsetsZero;
+    
+    if ([self respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 @end

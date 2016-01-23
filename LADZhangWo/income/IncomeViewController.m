@@ -30,13 +30,11 @@
     [self.scrollView addSubview:myIncomeView];
     
     //下载个人收益数据
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=income&a=getdata&uid=%ld",(long)[ZWUserStatus sharedStatus].uid];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] GET:@"&c=income&a=getdata" parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            self.income = [responseObject objectForKey:@"income"];
-            float income = [[responseObject objectForKey:@"income"] floatValue];
+            NSDictionary *returns = [responseObject objectForKey:@"data"];
+            self.income = [returns objectForKey:@"income"];
+            float income = [[returns objectForKey:@"income"] floatValue];
             myIncomeView.incomeLabel.text = [NSString stringWithFormat:@"￥: %.2f",income];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

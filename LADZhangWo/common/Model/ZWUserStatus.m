@@ -112,38 +112,18 @@ NSString *const UserImageChangedNotification = @"userImageChanged";
     [self saveData:[self userInfo]];
 }
 
-- (void)login:(NSMutableDictionary *)params success:(void (^)(id responseObject))success failure:(void (^)(NSString *errorMsg))failure{
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=member&a=login"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+- (void)login:(NSDictionary *)params success:(void (^)(id responseObject))success failure:(void (^)(NSString *errorMsg))failure{
+    [[DSXHttpManager sharedManager] POST:@"&c=member&a=login" parameters:params progress:nil
+                                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            [self setUid:[[responseObject objectForKey:@"uid"] integerValue]];
-            [self setUsername:[responseObject objectForKey:@"username"]];
-            if (_uid > 0 && [_username length] > 0) {
-                [self saveData:responseObject];
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                NSDictionary *info = [responseObject objectForKey:@"data"];
+                [self saveData:info];
                 [self reloadData];
                 [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
-                success(responseObject);
+                success(info);
             }else {
-                NSInteger errorCode = [[responseObject objectForKey:@"errno"] integerValue];
-                NSString *errorMsg = nil;
-                switch (errorCode) {
-                    case -1 :
-                        errorMsg = @"验证码错误";
-                        break;
-                    case -2 :
-                        errorMsg = @"账号错误";
-                        break;
-                    case -3 :
-                        errorMsg = @"密码错误";
-                        break;
-                    case -4 :
-                        errorMsg = @"账号和密码不匹配";
-                        break;
-                        
-                    default: errorMsg = @"内部错误";
-                        break;
-                }
+                NSString *errorMsg = [responseObject objectForKey:@"error"];
                 failure(errorMsg);
             }
         }else {
@@ -154,48 +134,21 @@ NSString *const UserImageChangedNotification = @"userImageChanged";
     }];
 }
 
-- (void)register:(NSMutableDictionary *)params success:(void (^)(id))success failure:(void (^)(NSString *))failure{
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=member&a=register"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+- (void)register:(NSDictionary *)params success:(void (^)(id))success failure:(void (^)(NSString *))failure{
+    
+    [[DSXHttpManager sharedManager] POST:@"&c=member&a=register" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if([responseObject isKindOfClass:[NSDictionary class]]){
-            [self setUid:[[responseObject objectForKey:@"uid"] integerValue]];
-            [self setUsername:[responseObject objectForKey:@"username"]];
-            if (_uid > 0 && [_username length] > 0) {
-                [self saveData:responseObject];
+            if([[responseObject objectForKey:@"errno"] intValue] == 0){
+                NSDictionary *info = [responseObject objectForKey:@"data"];
+                [self saveData:info];
                 [[ZWUserStatus sharedStatus] reloadData];
                 [[NSNotificationCenter defaultCenter] postNotificationName:UserStatusChangedNotification object:nil];
-                success(responseObject);
+                success(info);
             }else {
-                int errorCode = [[responseObject objectForKey:@"errno"] intValue];
-                NSString *errorMsg = nil;
-                switch (errorCode) {
-                    case -1 :
-                        errorMsg = @"邮箱格式错误";
-                        break;
-                    case -2 :
-                        errorMsg = @"邮箱已被注册";
-                        break;
-                    case -3 :
-                        errorMsg = @"手机号码格式错误";
-                        break;
-                    case -4 :
-                        errorMsg = @"手机验证码错误";
-                        break;
-                    case -5 :
-                        errorMsg = @"手机号码已被注册";
-                        break;
-                    case -6 :
-                        errorMsg = @"密码长度错误，至少6位";
-                        break;
-                        
-                    default: errorMsg = @"非法操作";
-                        break;
-                }
-                
+                NSString *errorMsg = [responseObject objectForKey:@"error"];
                 failure(errorMsg);
             }
-        }else{
+        }else {
             failure(@"内部错误");
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

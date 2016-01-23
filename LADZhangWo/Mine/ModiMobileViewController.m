@@ -71,10 +71,8 @@
 - (void)sendSecCode{
     NSString *phone = _mobileField.text;
     if ([phone isMobile]) {
-        NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=member&a=sendseccode&phone=%@",phone];
-        [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSString *urlString = [NSString stringWithFormat:@"&c=member&a=sendseccode&phone=%@",phone];
+        [[DSXHttpManager sharedManager] GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
                 _secCode = [responseObject objectForKey:@"seccode"];
                 if (_secCode != nil) {
@@ -91,6 +89,7 @@
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"%@", error);
         }];
+        
     }else {
         NSLog(@"手机号输入错误");
     }
@@ -128,9 +127,7 @@
     [params setObject:mobilenew forKey:@"newmobile"];
     [params setObject:secCode forKey:@"seccode"];
     
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=member&a=modimobile"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=member&a=modimobile" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                 NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[ZWUserStatus sharedStatus].userInfo];
@@ -139,21 +136,8 @@
                 [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"手机修改成功"];
                 [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
             }else {
-                NSString *errMsg;
-                switch ([[responseObject objectForKey:@"errno"] integerValue]) {
-                    case -1:
-                        errMsg = @"验证码错误";
-                        break;
-                    case -2:
-                        errMsg = @"手机号码输入错误";
-                        break;
-                    case -3:
-                        errMsg = @"手机号码已被使用";
-                        break;
-                    default:
-                        break;
-                }
-                [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:errMsg];
+                [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError
+                                                 Message:[responseObject objectForKey:@"errno"]];
             }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

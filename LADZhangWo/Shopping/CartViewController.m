@@ -121,14 +121,13 @@
     [params setObject:buynumStr forKey:@"goodsnums"];
     [params setObject:fromStr forKey:@"goodsfroms"];
     
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=order&a=create"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=order&a=create" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                NSDictionary *orderData = [responseObject objectForKey:@"data"];
                 [self deleteGoods:cartIdStr];
                 PayViewController *payView = [[PayViewController alloc] init];
-                payView.orderID     = [responseObject objectForKey:@"orderid"];
+                payView.orderID     = [orderData objectForKey:@"orderid"];
                 payView.orderName   = @"在线购物支付";
                 payView.orderDetail = @"购物车结算支付";
                 ZWNavigationController *nav = (ZWNavigationController *)self.navigationController;
@@ -145,9 +144,10 @@
 }
 
 - (void)deleteGoods:(NSString *)cartids{
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=cart&a=delete"] parameters:@{@"cartid":cartids,@"uid":@([ZWUserStatus sharedStatus].uid)} progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=cart&a=delete"
+                              parameters:@{@"cartid":cartids,@"uid":@([ZWUserStatus sharedStatus].uid)}
+                                progress:nil
+                                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
@@ -179,12 +179,14 @@
 }
 
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=cart&a=showlist&uid=%ld&page=%d",(long)[[ZWUserStatus sharedStatus] uid],_page];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            [self reloadTableViewWithArray:responseObject];
+    [[DSXHttpManager sharedManager] GET:@"&c=cart&a=showlist"
+                             parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"page":@(_page)}
+                               progress:nil
+                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
+            }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
@@ -305,15 +307,17 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     NSDictionary *cart = [_cartList objectAtIndex:indexPath.section];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=cart&a=delete&cartid=%@&uid=%ld",[cart objectForKey:@"cartid"],(long)[ZWUserStatus sharedStatus].uid];
-        [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+
+        NSDictionary *params = @{@"cartid":[cart objectForKey:@"cartid"],
+                                 @"uid":@([ZWUserStatus sharedStatus].uid)};
+        [[DSXHttpManager sharedManager] GET:@"&c=cart&a=delete" parameters:params progress:nil
+                                    success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
                 if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                     [_cartList removeObjectAtIndex:indexPath.section];
                     [_goodsModelArray removeObjectAtIndex:indexPath.section];
-                    [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationFade];
+                    [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
+                             withRowAnimation:UITableViewRowAnimationFade];
                 }
             }else {
                 [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"删除失败"];
@@ -363,13 +367,15 @@
 
 - (void)customCell:(CartCustomCell *)cell didEndEditing:(UIButton *)button goodsModel:(CartInfoModel *)model{
     [self total];
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=cart&a=modify&uid=%ld&cartid=%ld&buynum=%ld",(long)[[ZWUserStatus sharedStatus] uid],(long)model.cartID,(long)model.goodsNum];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
+                             @"cartid":@(model.cartID),
+                             @"buynum":@(model.goodsNum)};
+    [[DSXHttpManager sharedManager] POST:@"&c=cart&a=modify"
+                              parameters:params progress:nil
+                                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
+        NSLog(@"%@", error);
     }];
 }
 

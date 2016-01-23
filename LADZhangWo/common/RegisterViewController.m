@@ -7,15 +7,15 @@
 //
 
 #import "RegisterViewController.h"
-#import "RegisterViewController2.h"
-#import "LoginInputView.h"
+#import "RegWithEmailViewController.h"
 
 @implementation RegisterViewController
-@synthesize mobileField;
-@synthesize passwordField;
-@synthesize registerButton;
-@synthesize seccodeField;
-@synthesize seccodeButton;
+@synthesize usernameView = _usernameView;
+@synthesize mobileView   = _mobileView;
+@synthesize passwordView = _passwordView;
+@synthesize registerButton = _registerButton;
+@synthesize seccodeField   = _seccodeField;
+@synthesize seccodeButton  = _seccodeButton;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -26,53 +26,56 @@
     self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"邮箱注册" style:UIBarButtonItemStylePlain target:self action:@selector(showRegister)];
     
-    //手机号输入框
-    LoginInputView *mobileView = [[LoginInputView alloc] initWithFrame:CGRectMake(10, 10, SWIDTH-20, 40)];
-    mobileView.imageView.image = [UIImage imageNamed:@"account.png"];
-    mobileView.textField.placeholder = @"请输入手机号:";
-    [self.view addSubview:mobileView];
+    //用户名
+    _usernameView = [[LoginInputView alloc] initWithFrame:CGRectMake(10, 10, SWIDTH-20, 40)];
+    _usernameView.leftImage = @"icon-username.png";
+    _usernameView.placeHolder = @"请输入用户名:";
+    _usernameView.textField.delegate = self;
+    [self.view addSubview:_usernameView];
     
-    self.mobileField = mobileView.textField;
-    self.mobileField.returnKeyType = UIReturnKeyDone;
-    self.mobileField.delegate = self;
+    //手机号输入框
+    _mobileView = [[LoginInputView alloc] initWithFrame:CGRectMake(10, 60, SWIDTH-20, 40)];
+    _mobileView.leftImage = @"icon-mobilefill.png";
+    _mobileView.placeHolder = @"请输入手机号:";
+    _mobileView.textField.delegate = self;
+    _mobileView.textField.keyboardType = UIKeyboardTypePhonePad;
+    [self.view addSubview:_mobileView];
     
     //密码输入框
-    LoginInputView *passwordView = [[LoginInputView alloc] initWithFrame:CGRectMake(10, 60, SWIDTH-20, 40)];
-    passwordView.imageView.image = [UIImage imageNamed:@"password.png"];
-    passwordView.textField.placeholder = @"请输入密码:";
-    passwordView.textField.secureTextEntry = YES;
-    [self.view addSubview:passwordView];
-    
-    self.passwordField = passwordView.textField;
-    self.passwordField.returnKeyType = UIReturnKeyDone;
-    self.passwordField.delegate = self;
+    _passwordView = [[LoginInputView alloc] initWithFrame:CGRectMake(10, 110, SWIDTH-20, 40)];
+    _passwordView.leftImage = @"icon-lock.png";
+    _passwordView.placeHolder = @"请输入密码:";
+    _passwordView.textField.secureTextEntry = YES;
+    _passwordView.textField.delegate = self;
+    [self.view addSubview:_passwordView];
     
     //短信验证码
-    UIView *secView = [[UIView alloc] initWithFrame:CGRectMake(10, 120, SWIDTH-20, 40)];
+    UIView *secView = [[UIView alloc] initWithFrame:CGRectMake(10, 160, SWIDTH-20, 40)];
     secView.backgroundColor = [UIColor whiteColor];
     
-    self.seccodeField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, 120, 40)];
-    self.seccodeField.placeholder = @"短信验证码:";
-    self.seccodeField.returnKeyType = UIReturnKeyDone;
-    self.seccodeField.delegate = self;
-    [secView addSubview:self.seccodeField];
+    _seccodeField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, 120, 40)];
+    _seccodeField.placeholder = @"短信验证码:";
+    _seccodeField.returnKeyType = UIReturnKeyDone;
+    _seccodeField.delegate = self;
+    _seccodeField.keyboardType = UIKeyboardTypeNumberPad;
+    [secView addSubview:_seccodeField];
     
     //发送验证码按钮
-    self.seccodeButton = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-120, 0, 100, 40)];
-    [self.seccodeButton setTitle:@"发送验证码" forState:UIControlStateNormal];
-    [self.seccodeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.seccodeButton setBackgroundImage:[UIImage imageNamed:@"seccodebutton.png"] forState:UIControlStateNormal];
-    [self.seccodeButton.titleLabel setFont:[UIFont systemFontOfSize:14.0]];
-    [self.seccodeButton addTarget:self action:@selector(sendSecCode) forControlEvents:UIControlEventTouchUpInside];
-    [secView addSubview:self.seccodeButton];
+    _seccodeButton = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-120, 0, 100, 40)];
+    [_seccodeButton setTitle:@"发送验证码" forState:UIControlStateNormal];
+    [_seccodeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [_seccodeButton setBackgroundImage:[UIImage imageNamed:@"seccodebutton.png"] forState:UIControlStateNormal];
+    [_seccodeButton.titleLabel setFont:[UIFont systemFontOfSize:14.0]];
+    [_seccodeButton addTarget:self action:@selector(sendSecCode) forControlEvents:UIControlEventTouchUpInside];
+    [secView addSubview:_seccodeButton];
     
     [self.view addSubview:secView];
     
-    self.registerButton = [DSXUI longButtonWithTitle:@"注册"];
-    self.registerButton.frame = CGRectMake(10, 230, SWIDTH-20, 40);
-    self.registerButton.layer.cornerRadius = 20.0;
-    [self.registerButton addTarget:self action:@selector(checkRegister) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.registerButton];
+    _registerButton = [DSXUI longButtonWithTitle:@"注册"];
+    _registerButton.frame = CGRectMake(10, 260, SWIDTH-20, 40);
+    _registerButton.layer.cornerRadius = 20.0;
+    [_registerButton addTarget:self action:@selector(checkRegister) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_registerButton];
 }
 
 - (void)back{
@@ -80,28 +83,25 @@
 }
 
 - (void)showRegister{
-    RegisterViewController2 *registerController = [[RegisterViewController2 alloc] init];
+    RegWithEmailViewController *registerController = [[RegWithEmailViewController alloc] init];
     [self.navigationController pushViewController:registerController animated:YES];
 }
 
 - (void)sendSecCode{
-    NSString *phone = self.mobileField.text;
+    NSString *phone = _mobileView.text;
     if ([phone length] == 11) {
-        _watingTime = 60;
-        self.seccodeButton.enabled = NO;
-        [self.seccodeButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [self.seccodeButton setBackgroundImage:[UIImage imageNamed:@"seccodebutton2.png"] forState:UIControlStateNormal];
-        [self.seccodeButton setTitle:@"重新发送(60)" forState:UIControlStateNormal];
-        [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(wating:) userInfo:nil repeats:YES];
-        [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"验证码发送成功"];
-        
-        NSString *urlString = [SITEAPI stringByAppendingFormat:@"&mod=member&ac=sendseccode&phone=%@",phone];
-        [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            
+        [[DSXHttpManager sharedManager] GET:@"&c=member&a=sendseccode" parameters:@{@"phone":phone} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                _watingTime = 60;
+                _seccodeButton.enabled = NO;
+                [_seccodeButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+                [_seccodeButton setBackgroundImage:[UIImage imageNamed:@"seccodebutton2.png"] forState:UIControlStateNormal];
+                [_seccodeButton setTitle:@"重新发送(60)" forState:UIControlStateNormal];
+                [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(wating:) userInfo:nil repeats:YES];
+                [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"验证码发送成功"];
+            }
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            
+            NSLog(@"%@", error);
         }];
         
     }else {
@@ -112,26 +112,30 @@
 
 - (void)wating:(NSTimer *)timer{
     _watingTime--;
-    [self.seccodeButton setTitle:[NSString stringWithFormat:@"重新发送(%d)",_watingTime] forState:UIControlStateNormal];
+    [_seccodeButton setTitle:[NSString stringWithFormat:@"重新发送(%d)",_watingTime] forState:UIControlStateNormal];
     if (_watingTime < 1) {
         [timer invalidate];
-        self.seccodeButton.enabled = YES;
-        [self.seccodeButton setTitle:@"重新发送" forState:UIControlStateNormal];
-        [self.seccodeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [self.seccodeButton setBackgroundImage:[UIImage imageNamed:@"seccodebutton.png"] forState:UIControlStateNormal];
+        [_seccodeButton setEnabled:YES];
+        [_seccodeButton setTitle:@"重新发送" forState:UIControlStateNormal];
+        [_seccodeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [_seccodeButton setBackgroundImage:[UIImage imageNamed:@"seccodebutton.png"] forState:UIControlStateNormal];
     }
 }
 
 - (void)checkRegister{
-    NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    NSString *mobile = self.mobileField.text;
-    NSString *password = self.passwordField.text;
-    NSString *seccode = self.seccodeField.text;
-    if ([mobile length] != 11) {
+    NSString *username = _usernameView.text;
+    NSString *mobile   = _mobileView.text;
+    NSString *password = _passwordView.text;
+    NSString *seccode  = _seccodeField.text;
+    if (![username isUsername]) {
+        [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"用户名输入错误"];
+        return;
+    }
+    if (![mobile isMobile]) {
         [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"手机号码输入错误"];
         return;
     }
-    if ([password length] < 6) {
+    if (![password isPassword]) {
         [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"密码输入错误,至少6位"];
         return;
     }
@@ -141,17 +145,21 @@
         return;
     }
     
-    if (mobile && password && seccode) {
-        [params setObject:mobile forKey:@"mobile"];
-        [params setObject:password forKey:@"password"];
-        [params setObject:seccode forKey:@"seccode"];
-        [params setObject:@"mobile" forKey:@"type"];
-        self.registerButton.enabled = NO;
+    if (username && mobile && password && seccode) {
+        _registerButton.enabled = NO;
+        NSDictionary *params = @{@"username":username,
+                                 @"mobile":mobile,
+                                 @"password":password,
+                                 @"seccode":seccode,
+                                 @"type":@"mobile"};
         UIView *loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:@"注册中..."];
         [[ZWUserStatus sharedStatus] register:params success:^(id responseObject) {
-            [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(registerSucceed:) userInfo:loadingView repeats:NO];
+            [NSTimer scheduledTimerWithTimeInterval:2
+                                             target:self
+                                           selector:@selector(registerSucceed:)
+                                           userInfo:loadingView repeats:NO];
         } failure:^(NSString *errorMsg) {
-            self.registerButton.enabled = YES;
+            _registerButton.enabled = YES;
             [loadingView removeFromSuperview];
             [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:errorMsg];
         }];

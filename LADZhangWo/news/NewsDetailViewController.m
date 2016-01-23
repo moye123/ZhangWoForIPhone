@@ -30,47 +30,49 @@
     _popMenu.delegate = self;
     [self.navigationController.view addSubview:_popMenu];
     
-    CGRect frame = self.view.frame;
-    _scrollView = [[UIScrollView alloc] initWithFrame:frame];
+    _scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     _scrollView.pagingEnabled = YES;
-    _scrollView.contentSize = CGSizeMake(frame.size.width*2, 0);
+    _scrollView.contentSize = CGSizeMake(SWIDTH*2, 0);
     _scrollView.delegate = self;
     _scrollView.showsHorizontalScrollIndicator = NO;
+    _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:_scrollView];
     
     NSURLRequest *request;
     NSString *urlString;
     //正文
-    _contentWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+    _contentWebView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, SHEIGHT)];
     _contentWebView.backgroundColor = [UIColor backColor];
     _contentWebView.delegate = self;
     _contentWebView.hidden = YES;
+    _commentWebView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [_scrollView addSubview:_contentWebView];
     
     urlString = [SITEAPI stringByAppendingFormat:@"&c=post&a=showdetail&id=%ld",(long)_newsID];
     request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     [_contentWebView loadRequest:request];
-    
-    [[AFHTTPSessionManager sharedManager] GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] GET:@"&c=post&a=showdetail&datatype=json" parameters:@{@"id":@(_newsID)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            _articleData = responseObject;
-            _contentWebView.hidden = NO;
-            NSString *stringNum = [self.articleData objectForKey:@"commentnum"];
-            [commButton setTitle:stringNum forState:UIControlStateNormal];
-            commentNum = [stringNum intValue];
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                _articleData = [responseObject objectForKey:@"data"];
+                _contentWebView.hidden = NO;
+                NSString *stringNum = [self.articleData objectForKey:@"commentnum"];
+                [commButton setTitle:stringNum forState:UIControlStateNormal];
+                commentNum = [stringNum intValue];
+            }
+            
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
     
     //评论列表
-    _commentWebView = [[UIWebView alloc] initWithFrame:CGRectMake(frame.size.width, 0, frame.size.width, frame.size.height)];
+    _commentWebView = [[UIWebView alloc] initWithFrame:CGRectMake(SWIDTH, 0, SWIDTH, SHEIGHT)];
     _commentWebView.backgroundColor = [UIColor whiteColor];
+    _commentWebView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [_scrollView addSubview:_commentWebView];
     
-    urlString = [SITEAPI stringByAppendingFormat:@"&c=comment&a=showlist&idtype=aid&dataid=%ld",(long)_newsID];
+    urlString = [SITEAPI stringByAppendingFormat:@"&c=comment&a=showlist&datatype=article&dataid=%ld",(long)_newsID];
     request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     [_commentWebView loadRequest:request];
     
@@ -210,30 +212,32 @@
     if (message.length > 0) {
         NSMutableDictionary *params = [NSMutableDictionary dictionary];
         [params setObject:@(_newsID) forKey:@"dataid"];
-        [params setObject:@"aid" forKey:@"idtype"];
+        [params setObject:@"article" forKey:@"datatype"];
         [params setObject:@([ZWUserStatus sharedStatus].uid) forKey:@"uid"];
         [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
         [params setObject:message forKey:@"message"];
         
-        [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=comment&a=save"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [[CommentManager sharedManager] add:params success:^(id responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
-                if ([responseObject objectForKey:@"cid"]) {
+                if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                     commentNum++;
                     NSString *title = [NSString stringWithFormat:@"%ld",(long)commentNum];
                     [commButton setTitle:title forState:UIControlStateNormal];
                     
                     _commentView.textView.text = @"";
                     [_commentWebView reload];
+                    [_commentView hide];
                     [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"评论发表成功"];
-                }else {
-                    [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"内部系统错误"];
+                    [[DSXHttpManager sharedManager] POST:@"&c=post&a=updatecommentnum"
+                                              parameters:@{@"id":@(_newsID)}
+                                                progress:nil
+                                                 success:nil failure:nil];
                 }
+            }else {
+                [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:[responseObject objectForKey:@"errno"]];
             }
-            [_commentView hide];
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"%@",error);
+        } failure:^(NSError *error) {
+            NSLog(@"%@", error);
         }];
     }else{
         [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleWarning Message:@"不能发表空评论"];

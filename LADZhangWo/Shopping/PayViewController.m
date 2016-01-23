@@ -35,13 +35,12 @@
                              @"orderid":_orderID,
                              @"billname":_orderName,
                              @"detail":_orderDetail};
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=order&a=createbill"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=order&a=createbill" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
-                _billID = [responseObject objectForKey:@"billid"];
-                _billAmount = [responseObject objectForKey:@"amount"];
+                NSDictionary *returns = [responseObject objectForKey:@"data"];
+                _billID = [returns objectForKey:@"billid"];
+                _billAmount = [returns objectForKey:@"amount"];
                 _tableView.hidden = NO;
                 [_tableView reloadData];
             }
@@ -183,22 +182,23 @@
         NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
                                  @"username":[ZWUserStatus sharedStatus].username,
                                  @"orderid":_orderID};
-        [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=order&a=updatepaystatus"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [[DSXHttpManager sharedManager] POST:@"&c=order&a=updatepaystatus" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
-                /*
-                 if (![self.navigationController popViewControllerAnimated:YES]) {
-                 [self dismissViewControllerAnimated:YES completion:nil];
-                 }
-                 */
-                MyOrderViewController *myOrderView = [[MyOrderViewController alloc] init];
-                [self.navigationController pushViewController:myOrderView animated:YES];
+                if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                    /*
+                     if (![self.navigationController popViewControllerAnimated:YES]) {
+                     [self dismissViewControllerAnimated:YES completion:nil];
+                     }
+                     */
+                    MyOrderViewController *myOrderView = [[MyOrderViewController alloc] init];
+                    [self.navigationController pushViewController:myOrderView animated:YES];
+                }
+                
             }else {
                 NSLog(@"%@",responseObject);
             }
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-             NSLog(@"%@", error);
+            NSLog(@"%@", error);
         }];
     }else {
         _hasSubmitPay = NO;

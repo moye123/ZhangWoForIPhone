@@ -7,6 +7,8 @@
 //
 
 #import "TechanViewController.h"
+#import "SearchViewController.h"
+#import "GoodsListViewController.h"
 #import "GoodsDetailViewController.h"
 
 @implementation TechanViewController
@@ -16,7 +18,7 @@
     [self setTitle:@"名优特产"];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
-    self.navigationItem.rightBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
+    self.navigationItem.rightBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleMore target:self action:@selector(showMore)];
     
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _tableView.delegate = self;
@@ -34,10 +36,11 @@
     
     _tableView.tableHeaderView = _sliderView;
     
-    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake((SWIDTH-200)/2, 7, 200, 35)];
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(20, 5, SWIDTH-40, 40)];
     _searchBar.tintColor = [UIColor blackColor];
     _searchBar.backgroundImage = [UIImage imageNamed:@"bg.png"];
     _searchBar.placeholder = @"搜索你喜欢的商家，商品";
+    _searchBar.delegate = self;
     for (UIView *subview in _searchBar.subviews) {
         for (UIView *view in subview.subviews) {
             if ([view isKindOfClass:[UITextField class]]) {
@@ -54,15 +57,20 @@
     _galleryView.scrollEnabled = NO;
     _galleryView.touchDelegate = self;
     
-    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=goods&a=showlist&pagesize=12"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _galleryView.dataList = responseObject;
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@", error);
+    [[DSXHttpManager sharedManager] GET:@"&c=goods&a=showlist&pagesize=12"
+                             parameters:nil
+                               progress:nil
+                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                                    if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                                        if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                                            _galleryView.dataList = [responseObject objectForKey:@"data"];
+                                        }
+                                    }
+    }
+                                failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                                    NSLog(@"%@", error);
     }];
+
 }
 
 - (void)back{
@@ -71,8 +79,24 @@
     }
 }
 
+- (void)showMore{
+    GoodsListViewController *listView = [[GoodsListViewController alloc] init];
+    listView.catid = 17;
+    listView.title = @"名优特产";
+    [self.navigationController pushViewController:listView animated:YES];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+}
+
+#pragma mark - searchbar delegate
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
+    SearchViewController *searchView = [[SearchViewController alloc] init];
+    ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:searchView];
+    [nav setStyle:ZWNavigationStyleGray];
+    [self presentViewController:nav animated:NO completion:nil];
+    return NO;
 }
 
 #pragma mark - gallery view delegate
@@ -138,9 +162,27 @@
     
 }
 
-- (void)viewWillLayoutSubviews{
-    _tableView.separatorInset = UIEdgeInsetsZero;
-    _tableView.layoutMargins  = UIEdgeInsetsZero;
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [cell setSelected:NO animated:YES];
+    if (indexPath.section == 1) {
+        if (indexPath.row == 0) {
+            GoodsListViewController *listView = [[GoodsListViewController alloc] init];
+            listView.catid = 17;
+            listView.title = @"名优特产";
+            [self.navigationController pushViewController:listView animated:YES];
+        }
+    }
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{

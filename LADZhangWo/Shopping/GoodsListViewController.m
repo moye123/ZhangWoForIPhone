@@ -92,19 +92,15 @@
     [self loadData];
 }
 - (void)loadData{
-    NSDictionary *coordinateParam = [DSXUtil getLocation];
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=goods&a=showlist&catid=%ld&page=%d",(long)_catid,_page];
-    
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:coordinateParam progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            if ([responseObject count] > 0) {
+    [[DSXHttpManager sharedManager] GET:@"&c=goods&a=showlist" parameters:@{@"catid":@(_catid),@"page":@(_page)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                NSArray *array = [responseObject objectForKey:@"data"];
                 if (_isRefreshing) {
                     NSString *key = [NSString stringWithFormat:@"googsList_%ld",(long)_catid];
-                    [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:key];
+                    [[NSUserDefaults standardUserDefaults] setObject:array forKey:key];
                 }
-                [self reloadTableViewWithArray:responseObject];
+                [self reloadTableViewWithArray:array];
             }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -145,13 +141,12 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return SWIDTH*0.30+10;
+    return SWIDTH*0.33+10;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSDictionary *goodsData = [_goodsList objectAtIndex:indexPath.row];
     GoodsItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell" forIndexPath:indexPath];
-    cell.imageWidth = SWIDTH*0.30;
     cell.goodsData  = goodsData;
     return cell;
 }
@@ -179,14 +174,14 @@
     }
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (void)viewDidLayoutSubviews{
-    self.tableView.separatorInset = UIEdgeInsetsZero;
-    self.tableView.layoutMargins  = UIEdgeInsetsZero;
+    [super viewDidLayoutSubviews];
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsMake(0, 10, 0, 0)];
+    }
+    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 @end

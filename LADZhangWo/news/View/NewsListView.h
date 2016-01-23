@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "NewsItemCell.h"
-
+#import "NewsSliderView.h"
+@class NewsListView;
 @protocol NewsListDelegate <NSObject>
-
 @optional
-- (void)showNewsDetailWithID:(NSInteger)newsID;
+- (void)listView:(NewsListView *)listView didSelectedItemAtIndexPath:(NSIndexPath *)indexPath data:(NSDictionary *)data;
 
 @end
 
@@ -22,12 +22,13 @@
     BOOL _isRefreshing;
     ZWRefreshControl *_refreshControl;
     ZWPullUpView *_pullUpView;
+    NSMutableArray *_newsList;
 }
 @property(nonatomic,assign)int catid;
-@property(nonatomic,strong)NSMutableArray *newsArray;
-@property(nonatomic,assign)id<NewsListDelegate>showNewsDelegate;
+@property(nonatomic,readonly)NewsSliderView *sliderView;
+@property(nonatomic,assign)id<NewsSliderViewDelegate,NewsListDelegate>showDetailDelegate;
 
 - (instancetype)initWithFrame:(CGRect)frame;
-- (void)showTableView;
+- (void)show;
 
 @end

@@ -89,11 +89,9 @@
     [params setObject:[ZWUserStatus sharedStatus].username forKey:@"username"];
     [params setObject:[oldpass md5] forKey:@"oldpass"];
     [params setObject:[password md5] forKey:@"password"];
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=member&a=modipass"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=member&a=modipass" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            if ([[responseObject objectForKey:@"uid"] integerValue] == [ZWUserStatus sharedStatus].uid) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                 [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"密码修改成功"];
                 [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
             }else {

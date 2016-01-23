@@ -10,6 +10,7 @@
 #import "ZWCommon.h"
 #import "CartTitleCell.h"
 #import "CartCustomCell.h"
+#import "GoodsManager.h"
 
 @interface CartViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CartCustomCellDelegate,CartTitleCellDelegate>{
     @private

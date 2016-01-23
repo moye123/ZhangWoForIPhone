@@ -59,11 +59,9 @@
     _categoryView.touchDelegate = self;
     
     _serviceList = [NSMutableArray array];
-    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=service&a=category"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _serviceList = responseObject;
+    [[DSXHttpManager sharedManager] GET:@"&c=service&a=category" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            _serviceList = [responseObject objectForKey:@"data"];
             _categoryView.dataList = _serviceList;
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -71,13 +69,11 @@
     }];
     
     //加载商家列表
-    NSDictionary *coordinateParam = [DSXUtil getLocation];
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=shop&a=showlist&pagesize=10"] parameters:coordinateParam progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _shopList = responseObject;
-            [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [[DSXHttpManager sharedManager] GET:@"&c=shop&a=showlist&pagesize=10" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            _shopList = [responseObject objectForKey:@"data"];
+            [_tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);

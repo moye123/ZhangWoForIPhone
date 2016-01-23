@@ -56,12 +56,12 @@
 }
 
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=favorite&a=showlist&page=%d&uid=%ld",_page,(long)[ZWUserStatus sharedStatus].uid];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            [self reloadTableViewWithArray:responseObject];
+    [[DSXHttpManager sharedManager] GET:@"&c=favorite&a=showlist"
+                             parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"page":@(_page)}
+                               progress:nil
+                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
         }else {
             [_pullUpView endLoading];
             [_refreshContorl endRefreshing];
@@ -172,15 +172,13 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSInteger favid = [[favorItem objectForKey:@"favid"] integerValue];
         NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),@"favid":@(favid)};
-        [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=favorite&a=delete"] parameters:params progress:^(NSProgress * _Nonnull downloadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [[DSXHttpManager sharedManager] GET:@"&c=favorite&a=delete" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
                 [_favoriteList removeObjectAtIndex:indexPath.row];
                 [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             }
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-             NSLog(@"%@", error);
+            NSLog(@"%@", error);
         }];
     }
 }

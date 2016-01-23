@@ -73,13 +73,12 @@
                              @"billname":pay.orderName,
                              @"detail":pay.orderDetail,
                              @"amount":pay.orderAmount};
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=bill&a=create"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=bill&a=create" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            if ([[responseObject objectForKey:@"billid"] integerValue] > 0) {
-                pay.orderNO = [NSString stringWithFormat:@"zwrecharge%@",[responseObject objectForKey:@"billid"]];
-                pay.payID   = [responseObject objectForKey:@"billid"];
+            NSDictionary *returns = [responseObject objectForKey:@"data"];
+            if ([[returns objectForKey:@"billid"] integerValue] > 0) {
+                pay.orderNO = [NSString stringWithFormat:@"zwrecharge%@",[returns objectForKey:@"billid"]];
+                pay.payID   = [returns objectForKey:@"billid"];
                 pay.payType = @"recharge";
                 if ([_payType isEqualToString:@"wechat"]) {
                     [pay WechatPay];

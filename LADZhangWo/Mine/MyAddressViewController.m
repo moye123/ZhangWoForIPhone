@@ -30,12 +30,10 @@
     
     UIView *loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:@"正在加载.."];
     NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),@"username":[ZWUserStatus sharedStatus].username};
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=address&a=showlist"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] GET:@"&c=address&a=showlist" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [loadingView removeFromSuperview];
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _addressList = [NSMutableArray arrayWithArray:responseObject];
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            _addressList = [NSMutableArray arrayWithArray:[responseObject objectForKey:@"data"]];
             [_tableView reloadData];
             [_tableView setHidden:NO];
         }
@@ -99,11 +97,9 @@
         NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),
                                  @"username":[ZWUserStatus sharedStatus].username,
                                  @"addressid":@(addressid)};
-        [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=address&a=delete"] parameters:params progress:^(NSProgress * _Nonnull downloadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [[DSXHttpManager sharedManager] GET:@"&c=address&a=delete" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
-                if ([[responseObject objectForKey:@"addressid"] integerValue] == addressid) {
+                if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                     [_addressList removeObjectAtIndex:indexPath.row];
                     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
                 }

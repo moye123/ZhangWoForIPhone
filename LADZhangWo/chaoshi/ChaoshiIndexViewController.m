@@ -45,11 +45,9 @@
 }
 
 - (void)downloadData{
-    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=chaoshi&a=showshop"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _chaoshiList = [NSMutableArray arrayWithArray:responseObject];
+    [[DSXHttpManager sharedManager] GET:@"&c=chaoshi&a=showshop" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            _chaoshiList = [NSMutableArray arrayWithArray:[responseObject objectForKey:@"data"]];
             [self.collectionView reloadData];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

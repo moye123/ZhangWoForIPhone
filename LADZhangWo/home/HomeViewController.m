@@ -24,7 +24,7 @@
 #import "TechanViewController.h"
 
 @implementation HomeViewController
-@synthesize tableView   = _tableView;
+@synthesize tableView = _tableView;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -62,7 +62,7 @@
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"foodCell"];
     
     //轮播广告
-    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, 150)];
+    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, SWIDTH*0.5)];
     _slideView.groupid = 5;
     _slideView.num = 6;
     _slideView.delegate = self;
@@ -76,21 +76,20 @@
     _channelView.imageSize = CGSizeMake(50, 50);
     _channelView.touchDelegate = self;
     _channelView.dataList = [[NSUserDefaults standardUserDefaults] arrayForKey:@"channellist"];
-    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=channel"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _channelView.dataList = responseObject;
-            [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:@"channellist"];
-            
+    [[DSXHttpManager sharedManager] GET:@"&c=channel" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                NSArray *array = [responseObject objectForKey:@"data"];
+                _channelView.dataList = array;
+                [[NSUserDefaults standardUserDefaults] setObject:array forKey:@"channellist"];
+            }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
     
     //推荐商家
-    CGFloat height = SWIDTH*0.30;
-    _shopSlideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, height)];
+    _shopSlideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, SWIDTH*0.33)];
     _shopSlideView.delegate = self;
     _shopSlideView.groupid = 1;
     _shopSlideView.num = 5;
@@ -98,16 +97,17 @@
     [_shopSlideView loaddata];
     
     //本地旅游
-    _travelSliderView = [[TravelSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 900)];
+    _travelSliderView = [[TravelSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 750)];
     _travelSliderView.touchDelegate = self;
-    _travelSliderView.cellSize = CGSizeMake(SWIDTH-0.001, 300);
+    _travelSliderView.cellSize = CGSizeMake(SWIDTH-0.001, 250);
     _travelSliderView.contentSize = CGSizeMake(SWIDTH*2, 0);
-    _travelSliderView.collectionView.frame = CGRectMake(0, 0, SWIDTH*2, 900);
-    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=homepage&a=showlist&groupid=2&num=9"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _travelSliderView.dataList = responseObject;
+    _travelSliderView.collectionView.frame = CGRectMake(0, 0, SWIDTH*2, 750);
+    [[DSXHttpManager sharedManager] GET:@"&c=homepage&a=showlist&groupid=2&num=9" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                NSArray *array = [responseObject objectForKey:@"data"];
+                _travelSliderView.dataList = array;
+            }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
@@ -121,11 +121,12 @@
     _specialGoodsView.imageSize = CGSizeMake(goodsCellSize.width-10, goodsCellSize.height);
     _specialGoodsView.contentSize = CGSizeMake((SWIDTH-10)*3, 0);
     _specialGoodsView.collectionView.frame = CGRectMake(0, 0, _specialGoodsView.frame.size.width*3, goodsCellSize.height);
-    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=homepage&a=showlist&groupid=3&num=6"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _specialGoodsView.dataList = responseObject;
+    [[DSXHttpManager sharedManager] GET:@"&c=homepage&a=showlist&groupid=3&num=6" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                NSArray *array = [responseObject objectForKey:@"data"];
+                _specialGoodsView.dataList = array;
+            }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
@@ -139,34 +140,38 @@
     _foodGalleryView.scrollEnabled = NO;
     _foodGalleryView.touchDelegate = self;
     
-    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=homepage&a=showlist&groupid=4&num=6"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _foodGalleryView.dataList = responseObject;
+    [[DSXHttpManager sharedManager] GET:@"&c=homepage&a=showlist&groupid=4&num=6" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                _foodGalleryView.dataList = [responseObject objectForKey:@"data"];
+            }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
     
     //猜你喜欢
-    NSDictionary *coordinateParams = [DSXUtil getLocation];
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=goods&a=showlist&pagesize=10"] parameters:coordinateParams progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _goodsList = responseObject;
-            [_tableView reloadSections:[NSIndexSet indexSetWithIndex:5] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [[DSXHttpManager sharedManager] GET:@"&c=goods&a=showlist&pagesize=10"
+                             parameters:nil progress:nil
+                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            _goodsList = [responseObject objectForKey:@"data"];
+            [_tableView reloadSections:[NSIndexSet indexSetWithIndex:5]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
 }
 
-- (void)viewWillLayoutSubviews{
-    [super viewWillLayoutSubviews];
-    _tableView.separatorInset = UIEdgeInsetsZero;
-    _tableView.layoutMargins  = UIEdgeInsetsZero;
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 - (void)showMessage{
@@ -382,12 +387,12 @@
     if (indexPath.section == 0) {
         return 190;
     }else if (indexPath.section == 1){
-        return SWIDTH*0.30;
+        return _shopSlideView.frame.size.height;
     }else if (indexPath.section == 2){
         if (indexPath.row == 0) {
             return 45;
         }else {
-            return 902;
+            return _travelSliderView.frame.size.height+2;
         }
     }else if (indexPath.section == 3){
         if (indexPath.row == 0) {
@@ -488,7 +493,6 @@
         }else {
             NSDictionary *goodsData = [_goodsList objectAtIndex:(indexPath.row - 1)];
             GoodsItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"goodsCell"];
-            cell.imageWidth = SWIDTH*0.30;
             cell.goodsData  = goodsData;
             return cell;
         }

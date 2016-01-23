@@ -28,14 +28,16 @@
     self.navigationItem.rightBarButtonItem = moreButton;
     
     //菜单栏
-    _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 64, SWIDTH, 50)];
-    [_toolbar setHidden:YES];
-    [_toolbar setBackgroundColor:[UIColor whiteColor]];
+    _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, TOPHEIGHT+2, SWIDTH, 50)];
+    [_toolbar setHidden:NO];
+    [_toolbar setDelegate:self];
     [_toolbar setBackgroundImage:[UIImage imageNamed:@"bg.png"] forToolbarPosition:UIBarPositionTop barMetrics:UIBarMetricsDefault];
     [self.navigationController.view addSubview:_toolbar];
-    UIView *toolbarLine = [[UIView alloc] initWithFrame:CGRectMake(0, 49, SWIDTH, 1)];
-    toolbarLine.backgroundColor = [UIColor colorWithHexString:@"0xC9C9C9"];
-    [_toolbar addSubview:toolbarLine];
+    //导航栏
+    _navView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, _toolbar.frame.size.height-2)];
+    _navView.showsVerticalScrollIndicator = NO;
+    _navView.showsHorizontalScrollIndicator = NO;
+    [_toolbar addSubview:_navView];
     
     //pop菜单
     _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
@@ -51,12 +53,6 @@
     _scrollView.showsHorizontalScrollIndicator = NO;
     _scrollView.delegate = self;
     _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    
-    //导航栏
-    _navView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, self.toolbar.frame.size.height)];
-    _navView.showsVerticalScrollIndicator = NO;
-    _navView.showsHorizontalScrollIndicator = NO;
-    [self.toolbar addSubview:_navView];
     
     NSString *path = [[NSBundle mainBundle] pathForResource:@"NewsColumns" ofType:@"plist"];
     self.columns = [NSArray arrayWithContentsOfFile:path];
@@ -81,8 +77,9 @@
         //添加列表视图
         NewsListView *listView = [[NewsListView alloc] initWithFrame:CGRectMake(SWIDTH*i, 0, SWIDTH, _scrollView.frame.size.height)];
         listView.catid = [[column objectForKey:@"catid"] intValue];
-        listView.showNewsDelegate = self;
-        [listView showTableView];
+        listView.showDetailDelegate = self;
+        listView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+        [listView show];
         [_scrollView addSubview:listView];
     }
     
@@ -135,6 +132,11 @@
     [_popMenu slideUp];
 }
 
+#pragma mark - toolbar delegate
+- (UIBarPosition)positionForBar:(id<UIBarPositioning>)bar{
+    return UIBarPositionTop;
+}
+
 //栏目按钮点击事件
 - (void)columnButtonClick:(UIButton *)button{
     NSInteger index = 0;
@@ -159,12 +161,17 @@
 }
 
 
-#pragma mark - show news delegate
-- (void)showNewsDetailWithID:(NSInteger)newsID{
-    NewsDetailViewController *detailController = [[NewsDetailViewController alloc] init];
-    detailController.newsID = newsID;
-    detailController.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:detailController animated:YES];
+#pragma mark - newslistView delegate
+- (void)listView:(NewsListView *)listView didSelectedItemAtIndexPath:(NSIndexPath *)indexPath data:(NSDictionary *)data{
+    NewsDetailViewController *detailView = [[NewsDetailViewController alloc] init];
+    detailView.newsID = [[data objectForKey:@"id"] integerValue];
+    [self.navigationController pushViewController:detailView animated:YES];
+}
+
+- (void)newsSliderView:(NewsSliderView *)sliderView didClickedAtImageView:(UIImageView *)imageView data:(NSDictionary *)data{
+    NewsDetailViewController *detailView = [[NewsDetailViewController alloc] init];
+    detailView.newsID = [[data objectForKey:@"id"] integerValue];
+    [self.navigationController pushViewController:detailView animated:YES];
 }
 
 #pragma mark - scrollView delegate

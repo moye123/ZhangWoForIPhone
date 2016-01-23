@@ -21,8 +21,8 @@ UIKIT_EXTERN NSString *const UserImageChangedNotification;
 - (void)update;
 - (void)removeImageCache;
 
-- (void)login:(NSMutableDictionary *)params success:(void(^)(id responseObject))success failure:(void(^)(NSString *errorMsg))failure;
-- (void)register:(NSMutableDictionary *)params success:(void(^)(id responseObject))success failure:(void(^)(NSString *errorMsg))failure;
+- (void)login:(NSDictionary *)params success:(void(^)(id responseObject))success failure:(void(^)(NSString *errorMsg))failure;
+- (void)register:(NSDictionary *)params success:(void(^)(id responseObject))success failure:(void(^)(NSString *errorMsg))failure;
 - (void)showLoginFromViewController:(UIViewController *)vc;
 
 @property(nonatomic,readonly,assign)NSInteger uid;

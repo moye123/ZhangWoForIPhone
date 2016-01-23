@@ -48,14 +48,14 @@
 
 - (void)search{
     NSString *str = _searchBar.text;
-    [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=search"] parameters:@{@"keywords":str} progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            _dataList = responseObject;
-            [self.tableView reloadData];
-            if ([_dataList count] == 0) {
-                [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"没有查询到结果"];
+    [[DSXHttpManager sharedManager] GET:@"&c=search" parameters:@{@"keywords":str} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                _dataList = [responseObject objectForKey:@"data"];
+                [self.tableView reloadData];
+                if ([_dataList count] == 0) {
+                    [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"没有查询到结果"];
+                }
             }
         }else {
             [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"网络连接失败"];

@@ -25,11 +25,9 @@
     if (self) {
         _itemWith = SWIDTH/4-1;
         _categoryList = [NSMutableArray array];
-        [[AFHTTPSessionManager sharedManager] GET:[SITEAPI stringByAppendingString:@"&c=chaoshi&a=showcategory"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            if ([responseObject isKindOfClass:[NSArray class]]) {
-                _categoryList = responseObject;
+        [[DSXHttpManager sharedManager] GET:@"&c=chaoshi&a=showcategory" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                _categoryList = [responseObject objectForKey:@"data"];
                 [self.collectionView reloadData];
             }
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

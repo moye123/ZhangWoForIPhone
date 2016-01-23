@@ -51,8 +51,12 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
-    self.separatorInset = UIEdgeInsetsZero;
-    self.layoutMargins  = UIEdgeInsetsZero;
+    if ([self respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 @end

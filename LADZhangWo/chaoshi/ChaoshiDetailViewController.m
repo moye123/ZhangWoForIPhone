@@ -41,12 +41,10 @@
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=chaoshi&a=showdetail&id=%ld",(long)_goodsid];
     [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
     
-    [[AFHTTPSessionManager sharedManager] GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] GET:@"&c=chaoshi&a=showdetail&datatype=json" parameters:@{@"id":@(_goodsid)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
-                _goodsData = responseObject;
+                _goodsData = [responseObject objectForKey:@"data"];
                 _webView.hidden = NO;
                 [_loadingView removeFromSuperview];
             }else{
@@ -103,14 +101,12 @@
                                      @"dataid":@(_goodsid),
                                      @"idtype":@"csgoodsid",
                                      @"title":[_goodsData objectForKey:@"name"]};
-            [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=favorite&a=save"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-                
-            } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            [[DSXHttpManager sharedManager] POST:@"&c=favorite&a=save" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if ([responseObject isKindOfClass:[NSDictionary class]]) {
                     [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"收藏成功"];
                 }
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                NSLog(@"%@", error);
+                 NSLog(@"%@", error);
             }];
         }else {
             [[ZWUserStatus sharedStatus] showLoginFromViewController:self];

@@ -59,17 +59,13 @@
     _contactLabel.frame  = CGRectMake(_imageWidth+20, _imageWidth-30, 150, 20);
     _addressLabel.frame  = CGRectMake(_imageWidth+20, _imageWidth-10, 120, 20);
     _distanceLabel.frame = CGRectMake(SWIDTH-_distanceLabel.frame.size.width-10, _imageWidth-10, _distanceLabel.frame.size.width, _distanceLabel.frame.size.height);
-    self.separatorInset = UIEdgeInsetsZero;
-}
-
-- (void)awakeFromNib {
-    // Initialization code
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
+    
+    if ([self respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self setSeparatorInset:UIEdgeInsetsZero];
+    }
+    if ([self respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 @end

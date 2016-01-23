@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>zh_CN</string>
 	<key>CFBundleDisplayName</key>
-	<string>长沃</string>
+	<string>长沃2</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -53,7 +53,9 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>YES</string>
+	<string>允许访问，你才可以查看到附近的商家信息及活动</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>允许访问，你才可以查看到附近的商家信息及活动</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>thin.ttf</string>

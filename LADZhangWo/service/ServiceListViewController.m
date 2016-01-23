@@ -58,15 +58,15 @@
 }
 
 - (void)downloadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=service&a=showlist&catid=%ld&page=%d",(long)_catid,_page];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            [self reloadTableViewWithArray:responseObject];
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@", error);
+    [[DSXHttpManager sharedManager] GET:@"&c=service&a=showlist" parameters:@{@"catid":@(_catid),@"page":@(_page)}
+                               progress:nil
+                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                                    if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                                        [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
+                                    }
+    }
+                                failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                                    NSLog(@"%@", error);
     }];
 }
 

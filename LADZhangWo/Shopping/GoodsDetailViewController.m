@@ -49,18 +49,22 @@
     NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=goods&a=showdetail&id=%ld",(long)_goodsid];
     [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
     
-    [[AFHTTPSessionManager sharedManager] GET:[urlString stringByAppendingString:@"&datatype=json"] parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
-                _goodsdata = responseObject;
-                _webView.hidden = NO;
-            }else {
-                [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"商品不存在或已下架"];
-                [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(back) userInfo:nil repeats:NO];
-            }
-        }
+    [[DSXHttpManager sharedManager] GET:@"&c=goods&a=showdetail&datatype=json"
+                             parameters:@{@"id":@(_goodsid)}
+                               progress:nil
+                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                                    if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                                        if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                                            _goodsdata = [responseObject objectForKey:@"data"];
+                                            _webView.hidden = NO;
+                                        }else {
+                                            [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"商品不存在或已下架"];
+                                            [NSTimer scheduledTimerWithTimeInterval:2
+                                                                             target:self
+                                                                           selector:@selector(back)
+                                                                           userInfo:nil repeats:NO];
+                                        }
+                                    }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];

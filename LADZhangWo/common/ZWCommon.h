@@ -8,8 +8,6 @@
 
 #import "ZWConfig.h"
 #import "DSXWorking.h"
-#import "UIColor+color.h"
-#import "AFNetworking.h"
 #import "ZWUserStatus.h"
 #import "ZWRefreshControl.h"
 #import "ZWPullUpView.h"

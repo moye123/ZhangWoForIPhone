@@ -65,11 +65,9 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=wallet&a=showdetail"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=wallet&a=showdetail" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            _walletData = responseObject;
+            _walletData = [responseObject objectForKey:@"data"];
             _totalLabel.text = [NSString stringWithFormat:@"￥%.2f",[[_walletData objectForKey:@"balance"] floatValue]];
             [self.tableView reloadData];
         }else {

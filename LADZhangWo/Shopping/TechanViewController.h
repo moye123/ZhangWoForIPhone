@@ -14,7 +14,7 @@
 #import "TitleCell.h"
 #import "BlankCell.h"
 
-@interface TechanViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIWebViewDelegate,TechanGalleryViewDelegate>{
+@interface TechanViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIWebViewDelegate,UISearchBarDelegate,TechanGalleryViewDelegate>{
     @private
     DSXSliderView *_sliderView;
     TechanGalleryView *_galleryView;

@@ -83,15 +83,13 @@
 
 #pragma mark
 - (void)loadData{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=travel&a=showlist&catid=%ld&page=%d", (long)_catid,_page];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
+    [[DSXHttpManager sharedManager] GET:@"&c=travel&a=showlist" parameters:@{@"catid":@(_catid),@"page":@(_page)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            NSArray *array = [responseObject objectForKey:@"data"];
             if (_isRefreshing) {
-                [[NSUserDefaults standardUserDefaults] setObject:responseObject forKey:@"travelList"];
+                [[NSUserDefaults standardUserDefaults] setObject:array forKey:@"travelList"];
             }
-            [self showTableViewWithArray:responseObject];
+            [self showTableViewWithArray:array];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@",error);

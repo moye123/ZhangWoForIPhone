@@ -68,23 +68,22 @@
 }
 
 - (void)reloadPickerViewComponent:(NSInteger)Component level:(NSInteger)level fid:(NSInteger)fid{
-    NSString *urlString = [SITEAPI stringByAppendingFormat:@"&c=district&level=%ld&fid=%ld",(long)level,(long)fid];
-    [[AFHTTPSessionManager sharedManager] GET:urlString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSArray class]]) {
-            if ([responseObject count] > 0) {
+    NSString *urlString = [NSString stringWithFormat:@"&c=district&level=%ld&fid=%ld",(long)level,(long)fid];
+    [[DSXHttpManager sharedManager] GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if ([responseObject isKindOfClass:[NSDictionary class]]) {
+            NSArray *array = [responseObject objectForKey:@"data"];
+            if ([array count] > 0) {
                 if (Component == 0) {
-                    _provinceList = [NSMutableArray arrayWithArray:responseObject];
+                    _provinceList = [NSMutableArray arrayWithArray:array];
                     NSInteger fid = [[_provinceList[0] objectForKey:@"id"] integerValue];
                     [self reloadPickerViewComponent:1 level:2 fid:fid];
                 }else if (Component == 1){
-                    _cityList = [NSMutableArray arrayWithArray:responseObject];
+                    _cityList = [NSMutableArray arrayWithArray:array];
                     NSInteger fid = [[_cityList[0] objectForKey:@"id"] integerValue];
                     [self reloadPickerViewComponent:2 level:3 fid:fid];
                     [_pickerView selectRow:0 inComponent:1 animated:YES];
                 }else {
-                    _countyList = [NSMutableArray arrayWithArray:responseObject];
+                    _countyList = [NSMutableArray arrayWithArray:array];
                     [_pickerView selectRow:0 inComponent:2 animated:YES];
                 }
                 
@@ -157,19 +156,17 @@
     [params setObject:district forKey:@"district"];
     [params setObject:address forKey:@"address"];
     UIView *loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:@"保存中.."];
-    
-    [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=address&a=save"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] POST:@"&c=address&a=save" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [loadingView removeFromSuperview];
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            if ([[responseObject objectForKey:@"addressid"] integerValue] > 0) {
+            if ([[responseObject objectForKey:@"errno"] intValue] > 0) {
                 [[self.navigationController popViewControllerAnimated:YES] viewDidLoad];
             }
         }else {
             [_submitButton setEnabled:YES];
             [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleWarning Message:@"系统错误"];
         }
-        [loadingView removeFromSuperview];
+        
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [loadingView removeFromSuperview];
         [_submitButton setEnabled:YES];

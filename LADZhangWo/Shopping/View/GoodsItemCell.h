@@ -21,6 +21,5 @@
 @property(nonatomic,readonly)UILabel *shopLabel;
 @property(nonatomic,readonly)UILabel *locationLabel;
 @property(nonatomic,strong)NSDictionary *goodsData;
-@property(nonatomic,assign)CGFloat imageWidth;
 
 @end
