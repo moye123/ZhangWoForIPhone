@@ -9,11 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface UIView(size)
-- (CGSize)size;
-- (CGPoint)position;
-- (void)setSize:(CGSize)size;
-- (void)setPosition:(CGPoint)position;
-
 @property(nonatomic)CGSize size;
 @property(nonatomic)CGPoint position;
+@property(nonatomic)CGFloat originX;
+@property(nonatomic)CGFloat originY;
+@property(nonatomic)CGFloat width;
+@property(nonatomic)CGFloat height;
 @end

@@ -16,8 +16,8 @@
     @private
     int _page;
     BOOL _isRefreshing;
-    ZWRefreshControl *_refreshControl;
-    ZWPullUpView *_pullUpView;
+    DSXRefreshControl *_refreshControl;
+    DSXPullUpView *_pullUpView;
     UIButton *_checkAll;
     UILabel *_totaLabel;
     float _totalValue;

@@ -16,8 +16,8 @@
     BOOL _isRefreshing;
     UILabel *_tipsView;
     DSXDropDownMenu *_popMenu;
-    ZWPullUpView *_pullUpView;
-    ZWRefreshControl *_refreshControl;
+    DSXPullUpView *_pullUpView;
+    DSXRefreshControl *_refreshControl;
 }
 
 @property(nonatomic,strong)NSMutableArray *orderList;

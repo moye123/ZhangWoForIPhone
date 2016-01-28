@@ -37,7 +37,7 @@
     
     _amountField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, SWIDTH-115, 40)];
     _amountField.placeholder = @"请输入充值金额";
-    _amountField.keyboardType = UIKeyboardTypeNumberPad;
+    _amountField.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
     _amountField.clearButtonMode = UITextFieldViewModeWhileEditing;
     _index = 0;
     _payType = @"wechat";
@@ -77,8 +77,9 @@
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *returns = [responseObject objectForKey:@"data"];
             if ([[returns objectForKey:@"billid"] integerValue] > 0) {
-                pay.orderNO = [NSString stringWithFormat:@"zwrecharge%@",[returns objectForKey:@"billid"]];
+                
                 pay.payID   = [returns objectForKey:@"billid"];
+                pay.orderNO = [NSString stringWithFormat:@"zw%@",pay.payID];
                 pay.payType = @"recharge";
                 if ([_payType isEqualToString:@"wechat"]) {
                     [pay WechatPay];
@@ -96,6 +97,10 @@
 #pragma mark - paymanager delegate
 - (void)payManager:(DSXPayManager *)manager didFinishedWithCode:(int)errCode{
     if (errCode == 0) {
+        NSDictionary *params =@{@"uid":@([ZWUserStatus sharedStatus].uid),
+                                @"username":[ZWUserStatus sharedStatus].username,
+                                @"amount":manager.orderAmount};
+        [[DSXHttpManager sharedManager] POST:@"" parameters:params progress:nil success:nil failure:nil];
         [self back];
     }else {
         _hasSubmitPay = NO;

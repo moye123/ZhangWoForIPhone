@@ -13,8 +13,8 @@
 @private
     int _page;
     BOOL _isRefreshing;
-    ZWRefreshControl *_refreshControl;
-    ZWPullUpView*_pullUpView;
+    DSXRefreshControl *_refreshControl;
+    DSXPullUpView*_pullUpView;
     UILabel *_tipsLabel;
     DSXDropDownMenu *_popMenu;
 }

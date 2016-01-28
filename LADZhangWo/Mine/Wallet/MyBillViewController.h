@@ -14,8 +14,8 @@
     int _page;
     BOOL _isRefreshing;
     UILabel *_tipsView;
-    ZWRefreshControl *_refreshControl;
-    ZWPullUpView *_pullUpView;
+    DSXRefreshControl *_refreshControl;
+    DSXPullUpView *_pullUpView;
 }
 
 @property(nonatomic,strong)NSMutableArray *billList;

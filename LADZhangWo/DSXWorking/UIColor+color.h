@@ -10,6 +10,7 @@
 
 @interface UIColor(color)
 
++ (UIColor *)randomColor;
 + (UIColor *)colorWithHexString:(NSString*)hex;
 + (UIColor *)colorWithHexString:(NSString*)hex withAlpha:(CGFloat)alpha;
 + (UIColor *)backColor;

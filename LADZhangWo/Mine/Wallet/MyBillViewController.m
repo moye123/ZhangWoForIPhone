@@ -22,11 +22,11 @@
     self.tableView.dataSource = self;
     [self.tableView registerClass:[BillItemCell class] forCellReuseIdentifier:@"billCell"];
     
-    _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     [self setRefreshControl:_refreshControl];
     
-    _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _pullUpView.hidden = YES;
     self.tableView.tableFooterView = _pullUpView;
     
@@ -55,9 +55,11 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
+    [params setObject:@(_page) forKey:@"page"];
     [[DSXHttpManager sharedManager] POST:@"&c=bill&a=showlist"
-                              parameters:@{@"page":@(_page)}
-                                progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                              parameters:params
+                                progress:nil
+                                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
         }

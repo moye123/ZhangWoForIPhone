@@ -24,15 +24,28 @@
     self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
+    _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, TOPHEIGHT, SWIDTH, 40)];
+    _toolbar.backgroundColor = [UIColor whiteColor];
+    _toolbar.tintColor = [UIColor blackColor];
+    self.navigationItem.titleView = _toolbar;
+    //[self.navigationController.view addSubview:_toolbar];
+    
+    UIBarButtonItem *goodsItem = [[UIBarButtonItem alloc] initWithTitle:@"商品" style:UIBarButtonItemStylePlain target:self action:nil];
+    UIBarButtonItem *shopItem = [[UIBarButtonItem alloc] initWithTitle:@"店铺" style:UIBarButtonItemStylePlain target:self action:nil];
+    UIBarButtonItem *articleItem = [[UIBarButtonItem alloc] initWithTitle:@"文章" style:UIBarButtonItemStylePlain target:self action:nil];
+    UIBarButtonItem *travelItem = [[UIBarButtonItem alloc] initWithTitle:@"景点" style:UIBarButtonItemStylePlain target:self action:nil];
+    UIBarButtonItem *separater = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [_toolbar setItems:@[separater,goodsItem,separater,shopItem,separater,articleItem,separater,travelItem,separater]];
+    
     _favoriteList = [NSMutableArray array];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor backColor];
     [self.tableView registerClass:[FavorItemCell class] forCellReuseIdentifier:@"favorCell"];
     
-    _refreshContorl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _refreshContorl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshContorl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _pullUpView.hidden = YES;
     self.refreshControl = _refreshContorl;
     self.tableView.tableFooterView = _pullUpView;
@@ -41,6 +54,11 @@
 
 - (void)back{
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    _toolbar.hidden = YES;
 }
 
 - (void)refresh{
@@ -183,7 +201,7 @@
     }
 }
 
-
+#pragma mark - scrollview delagate
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     CGFloat diffHeight = scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentSize.height;
     if (diffHeight > 50) {

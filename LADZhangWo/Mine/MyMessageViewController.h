@@ -11,8 +11,8 @@
 
 @interface MyMessageViewController : UITableViewController{
     @private
-    ZWRefreshControl *_refreshControl;
-    ZWPullUpView *_pullUpView;
+    DSXRefreshControl *_refreshControl;
+    DSXPullUpView *_pullUpView;
     BOOL _isRefreshing;
     int _page;
 }

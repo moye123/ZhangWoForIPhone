@@ -9,7 +9,5 @@
 #import "ZWConfig.h"
 #import "DSXWorking.h"
 #import "ZWUserStatus.h"
-#import "ZWRefreshControl.h"
-#import "ZWPullUpView.h"
 #import "ZWNavigationController.h"
 #import "UIImageView+WebCache.h"

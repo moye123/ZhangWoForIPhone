@@ -6,7 +6,7 @@
 //  Copyright © 2015年 Apple. All rights reserved.
 //
 
-#define SITEAPI @"http://app.zhangwoo.cn/app.php?platform=ios&appkey=5a379b5eed8aaae531df5f60b12100cfb6dff2c1&version=2.0"
+#define SITEAPI @"http://zhangwoo.cn/app.php?platform=ios&appkey=5a379b5eed8aaae531df5f60b12100cfb6dff2c1&version=2.0"
 
 #define SWIDTH [UIScreen mainScreen].bounds.size.width
 #define SHEIGHT [UIScreen mainScreen].bounds.size.height

@@ -14,6 +14,7 @@
 @implementation GoodsListViewController
 @synthesize catid = _catid;
 @synthesize goodsList = _goodsList;
+@synthesize toolbar   = _toolbar;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -32,11 +33,11 @@
     self.tableView.dataSource = self;
     [self.tableView registerClass:[GoodsItemCell class] forCellReuseIdentifier:@"goodsCell"];
     
-    _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = _refreshControl;
     
-    _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _pullUpView.hidden = YES;
     self.tableView.tableFooterView = _pullUpView;
     

@@ -57,7 +57,7 @@
     _galleryView.scrollEnabled = NO;
     _galleryView.touchDelegate = self;
     
-    [[DSXHttpManager sharedManager] GET:@"&c=goods&a=showlist&pagesize=12"
+    [[DSXHttpManager sharedManager] GET:@"&c=goods&a=showlist&catid=17&pagesize=12"
                              parameters:nil
                                progress:nil
                                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {

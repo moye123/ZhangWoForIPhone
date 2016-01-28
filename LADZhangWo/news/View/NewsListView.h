@@ -20,8 +20,8 @@
     @private
     int _page;
     BOOL _isRefreshing;
-    ZWRefreshControl *_refreshControl;
-    ZWPullUpView *_pullUpView;
+    DSXRefreshControl *_refreshControl;
+    DSXPullUpView *_pullUpView;
     NSMutableArray *_newsList;
 }
 @property(nonatomic,assign)int catid;

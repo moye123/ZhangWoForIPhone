@@ -9,23 +9,23 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 #import "DSXStarView.h"
+#import "ChaoshiGoodsItemCell.h"
 
-@interface ChaoshiListViewController : UICollectionViewController<UIScrollViewDelegate,UICollectionViewDelegateFlowLayout,DSXDropDownMenuDelegate>{
-@private
+@interface ChaoshiListViewController : UIViewController<UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UITableViewDelegate,UITableViewDataSource,DSXDropDownMenuDelegate>{
+    @private
     int _page;
     BOOL _isRefreshing;
-    ZWRefreshControl *_refreshControl;
-    ZWPullUpView *_pullUpView;
-    CGFloat _cellWith;
-    CGFloat _cellHeight;
     UILabel *_tipsView;
     DSXDropDownMenu *_popMenu;
+    DSXPullUpView *_pullUpView;
+    DSXRefreshControl *_refreshControl;
 }
-
-- (instancetype)init;
 
 @property(nonatomic,assign)NSInteger catid;
 @property(nonatomic,assign)NSInteger shopid;
 @property(nonatomic,strong)NSMutableArray *goodsList;
+@property(nonatomic)UITableView *menuView;
+@property(nonatomic)UICollectionView *collectionView;
+@property(nonatomic)UIToolbar *toolbar;
 
 @end

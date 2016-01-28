@@ -63,7 +63,7 @@
     
     //轮播广告
     _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, SWIDTH*0.5)];
-    _slideView.groupid = 5;
+    _slideView.groupid = 13;
     _slideView.num = 6;
     _slideView.delegate = self;
     [_slideView loaddata];
@@ -91,7 +91,7 @@
     //推荐商家
     _shopSlideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, SWIDTH*0.33)];
     _shopSlideView.delegate = self;
-    _shopSlideView.groupid = 1;
+    _shopSlideView.groupid = 14;
     _shopSlideView.num = 5;
     _shopSlideView.pageControl.hidden = YES;
     [_shopSlideView loaddata];
@@ -193,94 +193,26 @@
     return NO;
 }
 
-- (void)showDetailWithData:(NSDictionary *)data{
-    NSString *idType = [data objectForKey:@"idtype"];
-    NSInteger dataID = [[data objectForKey:@"dataid"] integerValue];
-    if ([idType isEqualToString:@"goodsid"]) {
-        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
-        goodsView.goodsid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:NO completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"aid"]) {
-        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
-        newsView.newsID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"shopid"]) {
-        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
-        shopView.shopid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"travelid"]) {
-        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
-        travelView.travelID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-}
-
 #pragma mark - slider view delegate
 - (void)sliderView:(SliderView *)sliderView didSelectedItemWithData:(NSDictionary *)data{
-    [self showDetailWithData:data];
+    [[ShowAdModel sharedModel] showAdWithData:data fromViewController:self.navigationController];
+}
+
+- (void)DSXSliderView:(DSXSliderView *)sliderView didSelectedItemWithData:(NSDictionary *)data{
+    [[ShowAdModel sharedModel] showAdWithData:data fromViewController:self.navigationController];
 }
 
 #pragma mark - travel view delegate
 - (void)travelView:(TravelSliderView *)travelView didSelectedItemWithData:(NSDictionary *)data{
-    [self showDetailWithData:data];
+    [[ShowAdModel sharedModel] showAdWithData:data fromViewController:self.navigationController];
 }
 
 #pragma mark - gallery view delegate
 - (void)galleryView:(GalleryView *)galleryView didSelectedItemWithData:(NSDictionary *)data{
-    [self showDetailWithData:data];
-}
-
-#pragma mark - sliderView delegate
-- (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
-    if ([idType isEqualToString:@"goodsid"]) {
-        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
-        goodsView.goodsid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:NO completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"aid"]) {
-        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
-        newsView.newsID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"shopid"]) {
-        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
-        shopView.shopid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"travelid"]) {
-        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
-        travelView.travelID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
+    [[ShowAdModel sharedModel] showAdWithData:data fromViewController:self.navigationController];
 }
 
 #pragma mark - categoryView delegate
-
 - (void)categoryView:(CategoryView *)categoryView didSelectedAtItemWithData:(NSDictionary *)data{
     NSString *catid = [data objectForKey:@"catid"];
     //旅游
@@ -301,8 +233,8 @@
     
     //超市
     if ([catid isEqualToString:@"market"]) {
-        //ChaoshiIndexViewController *chaoshiController = [[ChaoshiIndexViewController alloc] init];
-        ChaoshiCatViewController *chaoshiView = [[ChaoshiCatViewController alloc] init];
+        ChaoshiIndexViewController *chaoshiView = [[ChaoshiIndexViewController alloc] init];
+        //ChaoshiCatViewController *chaoshiView = [[ChaoshiCatViewController alloc] init];
         ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:chaoshiView];
         nav.style = ZWNavigationStyleGray;
         [self.navigationController presentViewController:nav animated:YES completion:nil];

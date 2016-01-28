@@ -47,13 +47,13 @@
     [_tableView registerClass:[OrderCommonCell class] forCellReuseIdentifier:@"Cell3"];
     [self.view addSubview:self.tableView];
     
-    _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     UITableViewController *tableViewController = [[UITableViewController alloc] init];
     tableViewController.refreshControl = _refreshControl;
     tableViewController.tableView = _tableView;
     
-    _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
+    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _pullUpView.hidden = YES;
     _tableView.tableFooterView = _pullUpView;
     [self refresh];

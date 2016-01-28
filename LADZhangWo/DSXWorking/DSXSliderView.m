@@ -10,14 +10,12 @@
 
 @implementation DSXSliderView
 @synthesize groupid = _groupid;
-@synthesize num = _num;
-@synthesize imageViews = _imageViews;
-@synthesize scrollView = _scrollView;
+@synthesize num     = _num;
+@synthesize scrollView  = _scrollView;
 @synthesize pageControl = _pageControl;
 
 - (instancetype)initWithFrame:(CGRect)frame{
-    self = [super initWithFrame:frame];
-    if (self) {
+    if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor grayColor];
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
         _scrollView.pagingEnabled = YES;
@@ -37,12 +35,13 @@
 - (void)loaddata{
     NSString *keyName = [NSString stringWithFormat:@"slider_%d",_groupid];
     [self showImageWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:keyName]];
-    [[DSXHttpManager sharedManager] GET:@"&c=homepage&a=showlist" parameters:@{@"groupid":@(_groupid),@"num":@(_num)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] GET:@"&c=ad&a=showlist" parameters:@{@"groupid":@(_groupid),@"num":@(_num)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
-                NSArray *array = [responseObject objectForKey:@"data"];
-                [[NSUserDefaults standardUserDefaults] setObject:array forKey:keyName];
-                [self showImageWithArray:array];
+                _dataList = [responseObject objectForKey:@"data"];
+                //NSLog(@"%@",_dataList);
+                [self showImageWithArray:_dataList];
+                [[NSUserDefaults standardUserDefaults] setObject:_dataList forKey:keyName];
             }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -51,38 +50,34 @@
 }
 
 - (void)showImageWithArray:(NSArray *)array{
-    if (!array) {
+    if ([array count] == 0) {
         return;
     }
     for (UIView *subview in _scrollView.subviews) {
         [subview removeFromSuperview];
     }
     CGFloat x = 0;
-    _slideData = [NSMutableDictionary dictionary];
-    for (NSDictionary *dict in array) {
+    for (int i=0;i<[array count]; i++) {
+        NSDictionary *dict = [array objectAtIndex:i];
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(x, 0, self.frame.size.width, self.frame.size.height)];
         [imageView sd_setImageWithURL:[NSURL URLWithString:[dict objectForKey:@"pic"]]];
         [imageView setContentMode:UIViewContentModeScaleToFill];
-        [imageView setTag:[[dict objectForKey:@"id"] integerValue]];
+        [imageView setTag:i];
         [_scrollView addSubview:imageView];
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTap:)];
         [imageView addGestureRecognizer:tap];
         [imageView setUserInteractionEnabled:YES];
         x+= self.frame.size.width;
-        [_slideData setObject:dict forKey:[dict objectForKey:@"id"]];
     }
-    _scrollView.contentSize = CGSizeMake(self.frame.size.width*[_slideData count], 0);
-    _pageControl.numberOfPages = [_slideData count];
+    _scrollView.contentSize = CGSizeMake(self.frame.size.width*[_dataList count], 0);
+    _pageControl.numberOfPages = [_dataList count];
     [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(autoPlay) userInfo:nil repeats:YES];
 }
 
 - (void)imageViewTap:(UITapGestureRecognizer *)tap{
-    NSDictionary *dict = [_slideData objectForKey:[NSString stringWithFormat:@"%ld",(long)tap.view.tag]];
-    if ([_delegate respondsToSelector:@selector(slideView:touchedImageWithDataID:idType:)]) {
-        NSInteger dataID = [[dict objectForKey:@"dataid"] integerValue];
-        NSString *idType = [dict objectForKey:@"idtype"];
-        [_delegate slideView:self touchedImageWithDataID:dataID idType:idType];
+    if ([_delegate respondsToSelector:@selector(DSXSliderView:didSelectedItemWithData:)]) {
+        [_delegate DSXSliderView:self didSelectedItemWithData:[_dataList objectAtIndex:tap.view.tag]];
     }
 }
 

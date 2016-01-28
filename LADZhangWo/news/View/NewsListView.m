@@ -20,13 +20,13 @@
         self.dataSource = self;
         [self registerClass:[NewsItemCell class] forCellReuseIdentifier:@"newsCell"];
         
-        _refreshControl = [[ZWRefreshControl alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
+        _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
         UITableViewController *tableViewController = [[UITableViewController alloc] init];
         tableViewController.tableView = self;
         tableViewController.refreshControl = _refreshControl;
         [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
         
-        _pullUpView = [[ZWPullUpView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
+        _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
         _pullUpView.hidden = YES;
         self.tableFooterView = _pullUpView;
         

@@ -17,6 +17,7 @@
 #import "GalleryView.h"
 #import "SliderView.h"
 #import "DistrictViewController.h"
+#import "ShowAdModel.h"
 
 @interface HomeViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,LocationChangeDelegate,DSXSliderViewDelegate,CategoryViewDelegate,TravelSliderViewDelegate,SliderViewDelegate,GalleryViewDelegate,UITextFieldDelegate>{
     @private

@@ -50,6 +50,7 @@
 
     UIView *loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:@"交易处理中.."];
     [[DSXHttpManager sharedManager] POST:@"&c=weixin&a=sign" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"%@",responseObject);
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             [loadingView removeFromSuperview];
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {

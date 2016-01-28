@@ -10,10 +10,11 @@
 #import "FavorItemCell.h"
 
 @interface MyFavoriteViewController : UITableViewController<UIScrollViewDelegate>{
-    ZWPullUpView*_pullUpView;
-    ZWRefreshControl *_refreshContorl;
+    DSXPullUpView*_pullUpView;
+    DSXRefreshControl *_refreshContorl;
     BOOL _isRefreshing;
     int _page;
+    UIToolbar *_toolbar;
 }
 
 @property(nonatomic,strong)NSMutableArray *favoriteList;

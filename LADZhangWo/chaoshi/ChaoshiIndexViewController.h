@@ -8,15 +8,20 @@
 
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
+#import "chaoshiIndexCell.h"
+#import "CategoryView.h"
+#import "ChaoshiReusableView.h"
+#import "ShowAdModel.h"
 
-@interface ChaoshiIndexViewController : UICollectionViewController<UICollectionViewDelegateFlowLayout>{
+@interface ChaoshiIndexViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,DSXSliderViewDelegate>{
     @private
-    CGFloat _cellWith;
-    CGFloat _cellHeight;
     DSXSliderView *_slideView;
 }
 
-- (instancetype)init;
-@property(nonatomic,strong)NSMutableArray *chaoshiList;
+@property(nonatomic)NSArray *menuList;
+@property(nonatomic)NSArray *categoryList;
+@property(nonatomic)UITableView *tableView;
+@property(nonatomic)UITableView *menuView;
+@property(nonatomic)UICollectionView *collectionView;
 
 @end

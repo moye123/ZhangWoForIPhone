@@ -20,6 +20,7 @@
     [self.view setBackgroundColor:[UIColor colorWithHexString:@"0xf2f2f2"]];
     [self setTitle:@"找回密码"];
     self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
     if (!_step) {
         _step = 1;
     }
@@ -76,6 +77,10 @@
 
 - (void)back{
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)cancel{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)nextStep:(UIButton *)button{
