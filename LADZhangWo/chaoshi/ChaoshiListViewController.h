@@ -11,14 +11,12 @@
 #import "DSXStarView.h"
 #import "ChaoshiGoodsItemCell.h"
 
-@interface ChaoshiListViewController : UIViewController<UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UITableViewDelegate,UITableViewDataSource,DSXDropDownMenuDelegate>{
+@interface ChaoshiListViewController : UIViewController<UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UITableViewDelegate,UITableViewDataSource,DSXDropDownMenuDelegate,DSXRefreshDelegate>{
     @private
     int _page;
     BOOL _isRefreshing;
     UILabel *_tipsView;
     DSXDropDownMenu *_popMenu;
-    DSXPullUpView *_pullUpView;
-    DSXRefreshControl *_refreshControl;
 }
 
 @property(nonatomic,assign)NSInteger catid;

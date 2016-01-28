@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "DSXRefreshHeader.h"
+#import "DSXRefreshFooter.h"
 
 @interface UIScrollView (Refresh)
 
-@property(nonatomic)DSXRefreshHeader *refreshView;
+@property(nonatomic)DSXRefreshHeader *dsx_headerView;
+@property(nonatomic)DSXRefreshFooter *dsx_footerView;
 
 @end

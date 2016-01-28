@@ -53,16 +53,18 @@
     _scrollView.showsHorizontalScrollIndicator = NO;
     _scrollView.delegate = self;
     _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    _scrollView.backgroundColor = [UIColor backColor];
+    [self.view addSubview:_scrollView];
     
     NSString *path = [[NSBundle mainBundle] pathForResource:@"NewsColumns" ofType:@"plist"];
     self.columns = [NSArray arrayWithContentsOfFile:path];
     self.columnButtons = [NSMutableArray array];
-    CGFloat buttonWith = 80.0;
-    _navView.contentSize = CGSizeMake(buttonWith*[self.columns count], 0);
+    _buttonWidth = SWIDTH/4;
+    _navView.contentSize = CGSizeMake(_buttonWidth*[self.columns count], 0);
     for (int i = 0; i < [self.columns count]; i++) {
         NSDictionary *column = self.columns[i];
         //添加导航按钮
-        UIButton *columnButton = [[UIButton alloc] initWithFrame:CGRectMake(buttonWith*i, 10, buttonWith, 30)];
+        UIButton *columnButton = [[UIButton alloc] initWithFrame:CGRectMake(_buttonWidth*i, 10, _buttonWidth, 30)];
         [columnButton.layer setCornerRadius:3.0];
         [columnButton.layer setMasksToBounds:YES];
         [columnButton.titleLabel setFont:[UIFont fontWithName:DSXFontStyleMedinum size:16.0]];
@@ -79,14 +81,12 @@
         listView.catid = [[column objectForKey:@"catid"] intValue];
         listView.showDetailDelegate = self;
         listView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-        [listView show];
         [_scrollView addSubview:listView];
+        [listView show];
     }
     
     [self.columnButtons[0] setSelected:YES];
-    
     _scrollView.contentSize = CGSizeMake(SWIDTH*[self.columns count], 0);
-    [self.view addSubview:_scrollView];
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
@@ -184,14 +184,13 @@
         }
         [button setSelected:YES];
         CGFloat scaleWith = button.frame.origin.x - _navView.contentOffset.x;
-        if ((scaleWith + 80)> SWIDTH) {
-            [_navView setContentOffset:CGPointMake(_navView.contentOffset.x+80, _navView.contentOffset.y) animated:YES];
+        if ((scaleWith + _buttonWidth)> SWIDTH) {
+            [_navView setContentOffset:CGPointMake(_navView.contentOffset.x+_buttonWidth, _navView.contentOffset.y) animated:YES];
         }
         if (scaleWith<0) {
             [_navView setContentOffset:CGPointMake(_navView.contentOffset.x+scaleWith, _navView.contentOffset.y) animated:YES];
         }
     }
-    
 }
 
 @end

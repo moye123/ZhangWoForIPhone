@@ -27,13 +27,8 @@
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
-    _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    [self setRefreshControl:_refreshControl];
-    
-    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    _pullUpView.hidden = YES;
-    self.tableView.tableFooterView = _pullUpView;
+    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self.tableView];
+    refreshControl.delegate = self;
     
     _messageList = [NSMutableArray array];
     [self refresh];
@@ -80,15 +75,15 @@
         }
         [self.tableView reloadData];
     }
-    if ([_refreshControl isRefreshing]) {
-        [_refreshControl endRefreshing];
-    }
-    if ([array count] < 20) {
-        _pullUpView.hidden = YES;
-    }else {
-        _pullUpView.hidden = NO;
-    }
-    [_pullUpView endLoading];
+}
+
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [self refresh];
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [self loadMore];
 }
 
 #pragma mark - tableView delegate

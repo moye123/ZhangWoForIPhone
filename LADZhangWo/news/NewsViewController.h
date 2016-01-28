@@ -14,6 +14,7 @@
 @interface NewsViewController : UIViewController<NewsListDelegate,NewsSliderViewDelegate,DSXDropDownMenuDelegate,UIScrollViewDelegate,UIToolbarDelegate>{
     @private
     DSXDropDownMenu *_popMenu;
+    CGFloat _buttonWidth;
 }
 
 @property(nonatomic,strong)NSArray *columns;

@@ -32,15 +32,8 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.showsVerticalScrollIndicator = NO;
     
-    //下拉刷新
-    _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    self.refreshControl = _refreshControl;
-    
-    //上拉加载更多
-    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    _pullUpView.hidden = YES;
-    self.tableView.tableFooterView = _pullUpView;
+    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self.tableView];
+    refreshControl.delegate = self;
     
     [self showTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"travelList"]];
     [self refresh];
@@ -108,15 +101,6 @@
         }
         [self.tableView reloadData];
     }
-    if ([_refreshControl isRefreshing]) {
-        [_refreshControl endRefreshing];
-    }
-    [_pullUpView endLoading];
-    if ([array count] < 20) {
-        _pullUpView.hidden = YES;
-    }else{
-        _pullUpView.hidden = NO;
-    }
     
     if (_tipsLabel) {
         [_tipsLabel removeFromSuperview];
@@ -141,6 +125,15 @@
     _page++;
     _isRefreshing = NO;
     [self loadData];
+}
+
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [self refresh];
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [self loadMore];
 }
 
 #pragma mark - tableView delegate
@@ -210,18 +203,6 @@
     detailController.title = [travelItem objectForKey:@"title"];
     detailController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:detailController animated:YES];
-}
-
-#pragma mark - scrollView delegate
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    CGFloat diffHeight = scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentSize.height;
-    if (diffHeight > 100) {
-        if (_pullUpView.hidden == NO) {
-            [_pullUpView beginLoading];
-            [self loadMore];
-        }
-        
-    }
 }
 
 @end

@@ -20,18 +20,14 @@
         self.dataSource = self;
         [self registerClass:[NewsItemCell class] forCellReuseIdentifier:@"newsCell"];
         
-        _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
-        UITableViewController *tableViewController = [[UITableViewController alloc] init];
-        tableViewController.tableView = self;
-        tableViewController.refreshControl = _refreshControl;
-        [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-        
-        _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
-        _pullUpView.hidden = YES;
-        self.tableFooterView = _pullUpView;
-        
         _sliderView = [[NewsSliderView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.width/2)];
+        _sliderView.pageControl.hidden = YES;
         self.tableHeaderView = _sliderView;
+        self.tableFooterView = [[UIView alloc] init];
+        
+        DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self];
+        refreshControl.delegate = self;
+        refreshControl.scrollView = self;
         
         _newsList = [[NSMutableArray alloc] init];
     }
@@ -78,12 +74,12 @@
     [[DSXHttpManager sharedManager] GET:@"&c=post&a=showlist&limit=3&pic=1" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
-                NSArray *array = [responseObject objectForKey:@"data"];
-                if (_isRefreshing && [array count]>0) {
+                _moreData = [responseObject objectForKey:@"data"];
+                if (_isRefreshing && [_moreData count] > 0) {
                     NSString *key = [NSString stringWithFormat:@"newsList_%d",_catid];
-                    [[NSUserDefaults standardUserDefaults] setObject:array forKey:key];
+                    [[NSUserDefaults standardUserDefaults] setObject:_moreData forKey:key];
                 }
-                [self showTableViewWithArray:array];
+                [self showTableViewWithArray:_moreData];
             }
             
         }
@@ -103,18 +99,31 @@
         }
         [self reloadData];
     }
-    if ([array count] < 20) {
-        _pullUpView.hidden = YES;
-    }else {
-        _pullUpView.hidden = NO;
+    if ([_newsList count] < 20) {
+        self.dsx_footerView.hidden = YES;
     }
-    [_pullUpView endLoading];
-    
-    if ([_refreshControl isRefreshing]) {
-        [_refreshControl endRefreshing];
-    }
-    
 }
+
+- (void)drawRect:(CGRect)rect{
+    [super drawRect:rect];
+}
+
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [self refresh];
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [self loadMore];
+}
+
+- (void)didEndLoading:(DSXRefreshView *)refreshView{
+    if ([_moreData count] < 20) {
+        self.dsx_footerView.loadingState = DSXLoadingStateNoMoreData;
+    }
+}
+
+#pragma mark - table view delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
@@ -140,18 +149,6 @@
     NSDictionary *newsData = [_newsList objectAtIndex:indexPath.row];
     if ([_showDetailDelegate respondsToSelector:@selector(listView:didSelectedItemAtIndexPath:data:)]) {
         [_showDetailDelegate listView:self didSelectedItemAtIndexPath:indexPath data:newsData];
-    }
-}
-
-#pragma mark - scrollView delegate
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    CGFloat diffHeight = scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentSize.height;
-    if (diffHeight > 50) {
-        if (_pullUpView.hidden == NO) {
-            [_pullUpView beginLoading];
-            [self loadMore];
-        }
-        
     }
 }
 

@@ -9,22 +9,40 @@
 #import "UIScrollView+Refresh.h"
 #import <objc/runtime.h>
 
-static NSString *const DSXRefreshKey = @"dsxrefreshView";
+static NSString *const DSXRefreshKeyHeader = @"dsx_headerView";
+static NSString *const DSXRefreshKeyFooter = @"dsx_footerView";
 @implementation UIScrollView (Refresh)
 
-- (DSXRefreshHeader *)refreshView{
-    return objc_getAssociatedObject(self, &DSXRefreshKey);
+- (DSXRefreshHeader *)dsx_headerView{
+    return objc_getAssociatedObject(self, &DSXRefreshKeyHeader);
 }
 
-- (void)setRefreshView:(DSXRefreshHeader *)refreshView{
-    if (self.refreshView != refreshView) {
-        [self.refreshView removeFromSuperview];
-        [self insertSubview:refreshView atIndex:0];
-        refreshView.size = CGSizeMake(self.width, 50);
-        refreshView.originY = -refreshView.height - self.contentInset.top;
-        [self willChangeValueForKey:@"refrshView"];
-        objc_setAssociatedObject(self, &DSXRefreshKey, refreshView, OBJC_ASSOCIATION_ASSIGN);
-        [self didChangeValueForKey:@"refreshView"];
+- (void)setDsx_headerView:(DSXRefreshHeader *)dsx_headerView{
+    if (self.dsx_headerView != dsx_headerView) {
+        [self.dsx_headerView removeFromSuperview];
+        [self insertSubview:dsx_headerView atIndex:0];
+        
+        [self willChangeValueForKey:DSXRefreshKeyHeader];
+        objc_setAssociatedObject(self, &DSXRefreshKeyHeader, dsx_headerView, OBJC_ASSOCIATION_ASSIGN);
+        [self didChangeValueForKey:DSXRefreshKeyHeader];
+    }
+}
+
+- (DSXRefreshFooter *)dsx_footerView{
+    return objc_getAssociatedObject(self, &DSXRefreshKeyFooter);
+}
+
+- (void)setDsx_footerView:(DSXRefreshFooter *)dsx_footerView{
+    if (self.dsx_footerView != dsx_footerView) {
+        [self.dsx_footerView removeFromSuperview];
+        [self addSubview:dsx_footerView];
+        
+        dsx_footerView.size = CGSizeMake(self.width, 50);
+        dsx_footerView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin;
+        
+        [self willChangeValueForKey:DSXRefreshKeyFooter];
+        objc_setAssociatedObject(self, &DSXRefreshKeyFooter, dsx_footerView, OBJC_ASSOCIATION_ASSIGN);
+        [self didChangeValueForKey:DSXRefreshKeyFooter];
     }
 }
 

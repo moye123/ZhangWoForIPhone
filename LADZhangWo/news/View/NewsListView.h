@@ -16,13 +16,12 @@
 
 @end
 
-@interface NewsListView : UITableView<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>{
+@interface NewsListView : UITableView<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,DSXRefreshDelegate>{
     @private
     int _page;
     BOOL _isRefreshing;
-    DSXRefreshControl *_refreshControl;
-    DSXPullUpView *_pullUpView;
     NSMutableArray *_newsList;
+    NSArray *_moreData;
 }
 @property(nonatomic,assign)int catid;
 @property(nonatomic,readonly)NewsSliderView *sliderView;

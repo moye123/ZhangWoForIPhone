@@ -31,15 +31,8 @@
     [_tableView registerClass:[CartTitleCell class] forCellReuseIdentifier:@"titleCell"];
     [_tableView registerClass:[CartCustomCell class] forCellReuseIdentifier:@"goodsCell"];
     
-    _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    UITableViewController *tableViewController = [[UITableViewController alloc] init];
-    tableViewController.refreshControl = _refreshControl;
-    tableViewController.tableView = _tableView;
-    
-    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    _pullUpView.hidden = YES;
-    _tableView.tableFooterView = _pullUpView;
+    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:_tableView];
+    refreshControl.delegate = self;
     
     _totalNum = 0;
     _totalValue = 0.00;
@@ -183,14 +176,16 @@
                              parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"page":@(_page)}
                                progress:nil
                                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
-                [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
-            }
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@", error);
-    }];
+                                    if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                                        if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                                            _moreData = [responseObject objectForKey:@"data"];
+                                            [self reloadTableViewWithArray:_moreData];
+                                        }
+                                    }
+                                }
+                                failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                                    NSLog(@"%@", error);
+                                }];
 }
 
 - (void)reloadTableViewWithArray:(NSArray *)array{
@@ -214,18 +209,11 @@
         goodsModel.shopName   = [dict objectForKey:@"shopname"];
         [_goodsModelArray addObject:goodsModel];
     }
+    if ([_cartList count] < 20) {
+        _tableView.dsx_footerView.hidden = YES;
+    }
     [_tableView reloadData];
     [_checkAll setSelected:NO];
-    if ([array count] < 20) {
-        _pullUpView.hidden = YES;
-    }else{
-        _pullUpView.hidden = NO;
-    }
-    [_pullUpView endLoading];
-    
-    if ([_refreshControl isRefreshing]) {
-        [_refreshControl endRefreshing];
-    }
     [self total];
 }
 
@@ -234,6 +222,21 @@
     [checkBox setBackgroundImage:[UIImage imageNamed:@"icon-round.png"] forState:UIControlStateNormal];
     [checkBox setBackgroundImage:[UIImage imageNamed:@"icon-roundcheckfill.png"] forState:UIControlStateSelected];
     return checkBox;
+}
+
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [self refresh];
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [self loadMore];
+}
+
+- (void)didEndLoading:(DSXRefreshView *)refreshView{
+    if ([_moreData count] < 20) {
+        _tableView.dsx_footerView.loadingState = DSXLoadingStateNoMoreData;
+    }
 }
 
 #pragma mark - tableView delegate
@@ -388,17 +391,6 @@
     }
     [_tableView reloadData];
     [self total];
-}
-
-#pragma mark - scrollView delegate
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    CGFloat diffHeight = scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentSize.height;
-    if (diffHeight > 50) {
-        if (_pullUpView.hidden == NO) {
-            [_pullUpView beginLoading];
-            [self loadMore];
-        }
-    }
 }
 
 @end

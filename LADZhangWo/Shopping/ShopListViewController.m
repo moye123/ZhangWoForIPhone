@@ -33,14 +33,8 @@
     [self.tableView registerClass:[ShopItemCell class] forCellReuseIdentifier:@"shopCell"];
     
     //下来刷新
-    _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    [self setRefreshControl:_refreshControl];
-    
-    //上拉加载
-    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    _pullUpView.hidden = YES;
-    self.tableView.tableFooterView = _pullUpView;
+    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self.tableView];
+    refreshControl.delegate = self;
     
     _shopList = [NSMutableArray array];
     [self downloadData];
@@ -119,16 +113,15 @@
         }
         [self.tableView reloadData];
     }
-    
-    if ([_refreshControl isRefreshing]) {
-        [_refreshControl endRefreshing];
-    }
-    [_pullUpView endLoading];
-    if ([array count] < 20) {
-        _pullUpView.hidden = YES;
-    }else {
-        _pullUpView.hidden = NO;
-    }
+}
+
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [self refresh];
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [self loadMore];
 }
 
 #pragma mark - Table view data source
@@ -159,17 +152,6 @@
     ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
     shopView.shopid = [[shopData objectForKey:@"shopid"] integerValue];
     [self.navigationController pushViewController:shopView animated:YES];
-}
-
-#pragma mark - scrollView delegate
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    CGFloat diffHeight = scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentSize.height;
-    if (diffHeight > 50) {
-        if (_pullUpView.hidden == NO) {
-            [_pullUpView beginLoading];
-            [self loadMore];
-        }
-    }
 }
 
 @end

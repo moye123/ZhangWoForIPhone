@@ -182,6 +182,8 @@
 		18529CE81C47A80D002A0DFC /* icon-free.png in Resources */ = {isa = PBXBuildFile; fileRef = 18529CE71C47A80D002A0DFC /* icon-free.png */; };
 		18529CEB1C47BCDA002A0DFC /* TravelSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18529CEA1C47BCDA002A0DFC /* TravelSliderView.m */; };
 		185CB2831C0FFDE0007B6F24 /* DSXSandboxHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 185CB2821C0FFDE0007B6F24 /* DSXSandboxHelper.m */; };
+		185EA8CB1C59AE4E00D81104 /* DSXRefreshFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 185EA8CA1C59AE4E00D81104 /* DSXRefreshFooter.m */; };
+		185EA8D11C59F83200D81104 /* DSXRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 185EA8D01C59F83200D81104 /* DSXRefreshControl.m */; };
 		187B51561C487CC20073F4E5 /* GalleryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 187B51551C487CC20073F4E5 /* GalleryView.m */; };
 		187B51591C48894C0073F4E5 /* SliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 187B51581C48894C0073F4E5 /* SliderView.m */; };
 		187B515C1C4898690073F4E5 /* BlankCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 187B515B1C4898690073F4E5 /* BlankCell.m */; };
@@ -206,8 +208,6 @@
 		18A3CC451C55D0D700690CB5 /* ChaoshiIndexCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A3CC441C55D0D700690CB5 /* ChaoshiIndexCell.m */; };
 		18A3CC4B1C55EC7400690CB5 /* ChaoshiReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A3CC4A1C55EC7400690CB5 /* ChaoshiReusableView.m */; };
 		18A3CC4E1C55FB5D00690CB5 /* ChaoshiGoodsItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A3CC4D1C55FB5D00690CB5 /* ChaoshiGoodsItemCell.m */; };
-		18A3CC531C56045D00690CB5 /* DSXPullUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A3CC501C56045D00690CB5 /* DSXPullUpView.m */; };
-		18A3CC541C56045D00690CB5 /* DSXRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A3CC521C56045D00690CB5 /* DSXRefreshControl.m */; };
 		18A48D6B1C4CA31F0091C194 /* TitleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A48D6A1C4CA31F0091C194 /* TitleCell.m */; };
 		18A48D6E1C4CA9330091C194 /* localView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A48D6D1C4CA9330091C194 /* localView.m */; };
 		18A48D711C4CAA6B0091C194 /* HomeSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A48D701C4CAA6B0091C194 /* HomeSearchView.m */; };
@@ -631,6 +631,10 @@
 		185CB2791C0EEB6E007B6F24 /* LADZhangWo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LADZhangWo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		185CB2811C0FFDE0007B6F24 /* DSXSandboxHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXSandboxHelper.h; sourceTree = "<group>"; };
 		185CB2821C0FFDE0007B6F24 /* DSXSandboxHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXSandboxHelper.m; sourceTree = "<group>"; };
+		185EA8C91C59AE4E00D81104 /* DSXRefreshFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXRefreshFooter.h; sourceTree = "<group>"; };
+		185EA8CA1C59AE4E00D81104 /* DSXRefreshFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXRefreshFooter.m; sourceTree = "<group>"; };
+		185EA8CF1C59F83200D81104 /* DSXRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXRefreshControl.h; sourceTree = "<group>"; };
+		185EA8D01C59F83200D81104 /* DSXRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXRefreshControl.m; sourceTree = "<group>"; };
 		187B51541C487CC20073F4E5 /* GalleryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GalleryView.h; sourceTree = "<group>"; };
 		187B51551C487CC20073F4E5 /* GalleryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GalleryView.m; sourceTree = "<group>"; };
 		187B51571C48894C0073F4E5 /* SliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SliderView.h; sourceTree = "<group>"; };
@@ -672,10 +676,6 @@
 		18A3CC4A1C55EC7400690CB5 /* ChaoshiReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaoshiReusableView.m; sourceTree = "<group>"; };
 		18A3CC4C1C55FB5D00690CB5 /* ChaoshiGoodsItemCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChaoshiGoodsItemCell.h; sourceTree = "<group>"; };
 		18A3CC4D1C55FB5D00690CB5 /* ChaoshiGoodsItemCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChaoshiGoodsItemCell.m; sourceTree = "<group>"; };
-		18A3CC4F1C56045D00690CB5 /* DSXPullUpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXPullUpView.h; sourceTree = "<group>"; };
-		18A3CC501C56045D00690CB5 /* DSXPullUpView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXPullUpView.m; sourceTree = "<group>"; };
-		18A3CC511C56045D00690CB5 /* DSXRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXRefreshControl.h; sourceTree = "<group>"; };
-		18A3CC521C56045D00690CB5 /* DSXRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXRefreshControl.m; sourceTree = "<group>"; };
 		18A48D691C4CA31F0091C194 /* TitleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TitleCell.h; sourceTree = "<group>"; };
 		18A48D6A1C4CA31F0091C194 /* TitleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TitleCell.m; sourceTree = "<group>"; };
 		18A48D6C1C4CA9330091C194 /* localView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = localView.h; sourceTree = "<group>"; };
@@ -867,7 +867,6 @@
 		18CA778E1C58AD4F005B179F /* DSXRefreshHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXRefreshHeader.m; sourceTree = "<group>"; };
 		18CA77901C58AF56005B179F /* DSXRefreshView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSXRefreshView.h; sourceTree = "<group>"; };
 		18CA77911C58AF56005B179F /* DSXRefreshView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSXRefreshView.m; sourceTree = "<group>"; };
-		18CA77931C58B5EB005B179F /* DSXRefresh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DSXRefresh.h; sourceTree = "<group>"; };
 		18CA77941C58B6F5005B179F /* UIScrollView+Refresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+Refresh.h"; sourceTree = "<group>"; };
 		18CA77951C58B6F5005B179F /* UIScrollView+Refresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+Refresh.m"; sourceTree = "<group>"; };
 		18FC70501C0E811B004283A6 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -1744,10 +1743,6 @@
 				189DB07B1C5099ED00EC9087 /* DSXCLLocationManager.h */,
 				189DB07C1C5099ED00EC9087 /* DSXCLLocationManager.m */,
 				18BF14CE1C0E7B7200126918 /* DSXWorking.h */,
-				18A3CC4F1C56045D00690CB5 /* DSXPullUpView.h */,
-				18A3CC501C56045D00690CB5 /* DSXPullUpView.m */,
-				18A3CC511C56045D00690CB5 /* DSXRefreshControl.h */,
-				18A3CC521C56045D00690CB5 /* DSXRefreshControl.m */,
 				185CB2811C0FFDE0007B6F24 /* DSXSandboxHelper.h */,
 				185CB2821C0FFDE0007B6F24 /* DSXSandboxHelper.m */,
 				180C6FF51C2A2F9100A27EF8 /* DSXDropDownMenu.h */,
@@ -1927,11 +1922,14 @@
 			children = (
 				18CA778D1C58AD4F005B179F /* DSXRefreshHeader.h */,
 				18CA778E1C58AD4F005B179F /* DSXRefreshHeader.m */,
+				185EA8C91C59AE4E00D81104 /* DSXRefreshFooter.h */,
+				185EA8CA1C59AE4E00D81104 /* DSXRefreshFooter.m */,
 				18CA77901C58AF56005B179F /* DSXRefreshView.h */,
 				18CA77911C58AF56005B179F /* DSXRefreshView.m */,
-				18CA77931C58B5EB005B179F /* DSXRefresh.h */,
 				18CA77941C58B6F5005B179F /* UIScrollView+Refresh.h */,
 				18CA77951C58B6F5005B179F /* UIScrollView+Refresh.m */,
+				185EA8CF1C59F83200D81104 /* DSXRefreshControl.h */,
+				185EA8D01C59F83200D81104 /* DSXRefreshControl.m */,
 			);
 			path = Refresh;
 			sourceTree = "<group>";
@@ -2242,6 +2240,7 @@
 				189DB0771C50998600EC9087 /* GoodsManager.m in Sources */,
 				18529AA91C477013002A0DFC /* HomeViewController.m in Sources */,
 				18529B4C1C4771F3002A0DFC /* MyViewController.m in Sources */,
+				185EA8CB1C59AE4E00D81104 /* DSXRefreshFooter.m in Sources */,
 				18529CA61C47736F002A0DFC /* NewsListView.m in Sources */,
 				18CA778F1C58AD4F005B179F /* DSXRefreshHeader.m in Sources */,
 				18CA77921C58AF56005B179F /* DSXRefreshView.m in Sources */,
@@ -2264,6 +2263,7 @@
 				18FC708E1C0E8834004283A6 /* UIColor+color.m in Sources */,
 				18BF165B1C0E7B7200126918 /* IncomeView.m in Sources */,
 				18529CAD1C47736F002A0DFC /* TravelDetailViewController.m in Sources */,
+				185EA8D11C59F83200D81104 /* DSXRefreshControl.m in Sources */,
 				18529B631C4771F3002A0DFC /* MyHeadView.m in Sources */,
 				18529C321C47736F002A0DFC /* ChaoshiListViewController.m in Sources */,
 				18BF16211C0E7B7200126918 /* AppDelegate.m in Sources */,
@@ -2332,12 +2332,10 @@
 				18BF168D1C0E7B7200126918 /* SDWebImageCompat.m in Sources */,
 				189DB0801C5099ED00EC9087 /* UIView+Size.m in Sources */,
 				18BCB55F1C51D3750010D2AC /* RegWithEmailViewController.m in Sources */,
-				18A3CC541C56045D00690CB5 /* DSXRefreshControl.m in Sources */,
 				18529CA41C47736F002A0DFC /* CommentView.m in Sources */,
 				189DB07A1C50998600EC9087 /* ShopModel.m in Sources */,
 				18529CA51C47736F002A0DFC /* NewsColumnView.m in Sources */,
 				18BCB5641C51E8D30010D2AC /* FavoriteManager.m in Sources */,
-				18A3CC531C56045D00690CB5 /* DSXPullUpView.m in Sources */,
 				18529CD21C478767002A0DFC /* LoginViewController.m in Sources */,
 				18BCB55C1C51C7A20010D2AC /* LoginInputView.m in Sources */,
 				18529B641C4771F3002A0DFC /* NoticeViewCell.m in Sources */,

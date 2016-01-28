@@ -10,14 +10,12 @@
 #import "OrderItemCell.h"
 #import "OrderCommonCell.h"
 
-@interface MyOrderViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,DSXDropDownMenuDelegate>{
+@interface MyOrderViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,DSXDropDownMenuDelegate,DSXRefreshDelegate>{
     @private
     int _page;
     BOOL _isRefreshing;
     UILabel *_tipsView;
     DSXDropDownMenu *_popMenu;
-    DSXPullUpView *_pullUpView;
-    DSXRefreshControl *_refreshControl;
 }
 
 @property(nonatomic,strong)NSMutableArray *orderList;

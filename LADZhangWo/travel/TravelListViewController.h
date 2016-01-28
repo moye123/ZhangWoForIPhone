@@ -9,12 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface TravelListViewController : UITableViewController<UIScrollViewDelegate,DSXDropDownMenuDelegate>{
+@interface TravelListViewController : UITableViewController<UIScrollViewDelegate,DSXDropDownMenuDelegate,DSXRefreshDelegate>{
 @private
     int _page;
     BOOL _isRefreshing;
-    DSXRefreshControl *_refreshControl;
-    DSXPullUpView*_pullUpView;
     UILabel *_tipsLabel;
     DSXDropDownMenu *_popMenu;
 }

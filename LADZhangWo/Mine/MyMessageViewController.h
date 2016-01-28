@@ -9,10 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "NoticeViewCell.h"
 
-@interface MyMessageViewController : UITableViewController{
+@interface MyMessageViewController : UITableViewController<DSXRefreshDelegate>{
     @private
-    DSXRefreshControl *_refreshControl;
-    DSXPullUpView *_pullUpView;
     BOOL _isRefreshing;
     int _page;
 }

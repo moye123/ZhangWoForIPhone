@@ -10,20 +10,24 @@
 #import "DSXRefreshView.h"
 
 typedef NS_ENUM(NSInteger,DSXRefreshState){
-    DSXRefreshStateNormal,
-    DSXRefreshStateWillRefreshing,
-    DSXRefreshStateRefreshing,
-    DSXRefreshStateRefreshComplete
+    DSXRefreshStateNormal = 0,
+    DSXRefreshStateWillRefresh = 1,
+    DSXRefreshStateRefreshing = 2,
 };
 
-@interface DSXRefreshHeader : DSXRefreshView
+UIKIT_EXTERN NSString *const DSXRefreshStateNormalText;
+UIKIT_EXTERN NSString *const DSXRefreshStateWillRefreshText;
+UIKIT_EXTERN NSString *const DSXRefreshStateRefreshingText;
+
+@interface DSXRefreshHeader : DSXRefreshView{
+    NSString *_updateTimeKey;
+}
 
 @property(nonatomic)BOOL isRefreshing;
-@property(nonatomic)DSXRefreshState refreshState;
-@property(nonatomic,readonly)UILabel *updateLabel;
+@property(nonatomic,readwrite)DSXRefreshState refreshState;
+@property(nonatomic,readonly)UILabel *updateTimeLabel;
 
+- (instancetype)init;
 - (instancetype)initWithFrame:(CGRect)frame;
-- (void)beginRefreshing;
-- (void)endRefreshing;
 
 @end

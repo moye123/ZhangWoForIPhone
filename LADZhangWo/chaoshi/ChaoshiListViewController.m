@@ -29,27 +29,19 @@
     _popMenu.delegate = self;
     [self.navigationController.view addSubview:_popMenu];
     
-    _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    //[self.view addSubview:_refreshControl];
-    
-    CGRect frame = self.view.bounds;
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    _collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:layout];
+    _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
     _collectionView.delegate = self;
     _collectionView.dataSource = self;
     _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     _collectionView.alwaysBounceVertical = YES;
     _collectionView.backgroundColor = [UIColor clearColor];
-    _collectionView.showsVerticalScrollIndicator = NO;
-    _collectionView.contentInset = UIEdgeInsetsMake(0, 10, 0, 10);
-    _collectionView.refreshView = [[DSXRefreshHeader alloc] initWithFrame:CGRectZero];
+    _collectionView.contentInset = UIEdgeInsetsMake(10, 10, 10, 10);
     [_collectionView registerClass:[ChaoshiGoodsItemCell class] forCellWithReuseIdentifier:@"goodsCell"];
     [self.view addSubview:_collectionView];
     
-    _refreshControl = [[DSXRefreshControl alloc] init];
-    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    _pullUpView.hidden = YES;
+    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:_collectionView];
+    refreshControl.delegate = self;
     
     _tipsView = [[UILabel alloc] init];
     _tipsView.text = @"该类目下还没有商品";
@@ -65,7 +57,7 @@
     
     _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, TOPHEIGHT, SWIDTH, 50)];
     _toolbar.backgroundColor = [UIColor whiteColor];
-    [self.navigationController.view addSubview:_toolbar];
+    //[self.navigationController.view addSubview:_toolbar];
 }
 
 - (void)back{
@@ -148,21 +140,21 @@
             [_goodsList addObject:goods];
         }
         [self.collectionView reloadData];
-        if ([_refreshControl isRefreshing]) {
-            [_refreshControl endRefreshing];
-        }
     }
     if ([_goodsList count] == 0) {
         _tipsView.hidden = NO;
     }else {
         _tipsView.hidden = YES;
     }
-    if ([array count] < 20) {
-        _pullUpView.hidden = YES;
-    }else {
-        _pullUpView.hidden = NO;
-    }
-    [_pullUpView endLoading];
+}
+
+#pragma mark - dsxrefresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [self refresh];
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [self loadMore];
 }
 
 #pragma mark - collectionView delegate
@@ -213,25 +205,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     return [[UITableViewCell alloc] init];
-}
-
-#pragma mark - scrollView delegate
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    CGFloat diffHeight = scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentSize.height;
-    if (diffHeight > 50) {
-        if (_pullUpView.hidden == NO) {
-            [_pullUpView beginLoading];
-            [self loadMore];
-        }
-    }
-    
-    if (scrollView.contentOffset.y < -120) {
-        //[_refreshControl beginRefreshing];
-        //[self refresh];
-        UIEdgeInsets inset = scrollView.contentInset;
-        inset.top = 50;
-        scrollView.contentInset = inset;
-    }
 }
 
 @end

@@ -147,12 +147,9 @@ NSString *const DSXFontStyleBlack = @"Noto-Sans-S-Chinese-Black";
     
     UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
     [window addSubview:popView];
-    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(hidePopView:) userInfo:popView repeats:NO];
-}
-
-- (void)hidePopView:(NSTimer *)timer{
-    UIView *popView = [timer userInfo];
-    [popView removeFromSuperview];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [popView removeFromSuperview];
+    });
 }
 
 - (UIView *)showLoadingViewWithMessage:(NSString *)message{

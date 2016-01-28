@@ -31,15 +31,11 @@
     self.tableView = [[UITableView alloc] initWithFrame:self.view.frame];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [self.tableView registerClass:[GoodsItemCell class] forCellReuseIdentifier:@"goodsCell"];
     
-    _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    self.refreshControl = _refreshControl;
-    
-    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    _pullUpView.hidden = YES;
-    self.tableView.tableFooterView = _pullUpView;
+    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self.tableView];
+    refreshControl.delegate = self;
     
     NSString *key = [NSString stringWithFormat:@"googsList_%ld",(long)_catid];
     [self reloadTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:key]];
@@ -121,15 +117,15 @@
         }
         [self.tableView reloadData];
     }
-    if ([_refreshControl isRefreshing]) {
-        [_refreshControl endRefreshing];
-    }
-    [_pullUpView endLoading];
-    if ([array count] >= 20) {
-        _pullUpView.hidden = NO;
-    }else {
-        _pullUpView.hidden = YES;
-    }
+}
+
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [self refresh];
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [self loadMore];
 }
 
 #pragma mark - tableView delegate
@@ -162,17 +158,6 @@
     detailController.goodsid = [[goodsData objectForKey:@"id"] integerValue];
     detailController.title = [goodsData objectForKey:@"name"];
     [self.navigationController pushViewController:detailController animated:YES];
-}
-
-#pragma mark - scrollView delegate
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    CGFloat diffHeight = scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentSize.height;
-    if (diffHeight > 50) {
-        if (_pullUpView.hidden == NO) {
-            [_pullUpView beginLoading];
-            [self loadMore];
-        }
-    }
 }
 
 - (void)viewDidLayoutSubviews{

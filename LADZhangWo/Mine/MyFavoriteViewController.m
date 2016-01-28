@@ -43,12 +43,8 @@
     self.tableView.backgroundColor = [UIColor backColor];
     [self.tableView registerClass:[FavorItemCell class] forCellReuseIdentifier:@"favorCell"];
     
-    _refreshContorl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    [_refreshContorl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    _pullUpView.hidden = YES;
-    self.refreshControl = _refreshContorl;
-    self.tableView.tableFooterView = _pullUpView;
+    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self.tableView];
+    refreshControl.delegate = self;
     [self refresh];
 }
 
@@ -80,9 +76,6 @@
                                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
-        }else {
-            [_pullUpView endLoading];
-            [_refreshContorl endRefreshing];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@",error);
@@ -100,17 +93,15 @@
         }
         [self.tableView reloadData];
     }
-    
-    if ([array count] < 20) {
-        _pullUpView.hidden = YES;
-    }else {
-        _pullUpView.hidden = NO;
-    }
-    [_pullUpView endLoading];
-    
-    if ([_refreshContorl isRefreshing]) {
-        [_refreshContorl endRefreshing];
-    }
+}
+
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [self refresh];
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [self loadMore];
 }
 
 #pragma mark - tableView delegate
@@ -198,18 +189,6 @@
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"%@", error);
         }];
-    }
-}
-
-#pragma mark - scrollview delagate
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    CGFloat diffHeight = scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentSize.height;
-    if (diffHeight > 50) {
-        if (_pullUpView.hidden == NO) {
-            [_pullUpView beginLoading];
-            [self loadMore];
-        }
-        
     }
 }
 

@@ -12,7 +12,7 @@
 
 - (instancetype)init{
     if (self = [super init]) {
-        self.afManager = [AFHTTPSessionManager manager];
+        self.afManager = [AFHTTPSessionManager sharedManager];
     }
     return self;
 }

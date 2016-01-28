@@ -9,11 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "FavorItemCell.h"
 
-@interface MyFavoriteViewController : UITableViewController<UIScrollViewDelegate>{
-    DSXPullUpView*_pullUpView;
-    DSXRefreshControl *_refreshContorl;
-    BOOL _isRefreshing;
+@interface MyFavoriteViewController : UITableViewController<UIScrollViewDelegate,DSXRefreshDelegate>{
     int _page;
+    BOOL _isRefreshing;
     UIToolbar *_toolbar;
 }
 

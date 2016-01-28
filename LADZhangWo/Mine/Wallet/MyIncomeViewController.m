@@ -23,14 +23,9 @@
     self.tableView.backgroundColor = [UIColor backColor];
     [self downloadData];
     
-    _refreshControl = [[DSXRefreshControl alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    [_refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    [self setRefreshControl:_refreshControl];
-    
-    _pullUpView = [[DSXPullUpView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
-    _pullUpView.hidden = YES;
-    self.tableView.tableFooterView = _pullUpView;
-    
+    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self.tableView];
+    refreshControl.delegate = self;
+
     _tipsView = [[UILabel alloc] init];
     _tipsView.text = @"你还没有获得过任何收益";
     _tipsView.textColor = [UIColor grayColor];
@@ -83,20 +78,20 @@
         }
         [self.tableView reloadData];
     }
-    if ([_refreshControl isRefreshing]) {
-        [_refreshControl endRefreshing];
-    }
-    if ([array count] < 20) {
-        _pullUpView.hidden = YES;
-    }else {
-        _pullUpView.hidden = NO;
-    }
-    [_pullUpView endLoading];
     if ([_incomeList count] == 0) {
         _tipsView.hidden = NO;
     }else {
         _tipsView.hidden = YES;
     }
+}
+
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [self refresh];
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [self loadMore];
 }
 
 #pragma mark - tableView delegate
@@ -122,21 +117,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
-}
-
-#pragma mark - scrollView delegate
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    CGFloat diffHeight = scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentSize.height;
-    if (diffHeight > 50) {
-        if (_pullUpView.hidden == NO) {
-            [_pullUpView beginLoading];
-            [self loadMore];
-        }
-    }
-    
-    if (scrollView.contentOffset.y < -120) {
-        [self refresh];
-    }
 }
 
 @end
