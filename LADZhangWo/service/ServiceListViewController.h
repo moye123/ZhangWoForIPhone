@@ -9,13 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "ServiceItemCell.h"
 
-@interface ServiceListViewController : UITableViewController<UIScrollViewDelegate,DSXRefreshDelegate>{
+@interface ServiceListViewController : DSXTableViewController<UIScrollViewDelegate,UITableViewDelegate,UITableViewDataSource,DSXRefreshDelegate>{
     @private
-    int _page;
-    BOOL _isRefreshing;
     UIView *_noaccessView;
 }
 
 @property(nonatomic)NSInteger catid;
-@property(nonatomic)NSMutableArray *serviceList;
 @end

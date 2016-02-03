@@ -28,11 +28,12 @@
     self.navigationItem.rightBarButtonItem = moreButton;
     
     //菜单栏
-    _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, TOPHEIGHT+2, SWIDTH, 50)];
+    _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     [_toolbar setHidden:NO];
     [_toolbar setDelegate:self];
     [_toolbar setBackgroundImage:[UIImage imageNamed:@"bg.png"] forToolbarPosition:UIBarPositionTop barMetrics:UIBarMetricsDefault];
-    [self.navigationController.view addSubview:_toolbar];
+    [_toolbar setClipsToBounds:NO];
+    [self.view addSubview:_toolbar];
     //导航栏
     _navView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, _toolbar.frame.size.height-2)];
     _navView.showsVerticalScrollIndicator = NO;
@@ -44,15 +45,14 @@
     _popMenu.delegate = self;
     [self.navigationController.view addSubview:_popMenu];
     
-    CGRect frame = self.view.frame;
-    frame.origin.y = frame.origin.y + 50;
-    frame.size.height = frame.size.height - 50;
-    _scrollView = [[UIScrollView alloc] initWithFrame:frame];
+    _scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+    _scrollView.originY = 51;
+    _scrollView.height-= 50;
     _scrollView.pagingEnabled = YES;
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.showsHorizontalScrollIndicator = NO;
     _scrollView.delegate = self;
-    _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    _scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     _scrollView.backgroundColor = [UIColor backColor];
     [self.view addSubview:_scrollView];
     

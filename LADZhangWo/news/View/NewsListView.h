@@ -25,6 +25,7 @@
 }
 @property(nonatomic,assign)int catid;
 @property(nonatomic,readonly)NewsSliderView *sliderView;
+@property(nonatomic,readonly)DSXRefreshControl *refreshControl;
 @property(nonatomic,assign)id<NewsSliderViewDelegate,NewsListDelegate>showDetailDelegate;
 
 - (instancetype)initWithFrame:(CGRect)frame;

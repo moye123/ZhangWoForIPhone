@@ -49,13 +49,13 @@
         [imageView addGestureRecognizer:tap];
         [imageView setUserInteractionEnabled:YES];
         
-        UIView *backView = [[UIView alloc] initWithFrame:CGRectMake(0, frame.size.height-40, frame.size.width, 40)];
-        backView.backgroundColor = [UIColor blackColor];
-        backView.alpha = 0.5;
-        backView.opaque = YES;
-        [imageView addSubview:backView];
+        //UIView *backView = [[UIView alloc] initWithFrame:CGRectMake(0, frame.size.height-40, frame.size.width, 40)];
+        //backView.backgroundColor = [UIColor blackColor];
+        //backView.alpha = 0.5;
+        //backView.opaque = YES;
+        //[imageView addSubview:backView];
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:backView.frame];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, frame.size.height-30, frame.size.width, 30)];
         titleLabel.font = [UIFont systemFontOfSize:14.0];
         titleLabel.textColor = [UIColor whiteColor];
         titleLabel.textAlignment = NSTextAlignmentCenter;

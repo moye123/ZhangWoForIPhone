@@ -12,6 +12,7 @@
 @interface ShowAdModel : NSObject
 
 + (instancetype)sharedModel;
-- (void)showAdWithData:(NSDictionary *)data fromViewController:(UIViewController *)vc;
+- (void)pushWithData:(NSDictionary *)data fromViewController:(UINavigationController *)nav;
+- (void)presentWithData:(NSDictionary *)data fromViewController:(UIViewController *)vc;
 
 @end

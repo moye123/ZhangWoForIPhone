@@ -102,7 +102,7 @@
     _travelSliderView.cellSize = CGSizeMake(SWIDTH-0.001, 250);
     _travelSliderView.contentSize = CGSizeMake(SWIDTH*2, 0);
     _travelSliderView.collectionView.frame = CGRectMake(0, 0, SWIDTH*2, 750);
-    [[DSXHttpManager sharedManager] GET:@"&c=homepage&a=showlist&groupid=2&num=9" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] GET:@"&c=ad&a=showlist&groupid=15&num=9" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                 NSArray *array = [responseObject objectForKey:@"data"];
@@ -121,7 +121,7 @@
     _specialGoodsView.imageSize = CGSizeMake(goodsCellSize.width-10, goodsCellSize.height);
     _specialGoodsView.contentSize = CGSizeMake((SWIDTH-10)*3, 0);
     _specialGoodsView.collectionView.frame = CGRectMake(0, 0, _specialGoodsView.frame.size.width*3, goodsCellSize.height);
-    [[DSXHttpManager sharedManager] GET:@"&c=homepage&a=showlist&groupid=3&num=6" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] GET:@"&c=ad&a=showlist&groupid=16&num=6" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                 NSArray *array = [responseObject objectForKey:@"data"];
@@ -140,7 +140,7 @@
     _foodGalleryView.scrollEnabled = NO;
     _foodGalleryView.touchDelegate = self;
     
-    [[DSXHttpManager sharedManager] GET:@"&c=homepage&a=showlist&groupid=4&num=6" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[DSXHttpManager sharedManager] GET:@"&c=ad&a=showlist&groupid=17&num=6" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                 _foodGalleryView.dataList = [responseObject objectForKey:@"data"];
@@ -195,21 +195,21 @@
 
 #pragma mark - slider view delegate
 - (void)sliderView:(SliderView *)sliderView didSelectedItemWithData:(NSDictionary *)data{
-    [[ShowAdModel sharedModel] showAdWithData:data fromViewController:self.navigationController];
+    [[ShowAdModel sharedModel] presentWithData:data fromViewController:self.navigationController];
 }
 
 - (void)DSXSliderView:(DSXSliderView *)sliderView didSelectedItemWithData:(NSDictionary *)data{
-    [[ShowAdModel sharedModel] showAdWithData:data fromViewController:self.navigationController];
+    [[ShowAdModel sharedModel] presentWithData:data fromViewController:self.navigationController];
 }
 
 #pragma mark - travel view delegate
 - (void)travelView:(TravelSliderView *)travelView didSelectedItemWithData:(NSDictionary *)data{
-    [[ShowAdModel sharedModel] showAdWithData:data fromViewController:self.navigationController];
+    [[ShowAdModel sharedModel] presentWithData:data fromViewController:self.navigationController];
 }
 
 #pragma mark - gallery view delegate
 - (void)galleryView:(GalleryView *)galleryView didSelectedItemWithData:(NSDictionary *)data{
-    [[ShowAdModel sharedModel] showAdWithData:data fromViewController:self.navigationController];
+    [[ShowAdModel sharedModel] presentWithData:data fromViewController:self.navigationController];
 }
 
 #pragma mark - categoryView delegate

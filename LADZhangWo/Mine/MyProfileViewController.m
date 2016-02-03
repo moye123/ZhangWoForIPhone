@@ -226,7 +226,7 @@
 #pragma mark - imagepicker delegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
     [picker dismissViewControllerAnimated:YES completion:nil];
-    UIView *loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:@"正在上传照片.."];
+    [[DSXActivityIndicator sharedIndicator] showModalViewWithTitle:@"正在上传照片.."];
     UIImage *tmpImage = [self imageCompressForSize:[info objectForKey:UIImagePickerControllerOriginalImage] targetSize:CGSizeMake(1000, 1000)];
     NSData *imageData = UIImageJPEGRepresentation(tmpImage, 1.0);
     NSString *filePath = [[DSXSandboxHelper tmpPath] stringByAppendingString:@"/tmp_image.jpg"];
@@ -239,7 +239,7 @@
         } progress:^(NSProgress * _Nonnull uploadProgress) {
             
         } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            [loadingView removeFromSuperview];
+            [[DSXActivityIndicator sharedIndicator] hide];
             [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
                 if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
@@ -251,7 +251,7 @@
                 
             }
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            [loadingView removeFromSuperview];
+            [[DSXActivityIndicator sharedIndicator] hide];
             [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleError Message:@"上传失败"];
         }];
     }

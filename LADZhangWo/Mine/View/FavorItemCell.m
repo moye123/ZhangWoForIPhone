@@ -27,7 +27,7 @@
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(_picWidth+25, 10, SWIDTH-_picWidth-30, 40)];
         _titleLabel.numberOfLines = 2;
-        _titleLabel.font = [UIFont systemFontOfSize:18.0];
+        _titleLabel.font = [UIFont systemFontOfSize:15.0];
         _titleLabel.textAlignment = NSTextAlignmentJustified;
         [self addSubview:_titleLabel];
         

@@ -18,6 +18,7 @@
 @synthesize menuView  = _menuView;
 @synthesize collectionView = _collectionView;
 @synthesize toolbar = _toolbar;
+@synthesize refreshControl = _refreshControl;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -31,6 +32,7 @@
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
+    _collectionView.originY = 50;
     _collectionView.delegate = self;
     _collectionView.dataSource = self;
     _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -40,8 +42,9 @@
     [_collectionView registerClass:[ChaoshiGoodsItemCell class] forCellWithReuseIdentifier:@"goodsCell"];
     [self.view addSubview:_collectionView];
     
-    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:_collectionView];
-    refreshControl.delegate = self;
+    _refreshControl = [[DSXRefreshControl alloc] init];
+    _collectionView.dsx_refreshControl = _refreshControl;
+    _collectionView.dsx_refreshControl.delegate = self;
     
     _tipsView = [[UILabel alloc] init];
     _tipsView.text = @"该类目下还没有商品";
@@ -55,9 +58,30 @@
     _goodsList = [[NSMutableArray alloc] init];
     [self refresh];
     
-    _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, TOPHEIGHT, SWIDTH, 50)];
+    _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 50)];
     _toolbar.backgroundColor = [UIColor whiteColor];
-    //[self.navigationController.view addSubview:_toolbar];
+    [self.view addSubview:_toolbar];
+    
+    UIBarButtonItem *listButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-list.png"] style:UIBarButtonItemStylePlain target:self action:@selector(toggleLeftMenu)];
+    listButton.tintColor = [UIColor colorWithRed:0.55 green:0.55 blue:0.55 alpha:1];
+    _toolbar.items = @[listButton];
+    
+    
+    //左侧菜单
+    _leftMenu = [[LeftMenuView alloc] initWithFrame:CGRectMake(-120, 50, 120, self.view.bounds.size.height-50)];
+    _leftMenu.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    _leftMenu.delegate = self;
+    [self.view addSubview:_leftMenu];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    _toolbar.hidden = NO;
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    _toolbar.hidden = YES;
 }
 
 - (void)back{
@@ -65,6 +89,27 @@
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }
 }
+
+#pragma mark - leftMenu
+- (void)toggleLeftMenu{
+    CGFloat originX = _leftMenu.originX;
+    if (originX == 0) {
+        originX = -_leftMenu.width;
+    }else {
+        originX = 0;
+    }
+    [UIView animateWithDuration:0.3 animations:^{
+        _leftMenu.originX = originX;
+    }];
+}
+
+- (void)leftMenuDidSelectedItemWithData:(NSDictionary *)data{
+    _catid = [[data objectForKey:@"catid"] integerValue];
+    self.title = [data objectForKey:@"cname"];
+    [self refresh];
+}
+
+#pragma mark -
 
 - (void)showPopMenu{
     [_popMenu toggle];
@@ -146,6 +191,9 @@
     }else {
         _tipsView.hidden = YES;
     }
+    if ([_goodsList count] < 20) {
+        _collectionView.dsx_footerView.hidden = YES;
+    }
 }
 
 #pragma mark - dsxrefresh delegate
@@ -175,7 +223,7 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    return CGSizeMake((SWIDTH-30)/2, (SWIDTH-30)/2+60);
+    return CGSizeMake((SWIDTH-30)/2, (SWIDTH-30)/2+80);
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{

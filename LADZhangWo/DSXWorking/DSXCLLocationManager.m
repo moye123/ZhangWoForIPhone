@@ -11,8 +11,8 @@
 @implementation DSXCLLocationManager
 - (instancetype)init{
     if (self = [super init]) {
-        [self requestWhenInUseAuthorization];
-        [self requestAlwaysAuthorization];
+        //[self requestWhenInUseAuthorization];
+        //[self requestAlwaysAuthorization];
     }
     return self;
 }

@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DSXRefreshHeader.h"
-#import "DSXRefreshFooter.h"
+#import "DSXRefreshControl.h"
 
 @interface UIScrollView (Refresh)
 
 @property(nonatomic)DSXRefreshHeader *dsx_headerView;
 @property(nonatomic)DSXRefreshFooter *dsx_footerView;
+@property(nonatomic)DSXRefreshControl *dsx_refreshControl;
 
 @end

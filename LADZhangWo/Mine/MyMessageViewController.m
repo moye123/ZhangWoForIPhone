@@ -7,19 +7,8 @@
 //
 
 #import "MyMessageViewController.h"
-
+ 
 @implementation MyMessageViewController
-@synthesize messageList = _messageList;
-
-- (instancetype)init{
-    self = [super init];
-    if (self) {
-        self.tableView.delegate = self;
-        self.tableView.dataSource = self;
-        [self.tableView registerClass:[NoticeViewCell class] forCellReuseIdentifier:@"noticeCell"];
-    }
-    return self;
-}
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -27,11 +16,10 @@
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
-    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self.tableView];
-    refreshControl.delegate = self;
-    
-    _messageList = [NSMutableArray array];
-    [self refresh];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    [self.tableView registerClass:[NoticeViewCell class] forCellReuseIdentifier:@"noticeCell"];
+    [self didStartRefreshing:nil];
 }
 
 - (void)back{
@@ -40,50 +28,46 @@
     }
 }
 
-- (void)refresh{
-    _page = 1;
-    _isRefreshing = YES;
-    [self downloadData];
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [super didStartRefreshing:refreshView];
+    self.currentPage = 1;
+    self.isRefreshing = YES;
+    [self loadDataSource];
 }
 
-- (void)loadMore{
-    _page++;
-    _isRefreshing = NO;
-    [self downloadData];
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [super didStartLoading:refreshView];
+    self.currentPage++;
+    self.isRefreshing = NO;
+    [self loadDataSource];
 }
 
-- (void)downloadData{
-    NSString *urlString = [NSString stringWithFormat:@"&c=notification&a=showlist&uid=%ld&page=%d",(long)[ZWUserStatus sharedStatus].uid,_page];
+#pragma mark - loadDataSource
+
+- (void)loadDataSource{
+    NSString *urlString = [NSString stringWithFormat:@"&c=notification&a=showlist&uid=%ld&page=%ld",(long)[ZWUserStatus sharedStatus].uid,(long)self.currentPage];
     [[DSXHttpManager sharedManager] GET:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
+            
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                self.moreData = [responseObject objectForKey:@"data"];
+                if ([self.moreData count] > 0) {
+                    if (self.isRefreshing) {
+                        self.isRefreshing = NO;
+                        [self.dataList removeAllObjects];
+                        [self.tableView reloadData];
+                    }
+                    for (NSDictionary *dict in self.moreData) {
+                        [self.dataList addObject:dict];
+                    }
+                    [self.tableView reloadData];
+                }
+            }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
-}
-
-- (void)reloadTableViewWithArray:(NSArray *)array{
-    if ([array count] > 0) {
-        if (_isRefreshing) {
-            _isRefreshing = NO;
-            [_messageList removeAllObjects];
-            [self.tableView reloadData];
-        }
-        for (NSDictionary *notice in array) {
-            [_messageList addObject:notice];
-        }
-        [self.tableView reloadData];
-    }
-}
-
-#pragma mark - refresh delegate
-- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
-    [self refresh];
-}
-
-- (void)didStartLoading:(DSXRefreshView *)refreshView{
-    [self loadMore];
 }
 
 #pragma mark - tableView delegate
@@ -92,7 +76,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [_messageList count];
+    return [self.dataList count];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -101,7 +85,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NoticeViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"noticeCell"];
-    NSDictionary *notice = [_messageList objectAtIndex:indexPath.row];
+    NSDictionary *notice = [self.dataList objectAtIndex:indexPath.row];
     [cell setNoticeData:notice];
     return cell;
 }

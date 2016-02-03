@@ -9,7 +9,7 @@
 #import "DSXRefreshHeader.h"
 NSString *const DSXRefreshStateNormalText = @"下拉刷新当前内容";
 NSString *const DSXRefreshStateWillRefreshText = @"松开手立即刷新";
-NSString *const DSXRefreshStateRefreshingText = @"正在刷新数据中..";
+NSString *const DSXRefreshStateRefreshingText = @"正在努力刷新中..";
 
 @implementation DSXRefreshHeader
 @synthesize isRefreshing  = _isRefreshing;
@@ -24,6 +24,9 @@ NSString *const DSXRefreshStateRefreshingText = @"正在刷新数据中..";
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         self.height = DSXRefreshHeaderHeight;
+        _arrow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"arrow.png"]];
+        [self addSubview:_arrow];
+        
         _updateTimeLabel = [[UILabel alloc] init];
         _updateTimeLabel.font = [UIFont systemFontOfSize:12.0];
         _updateTimeLabel.textColor = [UIColor grayColor];
@@ -44,9 +47,11 @@ NSString *const DSXRefreshStateRefreshingText = @"正在刷新数据中..";
     switch (refreshState) {
         case DSXRefreshStateNormal:
             self.textLabel.text = DSXRefreshStateNormalText;
+            _arrow.transform = CGAffineTransformMakeRotation(0);
             break;
         case DSXRefreshStateWillRefresh:
             self.textLabel.text = DSXRefreshStateWillRefreshText;
+            _arrow.transform = CGAffineTransformMakeRotation(M_PI);
             break;
             
         case DSXRefreshStateRefreshing:
@@ -59,6 +64,7 @@ NSString *const DSXRefreshStateRefreshingText = @"正在刷新数据中..";
 }
 
 - (void)beginRefreshing{
+    _arrow.hidden = YES;
     _isRefreshing = YES;
     self.refreshState = DSXRefreshStateRefreshing;
     [self.indicatorView startAnimating];
@@ -74,13 +80,13 @@ NSString *const DSXRefreshStateRefreshingText = @"正在刷新数据中..";
 }
 
 - (void)endRefreshing{
+    _arrow.hidden = NO;
     _isRefreshing = NO;
     [self.indicatorView stopAnimating];
-    self.refreshState = DSXRefreshStateNormal;
-    self.scrollView.contentInset = self.scrollViewOriginInset;
     [UIView animateWithDuration:0.3f animations:^{
         self.scrollView.contentInset = self.scrollViewOriginInset;
     }];
+    self.refreshState = DSXRefreshStateNormal;
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:_updateTimeKey];
     [self updateRefreshTimeForKey:_updateTimeKey];
     if (self.delegate && [self.delegate respondsToSelector:@selector(didEndRefreshing:)]) {
@@ -127,12 +133,18 @@ NSString *const DSXRefreshStateRefreshingText = @"正在刷新数据中..";
     }
 }
 
+- (void)didMoveToSuperview{
+    [super didMoveToSuperview];
+    self.originY = -self.height - self.scrollView.contentInset.top;
+}
+
 - (void)layoutSubviews{
     [super layoutSubviews];
-    self.originY = -self.height - self.scrollView.contentInset.top;
+    //self.originY = -self.height - self.scrollView.contentInset.top;
     self.textLabel.frame = CGRectMake(0, 5, self.scrollView.width, DSXRefreshHeaderHeight/2);
     self.updateTimeLabel.frame = CGRectMake(0, DSXRefreshHeaderHeight/2-5, self.scrollView.width, DSXRefreshHeaderHeight/2);
     self.indicatorView.position  = CGPointMake(self.width/2 - 100, (self.height - self.indicatorView.height)/2);
+    _arrow.frame = CGRectMake(self.width/2 - 90, (self.height-40)/2, 17, 40);
 }
 
 - (void)scrollViewContentOffsetDidChange:(NSDictionary *)change{

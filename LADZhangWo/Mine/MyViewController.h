@@ -20,7 +20,6 @@
     UILabel *_loginout;
 }
 
-@property(nonatomic,retain)UIView *topView;
-@property(nonatomic,retain)UITableView *tableView;
+@property(nonatomic,readonly)UITableView *tableView;
 
 @end

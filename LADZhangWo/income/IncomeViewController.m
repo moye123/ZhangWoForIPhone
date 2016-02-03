@@ -64,7 +64,7 @@
     
     //底部广告
     _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 310, SWIDTH, 150)];
-    _slideView.groupid = 8;
+    _slideView.groupid = 13;
     _slideView.num = 3;
     _slideView.delegate = self;
     [_slideView loaddata];

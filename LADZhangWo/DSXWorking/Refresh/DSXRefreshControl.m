@@ -9,10 +9,12 @@
 #import "DSXRefreshControl.h"
 
 @implementation DSXRefreshControl
-@synthesize headerView = _headerView;
-@synthesize footerView = _footerView;
-@synthesize scrollView = _scrollView;
-@synthesize delegate   = _delegate;
+@synthesize headerView   = _headerView;
+@synthesize footerView   = _footerView;
+@synthesize refreshState = _refreshState;
+@synthesize loadingState = _loadingState;
+@synthesize bottomHidden = _bottomHidden;
+@synthesize delegate     = _delegate;
 
 - (instancetype)init{
     if (self = [super init]) {
@@ -22,22 +24,53 @@
     return self;
 }
 
-- (instancetype)initWithScrollView:(UIScrollView *)scrollView{
-    self = [self init];
-    self.scrollView = scrollView;
-    return self;
-}
-
 - (void)setDelegate:(id<DSXRefreshDelegate>)delegate{
     _delegate = delegate;
-    _headerView.delegate = delegate;
-    _footerView.delegate = delegate;
+    self.headerView.delegate = delegate;
+    self.footerView.delegate = delegate;
 }
 
-- (void)setScrollView:(UIScrollView *)scrollView{
-    _scrollView = scrollView;
-    _scrollView.dsx_headerView = _headerView;
-    _scrollView.dsx_footerView = _footerView;
+- (void)setRefreshState:(DSXRefreshState)refreshState{
+    if (_refreshState != refreshState) {
+        _refreshState = refreshState;
+        _headerView.refreshState = refreshState;
+    }
+}
+
+- (DSXRefreshState)refreshState{
+    return self.headerView.refreshState;
+}
+
+- (void)setLoadingState:(DSXLoadingState)loadingState{
+    if (_loadingState != loadingState) {
+        _loadingState = loadingState;
+        self.footerView.loadingState = loadingState;
+    }
+}
+
+- (DSXLoadingState)loadingState{
+    return self.footerView.loadingState;
+}
+
+- (void)setBottomHidden:(BOOL)bottomHidden{
+    _bottomHidden = bottomHidden;
+    self.footerView.hidden = bottomHidden;
+}
+
+- (void)beginRefreshing{
+    [self.headerView beginRefreshing];
+}
+
+- (void)endRefreshing{
+    [self.headerView endRefreshing];
+}
+
+- (void)beginLoading{
+    [self.footerView beginLoading];
+}
+
+- (void)endLoading{
+    [self.footerView endLoading];
 }
 
 @end

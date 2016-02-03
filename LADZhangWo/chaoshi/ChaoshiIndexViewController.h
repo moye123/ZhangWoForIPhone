@@ -20,6 +20,7 @@
 
 @property(nonatomic)NSArray *menuList;
 @property(nonatomic)NSArray *categoryList;
+@property(nonatomic)UIScrollView *scrollView;
 @property(nonatomic)UITableView *tableView;
 @property(nonatomic)UITableView *menuView;
 @property(nonatomic)UICollectionView *collectionView;

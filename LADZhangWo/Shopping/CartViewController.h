@@ -12,20 +12,16 @@
 #import "CartCustomCell.h"
 #import "GoodsManager.h"
 
-@interface CartViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CartCustomCellDelegate,CartTitleCellDelegate,DSXRefreshDelegate>{
+@interface CartViewController : DSXTableViewController<UITableViewDelegate,UITableViewDataSource,UIToolbarDelegate,CartCustomCellDelegate,CartTitleCellDelegate>{
     @private
-    int _page;
-    BOOL _isRefreshing;
     UIButton *_checkAll;
     UILabel *_totaLabel;
     float _totalValue;
     NSInteger _totalNum;
     UIButton *_settlement;
     NSMutableArray *_goodsModelArray;
-    NSArray *_moreData;
 }
 
-@property(nonatomic,strong)NSMutableArray *cartList;
-@property(nonatomic,retain)UITableView *tableView;
+@property(nonatomic,readonly)UIToolbar *toolbar;
 
 @end

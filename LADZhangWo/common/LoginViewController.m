@@ -90,20 +90,18 @@
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     [userInfo setObject:account forKey:@"account"];
     [userInfo setObject:password forKey:@"password"];
-    UIView *loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:@"登录中,请稍后..."];
+
+    [[DSXActivityIndicator sharedIndicator] showModalViewWithTitle:@"登录中,请稍后..."];
     [[ZWUserStatus sharedStatus] login:userInfo success:^(id responseObject) {
         [[NSUserDefaults standardUserDefaults] setObject:userInfo forKey:@"loginInfo"];
-        [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(loginSucceed:) userInfo:loadingView repeats:NO];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[DSXActivityIndicator sharedIndicator] hide];
+            [self dismissViewControllerAnimated:YES completion:nil];
+        });
     } failure:^(NSString *errorMsg) {
-        [loadingView removeFromSuperview];
+        [[DSXActivityIndicator sharedIndicator] hide];
         [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:errorMsg];
     }];
-}
-
-- (void)loginSucceed:(NSTimer *)timer{
-    UIView *view = [timer userInfo];
-    [view removeFromSuperview];
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{

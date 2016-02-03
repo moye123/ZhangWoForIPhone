@@ -11,26 +11,21 @@
 
 @implementation ServiceListViewController
 @synthesize catid = _catid;
-@synthesize serviceList = _serviceList;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor backColor]];
     self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     
-    _serviceList = [NSMutableArray array];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [self.tableView registerClass:[ServiceItemCell class] forCellReuseIdentifier:@"serviceCell"];
-    
-    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self.tableView];
-    refreshControl.delegate = self;
     
     _noaccessView.hidden = YES;
     _noaccessView.center = CGPointMake(self.view.center.x, 200);
     [self.view addSubview:_noaccessView];
     
-    [self refresh];
+    [self didStartRefreshing:nil];
 }
 
 - (void)back{
@@ -41,60 +36,42 @@
     [super didReceiveMemoryWarning];
 }
 
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    
+}
+
 #pragma mark - download data
-- (void)refresh{
-    _page = 1;
-    _isRefreshing = YES;
-    [self downloadData];
-}
 
-- (void)loadMore{
-    _page++;
-    _isRefreshing = NO;
-    [self downloadData];
-}
-
-- (void)downloadData{
-    [[DSXHttpManager sharedManager] GET:@"&c=service&a=showlist" parameters:@{@"catid":@(_catid),@"page":@(_page)}
+- (void)loadDataSource{
+    [[DSXHttpManager sharedManager] GET:@"&c=service&a=showlist" parameters:@{@"catid":@(_catid),@"page":@(self.currentPage)}
                                progress:nil
                                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                                     if ([responseObject isKindOfClass:[NSDictionary class]]) {
-                                        [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
+                                        if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                                            self.moreData = [responseObject objectForKey:@"data"];
+                                            if ([self.moreData count] > 0) {
+                                                if (self.isRefreshing) {
+                                                    self.isRefreshing = NO;
+                                                    [self.dataList removeAllObjects];
+                                                    [self.tableView reloadData];
+                                                }
+                                                
+                                                for (NSDictionary *item in self.moreData) {
+                                                    [self.dataList addObject:item];
+                                                }
+                                                [self.tableView reloadData];
+                                            }
+                                        }
                                     }
     }
                                 failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                                     NSLog(@"%@", error);
     }];
-}
-
-- (void)reloadTableViewWithArray:(NSArray *)array{
-    if ([array count] > 0) {
-        if (_isRefreshing) {
-            _isRefreshing = NO;
-            [_serviceList removeAllObjects];
-            [self.tableView reloadData];
-        }
-        
-        for (NSDictionary *item in array) {
-            [_serviceList addObject:item];
-        }
-        [self.tableView reloadData];
-    }
-    
-    if ([_serviceList count] == 0) {
-        _noaccessView.hidden = NO;
-    }else {
-        _noaccessView.hidden = YES;
-    }
-}
-
-#pragma mark - refresh delegate
-- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
-    [self refresh];
-}
-
-- (void)didStartLoading:(DSXRefreshView *)refreshView{
-    [self loadMore];
 }
 
 #pragma mark - Table view data source
@@ -104,7 +81,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_serviceList count];
+    return [self.dataList count];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -112,7 +89,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSDictionary *serviceData = [_serviceList objectAtIndex:indexPath.row];
+    NSDictionary *serviceData = [self.dataList objectAtIndex:indexPath.row];
     ServiceItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"serviceCell"];
     [cell setImageWidth:SWIDTH*0.35];
     [cell setServiceData:serviceData];
@@ -122,7 +99,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
-    NSDictionary *serviceData = [_serviceList objectAtIndex:indexPath.row];
+    NSDictionary *serviceData = [self.dataList objectAtIndex:indexPath.row];
     ServiceDetailViewController *detailView = [[ServiceDetailViewController alloc] init];
     detailView.serviceID = [[serviceData objectForKey:@"id"] integerValue];
     detailView.hidesBottomBarWhenPushed = YES;

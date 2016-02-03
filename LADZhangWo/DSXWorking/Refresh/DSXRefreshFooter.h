@@ -24,7 +24,10 @@ UIKIT_EXTERN NSString *const DSXLoadingStateNoMoreDataText;
 
 @property(nonatomic,readonly)BOOL isLoading;
 @property(nonatomic,readwrite)DSXLoadingState loadingState;
+
 - (instancetype)init;
 - (instancetype)initWithFrame:(CGRect)frame;
+- (void)beginLoading;
+- (void)endLoading;
 
 @end

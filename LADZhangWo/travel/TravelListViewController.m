@@ -13,7 +13,6 @@
 
 @implementation TravelListViewController
 @synthesize catid = _catid;
-@synthesize travelList = _travelList;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -25,26 +24,18 @@
     _popMenu.delegate = self;
     [self.navigationController.view addSubview:_popMenu];
     
-    //初始化列表数组
-    _travelList = [NSMutableArray array];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.showsVerticalScrollIndicator = NO;
-    
-    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self.tableView];
-    refreshControl.delegate = self;
-    
-    [self showTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:@"travelList"]];
-    [self refresh];
-    
+    [self.tableView registerClass:[TravelItemCell class] forCellReuseIdentifier:@"travelCell"];
+    [self didStartRefreshing:nil];
 }
 
 - (void)back{
     if (![self.navigationController popViewControllerAnimated:YES]) {
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }
-    
 }
 
 - (void)showPopMenu{
@@ -74,66 +65,48 @@
     [_popMenu slideUp];
 }
 
-#pragma mark
-- (void)loadData{
-    [[DSXHttpManager sharedManager] GET:@"&c=travel&a=showlist" parameters:@{@"catid":@(_catid),@"page":@(_page)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [super didStartRefreshing:refreshView];
+    self.currentPage = 1;
+    self.isRefreshing = YES;
+    [self loadDataSource];
+}
+
+- (void)didEndRefreshing:(DSXRefreshView *)refreshView{
+    [super didEndRefreshing:refreshView];
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [super didStartLoading:refreshView];
+    self.currentPage++;
+    self.isRefreshing = NO;
+    [self loadDataSource];
+}
+
+#pragma mark - loadDataSource
+- (void)loadDataSource{
+    [[DSXHttpManager sharedManager] GET:@"&c=travel&a=showlist" parameters:@{@"catid":@(_catid),@"page":@(self.currentPage)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            NSArray *array = [responseObject objectForKey:@"data"];
-            if (_isRefreshing) {
-                [[NSUserDefaults standardUserDefaults] setObject:array forKey:@"travelList"];
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                self.moreData = [responseObject objectForKey:@"data"];
+                if ([self.moreData count] > 0) {
+                    if (self.isRefreshing) {
+                        self.isRefreshing = NO;
+                        [self.dataList removeAllObjects];
+                        [self.tableView reloadData];
+                    }
+                    
+                    for (NSDictionary *item in self.moreData) {
+                        [self.dataList addObject:item];
+                    }
+                    [self.tableView reloadData];
+                }
             }
-            [self showTableViewWithArray:array];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@",error);
     }];
-}
-
-- (void)showTableViewWithArray:(NSArray *)array{
-    if ([array count]>0) {
-        if (_isRefreshing) {
-            [_travelList removeAllObjects];
-            [self.tableView reloadData];
-        }
-        
-        for (NSDictionary *item in array) {
-            [_travelList addObject:item];
-        }
-        [self.tableView reloadData];
-    }
-    
-    if (_tipsLabel) {
-        [_tipsLabel removeFromSuperview];
-    }
-    if ([_travelList count] == 0) {
-        _tipsLabel = [[UILabel alloc] initWithFrame:CGRectMake((SWIDTH-200)/2, 100, 200, 30)];
-        _tipsLabel.text = @"此板块暂无数据..";
-        _tipsLabel.font = [UIFont systemFontOfSize:14.0];
-        _tipsLabel.textColor = [UIColor grayColor];
-        _tipsLabel.textAlignment = NSTextAlignmentCenter;
-        [self.view addSubview:_tipsLabel];
-    }
-}
-
-- (void)refresh{
-    _page = 1;
-    _isRefreshing = YES;
-    [self loadData];
-}
-
-- (void)loadMore{
-    _page++;
-    _isRefreshing = NO;
-    [self loadData];
-}
-
-#pragma mark - refresh delegate
-- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
-    [self refresh];
-}
-
-- (void)didStartLoading:(DSXRefreshView *)refreshView{
-    [self loadMore];
 }
 
 #pragma mark - tableView delegate
@@ -142,64 +115,26 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [_travelList count];
+    return [self.dataList count];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 150;
+    return SWIDTH*0.5+10;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"travelCell"];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"travelCell"];
-    }else{
-        for (UIView *subview in cell.contentView.subviews) {
-            [subview removeFromSuperview];
-        }
-    }
-    cell.contentView.backgroundColor = [UIColor colorWithHexString:@"0xf2f2f2"];
-    NSDictionary *travelItem = [_travelList objectAtIndex:indexPath.row];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 140)];
-    //imageView.layer.cornerRadius = 10.0;
-    imageView.layer.masksToBounds = YES;
-    imageView.contentMode = UIViewContentModeScaleAspectFill;
-    [imageView sd_setImageWithURL:[travelItem objectForKey:@"pic"]];
-    [cell.contentView addSubview:imageView];
-    
-    //显示标题
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 80, SWIDTH-76, 40)];
-    titleLabel.text = [travelItem objectForKey:@"title"];
-    titleLabel.font = [UIFont systemFontOfSize:16.0];
-    titleLabel.textColor = [UIColor whiteColor];
-    //titleLabel.numberOfLines = 2;
-    [titleLabel sizeToFit];
-    [cell.contentView addSubview:titleLabel];
-    
-    //显示位置信息
-    if ([travelItem objectForKey:@"province"]) {
-        UIImageView *locationIcon = [[UIImageView alloc] initWithFrame:CGRectMake(20, 110, 20, 20)];
-        [locationIcon setImage:[UIImage imageNamed:@"icon-location.png"]];
-        [cell.contentView addSubview:locationIcon];
-        
-        UILabel *locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(43, 108, SWIDTH-60, 20)];
-        locationLabel.text = [NSString stringWithFormat:@"%@  %@",[travelItem objectForKey:@"province"],[travelItem objectForKey:@"city"]];
-        locationLabel.font = [UIFont systemFontOfSize:12.0];
-        locationLabel.textColor = [UIColor whiteColor];
-        [cell.contentView addSubview:locationLabel];
-    }
-    
-
-    cell.tag = [[travelItem objectForKey:@"id"] intValue];
+    NSDictionary *travelData = [self.dataList objectAtIndex:indexPath.row];
+    TravelItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"travelCell" forIndexPath:indexPath];
+    cell.data = travelData;
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
-    NSDictionary *travelItem = [_travelList objectAtIndex:indexPath.row];
+    NSDictionary *travelItem = [self.dataList objectAtIndex:indexPath.row];
     TravelDetailViewController *detailController = [[TravelDetailViewController alloc] init];
-    detailController.travelID = [[travelItem objectForKey:@"id"] intValue];
+    detailController.travelID = [[travelItem objectForKey:@"id"] integerValue];
     detailController.title = [travelItem objectForKey:@"title"];
     detailController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:detailController animated:YES];

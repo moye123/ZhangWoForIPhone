@@ -45,8 +45,8 @@
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"categoryCell"];
     
     //轮播广告
-    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 180)];
-    _slideView.groupid = 9;
+    _slideView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, SWIDTH*0.5)];
+    _slideView.groupid = 22;
     _slideView.num = 3;
     _slideView.delegate = self;
     [_slideView loaddata];
@@ -120,6 +120,11 @@
     listView.title = [data objectForKey:@"cname"];
     [self.navigationController pushViewController:listView animated:YES];
     
+}
+
+#pragma mark - sliderview delegate
+- (void)DSXSliderView:(DSXSliderView *)sliderView didSelectedItemWithData:(NSDictionary *)data{
+    [[ShowAdModel sharedModel] pushWithData:data fromViewController:self.navigationController];
 }
 
 #pragma mark - tableView delegate
@@ -196,41 +201,6 @@
             shopView.shopid = [[shopData objectForKey:@"shopid"] integerValue];
             [self.navigationController pushViewController:shopView animated:YES];
         }
-    }
-}
-
-#pragma mark - sliderView delegate
-- (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
-    if ([idType isEqualToString:@"goodsid"]) {
-        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
-        goodsView.goodsid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:NO completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"aid"]) {
-        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
-        newsView.newsID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"shopid"]) {
-        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
-        shopView.shopid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"travelid"]) {
-        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
-        travelView.travelID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
 }
 

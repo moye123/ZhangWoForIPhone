@@ -13,8 +13,9 @@
 #import "TechanGalleryView.h"
 #import "TitleCell.h"
 #import "BlankCell.h"
+#import "ShowAdModel.h"
 
-@interface TechanViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIWebViewDelegate,UISearchBarDelegate,TechanGalleryViewDelegate>{
+@interface TechanViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIWebViewDelegate,UISearchBarDelegate,TechanGalleryViewDelegate,DSXSliderViewDelegate>{
     @private
     DSXSliderView *_sliderView;
     TechanGalleryView *_galleryView;

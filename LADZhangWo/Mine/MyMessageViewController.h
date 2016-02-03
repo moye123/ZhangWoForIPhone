@@ -9,13 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "NoticeViewCell.h"
 
-@interface MyMessageViewController : UITableViewController<DSXRefreshDelegate>{
-    @private
-    BOOL _isRefreshing;
-    int _page;
-}
+@interface MyMessageViewController : DSXTableViewController<UITableViewDelegate,UITableViewDataSource>{
 
-- (instancetype)init;
-@property(nonatomic,strong)NSMutableArray *messageList;
+}
 
 @end

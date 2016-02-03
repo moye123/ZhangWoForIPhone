@@ -39,17 +39,32 @@ NSString *const DSXRefreshKeyPathPanState = @"state";
     return self;
 }
 
-- (void)willMoveToSuperview:(UIView *)newSuperview{
-    [super willMoveToSuperview:newSuperview];
-    if (newSuperview && ![newSuperview isKindOfClass:[UIScrollView class]]) {
-        return;
-    }
+//- (void)willMoveToSuperview:(UIView *)newSuperview{
+//    [super willMoveToSuperview:newSuperview];
+//    if (newSuperview && ![newSuperview isKindOfClass:[UIScrollView class]]) {
+//        return;
+//    }
+//    [self removeObservers];
+//    if (newSuperview) {
+//        self.width = newSuperview.width;
+//        self.originX = 0;
+//        
+//        _scrollView = (UIScrollView *)newSuperview;
+//        _scrollView.alwaysBounceVertical = YES;
+//        _scrollViewOriginInset = _scrollView.contentInset;
+//        [self addObservers];
+//    }
+//}
+
+- (void)didMoveToSuperview{
+    [super didMoveToSuperview];
+    UIView *superView = self.superview;
     [self removeObservers];
-    if (newSuperview) {
-        self.width = newSuperview.width;
+    if (superView && [superView isKindOfClass:[UIScrollView class]]) {
+        self.width = superView.width;
         self.originX = 0;
         
-        _scrollView = (UIScrollView *)newSuperview;
+        _scrollView = (UIScrollView *)superView;
         _scrollView.alwaysBounceVertical = YES;
         _scrollViewOriginInset = _scrollView.contentInset;
         [self addObservers];
@@ -73,7 +88,7 @@ NSString *const DSXRefreshKeyPathPanState = @"state";
 - (void)removeObservers
 {
     [self.scrollView removeObserver:self forKeyPath:DSXRefreshKeyPathContentOffset];
-    [self.scrollView removeObserver:self forKeyPath:DSXRefreshKeyPathContentSize];;
+    [self.scrollView removeObserver:self forKeyPath:DSXRefreshKeyPathContentSize];
     [self.pan removeObserver:self forKeyPath:DSXRefreshKeyPathPanState];
     self.pan = nil;
 }

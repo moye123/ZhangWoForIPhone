@@ -13,50 +13,65 @@
 #import "ShopDetailViewController.h"
 
 @implementation CartViewController
-@synthesize cartList  = _cartList;
-@synthesize tableView = _tableView;
+@synthesize toolbar = _toolbar;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self setTitle:@"我的购物车"];
-    _cartList = [NSMutableArray array];
     _goodsModelArray = [NSMutableArray array];
     
-    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
-    _tableView.delegate = self;
-    _tableView.dataSource = self;
-    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    [self.view addSubview:_tableView];
-    [_tableView registerClass:[CartTitleCell class] forCellReuseIdentifier:@"titleCell"];
-    [_tableView registerClass:[CartCustomCell class] forCellReuseIdentifier:@"goodsCell"];
-    
-    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:_tableView];
-    refreshControl.delegate = self;
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.backgroundColor = [UIColor colorWithHexString:@"0xf0f0f0"];
+    self.view.backgroundColor = self.tableView.backgroundColor;
+    [self.tableView registerClass:[CartTitleCell class] forCellReuseIdentifier:@"titleCell"];
+    [self.tableView registerClass:[CartCustomCell class] forCellReuseIdentifier:@"goodsCell"];
     
     _totalNum = 0;
     _totalValue = 0.00;
+    _toolbar = self.navigationController.toolbar;
+    //_toolbar.delegate = self;
+    
     _checkAll = [self checkBox];
     [_checkAll setFrame:CGRectMake(12, 11, 22, 22)];
     [_checkAll addTarget:self action:@selector(checkAll:) forControlEvents:UIControlEventTouchUpInside];
-    [self.navigationController.toolbar addSubview:_checkAll];
-    [self.navigationController.toolbar setBackgroundImage:[UIImage imageNamed:@"bg.png"] forToolbarPosition:UIBarPositionBottom barMetrics:UIBarMetricsDefault];
+    [_toolbar addSubview:_checkAll];
+    [_toolbar setBackgroundImage:[UIImage imageNamed:@"bg.png"] forToolbarPosition:UIBarPositionBottom barMetrics:UIBarMetricsDefault];
     
     UILabel *checkallLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 10, 40, 25)];
     checkallLabel.text = @"全选";
     checkallLabel.font = [UIFont systemFontOfSize:16.0];
-    [self.navigationController.toolbar addSubview:checkallLabel];
+    [_toolbar addSubview:checkallLabel];
     
     _totaLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 13, 0, 0)];
     _totaLabel.font = [UIFont systemFontOfSize:16.0];
     [self resetTotalLabel];
-    [self.navigationController.toolbar addSubview:_totaLabel];
+    [_toolbar addSubview:_totaLabel];
     
-    _settlement = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-100, 0, 100, self.navigationController.toolbar.frame.size.height)];
+    _settlement = [[UIButton alloc] initWithFrame:CGRectMake(SWIDTH-100, 0, 100, _toolbar.height)];
     [_settlement setBackgroundColor:[UIColor colorWithHexString:@"0x63D0BD"]];
     [_settlement setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_settlement addTarget:self action:@selector(settlement) forControlEvents:UIControlEventTouchUpInside];
-    [self.navigationController.toolbar addSubview:_settlement];
+    [_toolbar addSubview:_settlement];
+    [self.view addSubview:_toolbar];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.navigationController.toolbarHidden = NO;
+    ZWNavigationController *nav = (ZWNavigationController *)self.navigationController;
+    [nav setStyle:ZWNavigationStyleDefault];
+    [self didStartRefreshing:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.navigationController.toolbarHidden = YES;
+}
+
+#pragma mark - toolbar delegate
+- (UIBarPosition)positionForBar:(id<UIBarPositioning>)bar{
+    return UIBarPositionBottom;
 }
 
 - (void)resetTotalLabel{
@@ -76,7 +91,7 @@
         }
     }
 
-    if (_totalNum == [_cartList count] && _totalNum>0) {
+    if (_totalNum == [self.dataList count] && _totalNum>0) {
         _checkAll.selected = YES;
     }else {
         _checkAll.selected = NO;
@@ -147,39 +162,31 @@
     }];
 }
 
-- (void)viewWillAppear:(BOOL)animated{
-    self.navigationController.toolbarHidden = NO;
-    ZWNavigationController *nav = (ZWNavigationController *)self.navigationController;
-    [nav setStyle:ZWNavigationStyleDefault];
-    [self refresh];
-    [super viewWillAppear:animated];
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [super didStartRefreshing:refreshView];
+    self.currentPage = 1;
+    self.isRefreshing = YES;
+    [self loadDataSource];
 }
 
-- (void)viewWillDisappear:(BOOL)animated{
-    self.navigationController.toolbarHidden = YES;
-    [super viewWillDisappear:animated];
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [super didStartLoading:refreshView];
+    self.currentPage++;
+    self.isRefreshing = NO;
+    [self loadDataSource];
 }
 
-- (void)refresh{
-    _page = 1;
-    _isRefreshing = YES;
-    [self loadData];
-}
-
-- (void)loadMore{
-    _page++;
-    [self loadData];
-}
-
-- (void)loadData{
+#pragma mark - loadDataSource
+- (void)loadDataSource{
     [[DSXHttpManager sharedManager] GET:@"&c=cart&a=showlist"
-                             parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"page":@(_page)}
+                             parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"page":@(self.currentPage)}
                                progress:nil
                                 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                                     if ([responseObject isKindOfClass:[NSDictionary class]]) {
                                         if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
-                                            _moreData = [responseObject objectForKey:@"data"];
-                                            [self reloadTableViewWithArray:_moreData];
+                                            self.moreData = [responseObject objectForKey:@"data"];
+                                            [self reloadTableViewWithArray:self.moreData];
                                         }
                                     }
                                 }
@@ -189,14 +196,15 @@
 }
 
 - (void)reloadTableViewWithArray:(NSArray *)array{
-    if (_isRefreshing) {
-        [_cartList removeAllObjects];
+    if (self.isRefreshing) {
+        self.isRefreshing = NO;
+        [self.dataList removeAllObjects];
         [_goodsModelArray removeAllObjects];
-        [_tableView reloadData];
+        [self.tableView reloadData];
     }
     
     for (NSDictionary *dict in array) {
-        [_cartList addObject:dict];
+        [self.dataList addObject:dict];
         CartInfoModel *goodsModel = [[CartInfoModel alloc] init];
         goodsModel.cartID     = [[dict objectForKey:@"cartid"] integerValue];
         goodsModel.goodsID    = [[dict objectForKey:@"goods_id"] integerValue];
@@ -209,10 +217,7 @@
         goodsModel.shopName   = [dict objectForKey:@"shopname"];
         [_goodsModelArray addObject:goodsModel];
     }
-    if ([_cartList count] < 20) {
-        _tableView.dsx_footerView.hidden = YES;
-    }
-    [_tableView reloadData];
+    [self.tableView reloadData];
     [_checkAll setSelected:NO];
     [self total];
 }
@@ -224,24 +229,9 @@
     return checkBox;
 }
 
-#pragma mark - refresh delegate
-- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
-    [self refresh];
-}
-
-- (void)didStartLoading:(DSXRefreshView *)refreshView{
-    [self loadMore];
-}
-
-- (void)didEndLoading:(DSXRefreshView *)refreshView{
-    if ([_moreData count] < 20) {
-        _tableView.dsx_footerView.loadingState = DSXLoadingStateNoMoreData;
-    }
-}
-
 #pragma mark - tableView delegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return [_cartList count];
+    return [self.dataList count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -292,11 +282,11 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 0.001;
+    return 0.0001;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 10.0;
+    return 20.0;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -308,7 +298,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSDictionary *cart = [_cartList objectAtIndex:indexPath.section];
+    NSDictionary *cart = [self.dataList objectAtIndex:indexPath.section];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
 
         NSDictionary *params = @{@"cartid":[cart objectForKey:@"cartid"],
@@ -317,7 +307,7 @@
                                     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
                 if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
-                    [_cartList removeObjectAtIndex:indexPath.section];
+                    [self.dataList removeObjectAtIndex:indexPath.section];
                     [_goodsModelArray removeObjectAtIndex:indexPath.section];
                     [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
                              withRowAnimation:UITableViewRowAnimationFade];
@@ -334,10 +324,10 @@
 
 #pragma mark - titleCell delegate
 - (void)titleCell:(CartTitleCell *)cell didClickedAtCheckBox:(UIButton *)checkBox{
-    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     CartInfoModel *model = [_goodsModelArray objectAtIndex:indexPath.section];
     model.selectState = checkBox.isSelected;
-    [_tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
     [self total];
 }
 
@@ -351,8 +341,8 @@
 #pragma mark - customCell delegate
 - (void)customCell:(CartCustomCell *)cell didClickedItemAtCheckBox:(UIButton *)checkBox model:(CartInfoModel *)model{
     model.selectState = checkBox.isSelected;
-    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
-    [_tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationNone];
     [self total];
 }
 
@@ -385,11 +375,11 @@
 #pragma mark - checkAll
 - (void)checkAll:(UIButton *)sender{
     sender.selected = !sender.isSelected;
-    for (int i=0; i<[_cartList count]; i++) {
+    for (int i=0; i<[self.dataList count]; i++) {
         CartInfoModel *model = [_goodsModelArray objectAtIndex:i];
         model.selectState = sender.isSelected;
     }
-    [_tableView reloadData];
+    [self.tableView reloadData];
     [self total];
 }
 

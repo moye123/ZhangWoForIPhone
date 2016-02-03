@@ -29,15 +29,9 @@
     //实现代理
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.backgroundColor = [UIColor backColor];
     [self.tableView registerClass:[ShopItemCell class] forCellReuseIdentifier:@"shopCell"];
-    
-    //下来刷新
-    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self.tableView];
-    refreshControl.delegate = self;
-    
-    _shopList = [NSMutableArray array];
-    [self downloadData];
+
+    [self didStartRefreshing:nil];
 }
 
 - (void)back{
@@ -72,56 +66,45 @@
     [_popMenu slideUp];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [super didStartRefreshing:refreshView];
+    self.currentPage = 1;
+    self.isRefreshing = YES;
+    [self loadDataSource];
 }
 
-#pragma mark - download data
-- (void)refresh{
-    _page = 1;
-    _isRefreshing = YES;
-    [self downloadData];
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [super didStartRefreshing:refreshView];
+    self.currentPage++;
+    self.isRefreshing = NO;
+    [self loadDataSource];
 }
 
-- (void)loadMore{
-    _page++;
-    _isRefreshing = NO;
-    [self downloadData];
-}
+#pragma mark - loadDataSource
 
-- (void)downloadData{
-    [[DSXHttpManager sharedManager] GET:@"&c=shop&a=showlist" parameters:@{@"page":@(_page)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+- (void)loadDataSource{
+    [[DSXHttpManager sharedManager] GET:@"&c=shop&a=showlist" parameters:@{@"page":@(self.currentPage)} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                self.moreData = [responseObject objectForKey:@"data"];
+                if ([self.moreData count] > 0) {
+                    if (self.isRefreshing) {
+                        self.isRefreshing = NO;
+                        [self.dataList removeAllObjects];
+                        [self.tableView reloadData];
+                    }
+                    
+                    for (NSDictionary *dict in self.moreData) {
+                        [self.dataList addObject:dict];
+                    }
+                    [self.tableView reloadData];
+                }
+            }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
-}
-
-- (void)reloadTableViewWithArray:(NSArray *)array{
-    if ([array count] > 0) {
-        if (_isRefreshing) {
-            _isRefreshing = NO;
-            [_shopList removeAllObjects];
-            [self.tableView reloadData];
-        }
-        
-        for (NSDictionary *dict in array) {
-            [_shopList addObject:dict];
-        }
-        [self.tableView reloadData];
-    }
-}
-
-#pragma mark - refresh delegate
-- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
-    [self refresh];
-}
-
-- (void)didStartLoading:(DSXRefreshView *)refreshView{
-    [self loadMore];
 }
 
 #pragma mark - Table view data source
@@ -131,7 +114,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_shopList count];
+    return [self.dataList count];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -139,7 +122,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSDictionary *shopData = [_shopList objectAtIndex:indexPath.row];
+    NSDictionary *shopData = [self.dataList objectAtIndex:indexPath.row];
     ShopItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"shopCell" forIndexPath:indexPath];
     cell.shopData = shopData;
     return cell;
@@ -148,7 +131,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
-    NSDictionary *shopData = [_shopList objectAtIndex:(indexPath.row-1)];
+    NSDictionary *shopData = [self.dataList objectAtIndex:(indexPath.row-1)];
     ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
     shopView.shopid = [[shopData objectForKey:@"shopid"] integerValue];
     [self.navigationController pushViewController:shopView animated:YES];

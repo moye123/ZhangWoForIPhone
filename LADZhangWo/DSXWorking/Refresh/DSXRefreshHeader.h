@@ -21,6 +21,7 @@ UIKIT_EXTERN NSString *const DSXRefreshStateRefreshingText;
 
 @interface DSXRefreshHeader : DSXRefreshView{
     NSString *_updateTimeKey;
+    UIImageView *_arrow;
 }
 
 @property(nonatomic)BOOL isRefreshing;
@@ -29,5 +30,7 @@ UIKIT_EXTERN NSString *const DSXRefreshStateRefreshingText;
 
 - (instancetype)init;
 - (instancetype)initWithFrame:(CGRect)frame;
+- (void)beginRefreshing;
+- (void)endRefreshing;
 
 @end

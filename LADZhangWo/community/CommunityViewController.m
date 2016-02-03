@@ -28,9 +28,9 @@
     [_tableView registerClass:[ShopItemCell class] forCellReuseIdentifier:@"shopItemCell"];
     [self.view addSubview:_tableView];
     
-    _sliderView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, SWIDTH*0.33)];
+    _sliderView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, SWIDTH*0.5)];
     _sliderView.num = 3;
-    _sliderView.groupid = 1;
+    _sliderView.groupid = 21;
     _sliderView.delegate = self;
     [_sliderView loaddata];
     [_tableView setTableHeaderView:_sliderView];
@@ -77,6 +77,11 @@
     [alert show];
 }
 
+#pragma mark - slider view delegate
+- (void)DSXSliderView:(DSXSliderView *)sliderView didSelectedItemWithData:(NSDictionary *)data{
+    [[ShowAdModel sharedModel] pushWithData:data fromViewController:self.navigationController];
+}
+
 #pragma mark - tableView delegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 2;
@@ -105,7 +110,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 5;
+    return 10;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -156,41 +161,6 @@
             shopView.shopid = [[shopData objectForKey:@"shopid"] integerValue];
             [self.navigationController pushViewController:shopView animated:YES];
         }
-    }
-}
-
-#pragma mark - sliderView delegate
-- (void)slideView:(DSXSliderView *)slideView touchedImageWithDataID:(NSInteger)dataID idType:(NSString *)idType{
-    if ([idType isEqualToString:@"goodsid"]) {
-        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
-        goodsView.goodsid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:goodsView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:NO completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"aid"]) {
-        NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
-        newsView.newsID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:newsView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"shopid"]) {
-        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
-        shopView.shopid = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:shopView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-    
-    if ([idType isEqualToString:@"travelid"]) {
-        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
-        travelView.travelID = dataID;
-        ZWNavigationController *nav = [[ZWNavigationController alloc] initWithRootViewController:travelView];
-        nav.style = ZWNavigationStyleGray;
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
 }
 

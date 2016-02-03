@@ -9,13 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "ShopItemCell.h"
 
-@interface ShopListViewController : UITableViewController<UIScrollViewDelegate,DSXDropDownMenuDelegate,DSXRefreshDelegate>{
+@interface ShopListViewController : DSXTableViewController<UITableViewDelegate,UITableViewDataSource,DSXDropDownMenuDelegate>{
     @private
-    int _page;
-    BOOL _isRefreshing;
     DSXDropDownMenu *_popMenu;
 }
-
-@property(nonatomic)NSMutableArray *shopList;
 
 @end

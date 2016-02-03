@@ -9,16 +9,20 @@
 #import <Foundation/Foundation.h>
 #import "DSXRefreshHeader.h"
 #import "DSXRefreshFooter.h"
-#import "UIScrollView+Refresh.h"
 
 @interface DSXRefreshControl : NSObject
 
 @property(nonatomic,readonly)DSXRefreshHeader *headerView;
 @property(nonatomic,readonly)DSXRefreshFooter *footerView;
-@property(nonatomic)UIScrollView *scrollView;
-@property(nonatomic)id<DSXRefreshDelegate>delegate;
+@property(nonatomic,readwrite)DSXRefreshState refreshState;
+@property(nonatomic,readwrite)DSXLoadingState loadingState;
+@property(nonatomic,assign)BOOL bottomHidden;
+@property(nonatomic,assign)id<DSXRefreshDelegate>delegate;
 
 - (instancetype)init;
-- (instancetype)initWithScrollView:(UIScrollView *)scrollView;
+- (void)beginRefreshing;
+- (void)endRefreshing;
+- (void)beginLoading;
+- (void)endLoading;
 
 @end

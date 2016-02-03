@@ -27,7 +27,51 @@
     return instance;
 }
 
-- (void)showAdWithData:(NSDictionary *)data fromViewController:(UIViewController *)vc{
+- (void)pushWithData:(NSDictionary *)data fromViewController:(UINavigationController *)nav{
+    NSInteger dataid = [[data objectForKey:@"dataid"] integerValue];
+    NSString *dataType = [data objectForKey:@"datatype"];
+    
+    if ([dataType isEqualToString:@"goods"]) {
+        GoodsDetailViewController *goodsView = [[GoodsDetailViewController alloc] init];
+        goodsView.goodsid = dataid;
+        goodsView.hidesBottomBarWhenPushed = YES;
+        [nav pushViewController:goodsView animated:YES];
+    }
+    
+    if ([dataType isEqualToString:@"shop"]) {
+        ShopDetailViewController *shopView = [[ShopDetailViewController alloc] init];
+        shopView.shopid = dataid;
+        [nav pushViewController:shopView animated:YES];
+    }
+    
+    if ([dataType isEqualToString:@"chaoshigoods"]) {
+        ChaoshiDetailViewController *chaoshiDetailView = [[ChaoshiDetailViewController alloc] init];
+        chaoshiDetailView.goodsid = dataid;
+        chaoshiDetailView.hidesBottomBarWhenPushed = YES;
+        [nav pushViewController:chaoshiDetailView animated:YES];
+    }
+    
+    if ([dataType isEqualToString:@"chaoshi"]) {
+        ChaoshiViewController *chaoshiView = [[ChaoshiViewController alloc] init];
+        chaoshiView.shopid = dataid;
+        [nav pushViewController:chaoshiView animated:YES];
+    }
+    
+    if ([dataType isEqualToString:@"travel"]) {
+        TravelDetailViewController *travelView = [[TravelDetailViewController alloc] init];
+        travelView.travelID = dataid;
+        travelView.hidesBottomBarWhenPushed = YES;
+        [nav pushViewController:travelView animated:YES];
+    }
+    
+    if ([dataType isEqualToString:@"url"]) {
+        WebViewController *webView = [[WebViewController alloc] init];
+        webView.urlString = [data objectForKey:@"dataid"];
+        [nav pushViewController:webView animated:YES];
+    }
+}
+
+- (void)presentWithData:(NSDictionary *)data fromViewController:(UIViewController *)vc{
     NSInteger dataid = [[data objectForKey:@"dataid"] integerValue];
     NSString *dataType = [data objectForKey:@"datatype"];
     

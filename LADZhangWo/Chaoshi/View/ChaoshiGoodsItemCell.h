@@ -17,6 +17,8 @@
 @property(nonatomic,readonly)UILabel *titleLabel;
 @property(nonatomic,readonly)UILabel *priceLabel;
 @property(nonatomic,readonly)UILabel *soldLabel;
+@property(nonatomic,readonly)UILabel *shopLabel;
+@property(nonatomic,readonly)UILabel *shopTextLabel;
 @property(nonatomic)NSDictionary *data;
 
 @end

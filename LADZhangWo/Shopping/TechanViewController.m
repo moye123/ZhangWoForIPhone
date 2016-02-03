@@ -29,9 +29,10 @@
     [_tableView registerClass:[TitleCell class] forCellReuseIdentifier:@"titleCell"];
     [self.view addSubview:_tableView];
     
-    _sliderView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 200)];
-    _sliderView.num = 2;
-    _sliderView.groupid = 1;
+    _sliderView = [[DSXSliderView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, SWIDTH*0.5)];
+    _sliderView.num = 3;
+    _sliderView.groupid = 19;
+    _sliderView.delegate = self;
     [_sliderView loaddata];
     
     _tableView.tableHeaderView = _sliderView;
@@ -99,10 +100,16 @@
     return NO;
 }
 
+#pragma mark - slider view delegate
+- (void)DSXSliderView:(DSXSliderView *)sliderView didSelectedItemWithData:(NSDictionary *)data{
+    [[ShowAdModel sharedModel] presentWithData:data fromViewController:self.navigationController];
+}
+
 #pragma mark - gallery view delegate
 - (void)techanGalleryView:(TechanGalleryView *)galleryView didSelectedItemWithData:(NSDictionary *)data{
     GoodsDetailViewController *detailView = [[GoodsDetailViewController alloc] init];
     detailView.goodsid = [[data objectForKey:@"id"] integerValue];
+    detailView.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:detailView animated:YES];
 }
 

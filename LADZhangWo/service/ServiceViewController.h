@@ -10,6 +10,7 @@
 #import "CategoryView.h"
 #import "ShopItemCell.h"
 #import "TitleCell.h"
+#import "ShowAdModel.h"
 
 @interface ServiceViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,DSXSliderViewDelegate,CategoryViewDelegate,DSXDropDownMenuDelegate>{
     @private

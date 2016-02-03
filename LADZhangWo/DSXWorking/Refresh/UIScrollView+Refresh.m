@@ -11,6 +11,7 @@
 
 static NSString *const DSXRefreshKeyHeader = @"dsx_headerView";
 static NSString *const DSXRefreshKeyFooter = @"dsx_footerView";
+static NSString *const DSXRefreshKeyRefreshControl = @"dsx_refreshControl";
 @implementation UIScrollView (Refresh)
 
 - (DSXRefreshHeader *)dsx_headerView{
@@ -43,6 +44,20 @@ static NSString *const DSXRefreshKeyFooter = @"dsx_footerView";
         [self willChangeValueForKey:DSXRefreshKeyFooter];
         objc_setAssociatedObject(self, &DSXRefreshKeyFooter, dsx_footerView, OBJC_ASSOCIATION_ASSIGN);
         [self didChangeValueForKey:DSXRefreshKeyFooter];
+    }
+}
+
+- (DSXRefreshControl *)dsx_refreshControl{
+    return objc_getAssociatedObject(self, &DSXRefreshKeyRefreshControl);
+}
+
+- (void)setDsx_refreshControl:(DSXRefreshControl *)dsx_refreshControl{
+    if (self.dsx_refreshControl != dsx_refreshControl) {
+        self.dsx_headerView = dsx_refreshControl.headerView;
+        self.dsx_footerView = dsx_refreshControl.footerView;
+        [self willChangeValueForKey:DSXRefreshKeyRefreshControl];
+        objc_setAssociatedObject(self, &DSXRefreshKeyRefreshControl, dsx_refreshControl, OBJC_ASSOCIATION_ASSIGN);
+        [self didChangeValueForKey:DSXRefreshKeyRefreshControl];
     }
 }
 

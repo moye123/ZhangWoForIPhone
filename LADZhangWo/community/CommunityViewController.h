@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "CategoryView.h"
 #import "ShopItemCell.h"
+#import "ShowAdModel.h"
 
 @interface CommunityViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,DSXSliderViewDelegate,CategoryViewDelegate>{
     DSXSliderView *_sliderView;

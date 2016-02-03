@@ -15,7 +15,6 @@
 #import "ChaoshiDetailViewController.h"
 
 @implementation MyFavoriteViewController
-@synthesize favoriteList = _favoriteList;
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -24,9 +23,10 @@
     self.navigationItem.leftBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleBack target:self action:@selector(back)];
     self.navigationItem.rightBarButtonItem = [DSXUI barButtonWithStyle:DSXBarButtonStyleMore target:self action:nil];
     
-    _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, TOPHEIGHT, SWIDTH, 40)];
+    _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, 30)];
     _toolbar.backgroundColor = [UIColor whiteColor];
     _toolbar.tintColor = [UIColor blackColor];
+    _toolbar.clipsToBounds = YES;
     self.navigationItem.titleView = _toolbar;
     //[self.navigationController.view addSubview:_toolbar];
     
@@ -35,73 +35,59 @@
     UIBarButtonItem *articleItem = [[UIBarButtonItem alloc] initWithTitle:@"文章" style:UIBarButtonItemStylePlain target:self action:nil];
     UIBarButtonItem *travelItem = [[UIBarButtonItem alloc] initWithTitle:@"景点" style:UIBarButtonItemStylePlain target:self action:nil];
     UIBarButtonItem *separater = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [_toolbar setItems:@[separater,goodsItem,separater,shopItem,separater,articleItem,separater,travelItem,separater]];
+    [_toolbar setItems:@[goodsItem,separater,shopItem,separater,articleItem,separater,travelItem]];
     
-    _favoriteList = [NSMutableArray array];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.backgroundColor = [UIColor backColor];
     [self.tableView registerClass:[FavorItemCell class] forCellReuseIdentifier:@"favorCell"];
     
-    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self.tableView];
-    refreshControl.delegate = self;
-    [self refresh];
+    [self didStartRefreshing:nil];
 }
 
 - (void)back{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-    _toolbar.hidden = YES;
-}
-
-- (void)refresh{
-    _page = 1;
-    _isRefreshing = YES;
-    [self loadData];
-}
-
-- (void)loadMore{
-    _page++;
-    _isRefreshing = NO;
-    [self loadData];
-}
-
-- (void)loadData{
-    [[DSXHttpManager sharedManager] GET:@"&c=favorite&a=showlist"
-                             parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"page":@(_page)}
-                               progress:nil
-                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
-        }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
-    }];
-}
-
-- (void)reloadTableViewWithArray:(NSArray *)array{
-    if ([array count] > 0) {
-        if (_isRefreshing) {
-            [_favoriteList removeAllObjects];
-            [self.tableView reloadData];
-        }
-        for (NSDictionary *dict in array) {
-            [_favoriteList addObject:dict];
-        }
-        [self.tableView reloadData];
-    }
-}
-
 #pragma mark - refresh delegate
 - (void)didStartRefreshing:(DSXRefreshView *)refreshView{
-    [self refresh];
+    self.currentPage = 1;
+    self.isRefreshing = YES;
+    [self loadDataSource];
 }
 
 - (void)didStartLoading:(DSXRefreshView *)refreshView{
-    [self loadMore];
+    self.currentPage++;
+    self.isRefreshing = NO;
+    [self loadDataSource];
+}
+
+#pragma mark - loadDataSource
+
+- (void)loadDataSource{
+    [[DSXHttpManager sharedManager] GET:@"&c=favorite&a=showlist"
+                             parameters:@{@"uid":@([ZWUserStatus sharedStatus].uid),@"page":@(self.currentPage)}
+                               progress:nil
+                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                                    if ([responseObject isKindOfClass:[NSDictionary class]]) {
+                                        if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                                            self.moreData = [responseObject objectForKey:@"data"];
+                                            if ([self.moreData count] > 0) {
+                                                if (self.isRefreshing) {
+                                                    self.isRefreshing = NO;
+                                                    [self.dataList removeAllObjects];
+                                                    [self.tableView reloadData];
+                                                }
+                                                for (NSDictionary *dict in self.moreData) {
+                                                    [self.dataList addObject:dict];
+                                                }
+                                                [self.tableView reloadData];
+                                            }
+                                        }
+                                    }
+                                }
+                                failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                                    NSLog(@"%@",error);
+                                }];
 }
 
 #pragma mark - tableView delegate
@@ -110,7 +96,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [_favoriteList count];
+    return [self.dataList count];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -118,7 +104,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSDictionary *favorItem = [_favoriteList objectAtIndex:indexPath.row];
+    NSDictionary *favorItem = [self.dataList objectAtIndex:indexPath.row];
     NSDictionary *favorData = [favorItem objectForKey:@"data"];
     FavorItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"favorCell"];
     [cell setIdType:[favorItem objectForKey:@"idtype"]];
@@ -130,7 +116,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
-    NSDictionary *favorItem = [_favoriteList objectAtIndex:indexPath.row];
+    NSDictionary *favorItem = [self.dataList objectAtIndex:indexPath.row];
     NSString *idType = [favorItem objectForKey:@"idtype"];
     if ([idType isEqualToString:@"aid"]) {
         NewsDetailViewController *newsView = [[NewsDetailViewController alloc] init];
@@ -177,13 +163,13 @@
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSDictionary *favorItem = [_favoriteList objectAtIndex:indexPath.row];
+    NSDictionary *favorItem = [self.dataList objectAtIndex:indexPath.row];
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSInteger favid = [[favorItem objectForKey:@"favid"] integerValue];
         NSDictionary *params = @{@"uid":@([ZWUserStatus sharedStatus].uid),@"favid":@(favid)};
         [[DSXHttpManager sharedManager] GET:@"&c=favorite&a=delete" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
-                [_favoriteList removeObjectAtIndex:indexPath.row];
+                [self.dataList removeObjectAtIndex:indexPath.row];
                 [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             }
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

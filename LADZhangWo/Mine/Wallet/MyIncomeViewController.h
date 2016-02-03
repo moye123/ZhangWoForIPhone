@@ -9,13 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
 
-@interface MyIncomeViewController : UITableViewController<UIScrollViewDelegate,DSXRefreshDelegate>{
+@interface MyIncomeViewController : DSXTableViewController<UITableViewDelegate,UITableViewDataSource>{
     @private
-    int _page;
-    BOOL _isRefreshing;
     UILabel *_tipsView;
 }
-
-@property(nonatomic,strong)NSMutableArray *incomeList;
 
 @end

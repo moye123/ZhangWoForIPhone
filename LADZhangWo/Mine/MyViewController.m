@@ -22,8 +22,8 @@
     [self.view setBackgroundColor:[UIColor backColor]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userStatusChanged) name:UserStatusChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setHeadView) name:UserImageChangedNotification object:nil];
-    
-    CGRect frame = self.view.frame;
+    [[UIApplication sharedApplication] setStatusBarStyle:2];
+    CGRect frame = self.view.bounds;
     frame.origin.y = frame.origin.y - 30;
     frame.size.height+= 30;
     _tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStyleGrouped];

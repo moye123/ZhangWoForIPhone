@@ -25,11 +25,10 @@
         self.tableHeaderView = _sliderView;
         self.tableFooterView = [[UIView alloc] init];
         
-        DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:self];
-        refreshControl.delegate = self;
-        refreshControl.scrollView = self;
-        
         _newsList = [[NSMutableArray alloc] init];
+        _refreshControl = [[DSXRefreshControl alloc] init];
+        self.dsx_refreshControl = _refreshControl;
+        self.dsx_refreshControl.delegate = self;
     }
     return self;
 }
@@ -42,22 +41,35 @@
 - (void)show{
     NSString *key = [NSString stringWithFormat:@"newsList_%d", _catid];
     [self showTableViewWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:key]];
-    [self refresh];
+    [self didStartRefreshing:nil];
 }
 
-- (void)refresh{
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
     _page = 1;
     _isRefreshing = YES;
-    [self downloadData];
+    [self loadDataSource];
 }
 
-- (void)loadMore{
+- (void)didEndRefreshing:(DSXRefreshView *)refreshView{
+    self.refreshControl.bottomHidden = ([_newsList count] < 20);
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
     _page++;
     _isRefreshing = NO;
-    [self downloadData];
+    [self loadDataSource];
 }
 
-- (void)downloadData{
+- (void)didEndLoading:(DSXRefreshView *)refreshView{
+    if ([_moreData count] < 20) {
+        self.refreshControl.loadingState = DSXLoadingStateNoMoreData;
+    }
+}
+
+#pragma mark - load dataSource
+
+- (void)loadDataSource{
     NSDictionary *params = @{@"catid":@(_catid),@"page":@(_page)};
     if (_isRefreshing) {
         [[DSXHttpManager sharedManager] GET:@"&c=post&a=showlist&pagesize=3&pic=1" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -106,21 +118,6 @@
 
 - (void)drawRect:(CGRect)rect{
     [super drawRect:rect];
-}
-
-#pragma mark - refresh delegate
-- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
-    [self refresh];
-}
-
-- (void)didStartLoading:(DSXRefreshView *)refreshView{
-    [self loadMore];
-}
-
-- (void)didEndLoading:(DSXRefreshView *)refreshView{
-    if ([_moreData count] < 20) {
-        self.dsx_footerView.loadingState = DSXLoadingStateNoMoreData;
-    }
 }
 
 #pragma mark - table view delegate

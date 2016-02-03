@@ -122,11 +122,9 @@
         [params setObject:@(_userStatus.uid) forKey:@"uid"];
         [params setObject:_userStatus.username forKey:@"username"];
         
-        [[AFHTTPSessionManager sharedManager] POST:[SITEAPI stringByAppendingString:@"&c=cart&a=save"] parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
-            
-        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [[DSXHttpManager sharedManager] POST:@"&c=cart&a=add" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
-                if ([responseObject objectForKey:@"cartid"]) {
+                if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
                     [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleSuccess Message:@"添加成功"];
                     [self hide];
                 }

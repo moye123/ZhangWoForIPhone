@@ -152,25 +152,20 @@
                                  @"password":password,
                                  @"seccode":seccode,
                                  @"type":@"mobile"};
-        UIView *loadingView = [[DSXUI standardUI] showLoadingViewWithMessage:@"注册中..."];
+        [[DSXActivityIndicator sharedIndicator] showModalViewWithTitle:@"注册中..."];
         [[ZWUserStatus sharedStatus] register:params success:^(id responseObject) {
-            [NSTimer scheduledTimerWithTimeInterval:2
-                                             target:self
-                                           selector:@selector(registerSucceed:)
-                                           userInfo:loadingView repeats:NO];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[DSXActivityIndicator sharedIndicator] hide];
+                [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"注册成功"];
+                [self dismissViewControllerAnimated:YES completion:nil];
+            });
         } failure:^(NSString *errorMsg) {
             _registerButton.enabled = YES;
-            [loadingView removeFromSuperview];
+            [[DSXActivityIndicator sharedIndicator] hide];
             [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:errorMsg];
         }];
     }
-}
-
-- (void)registerSucceed:(NSTimer *)timer{
-    UIView *view = [timer userInfo];
-    [view removeFromSuperview];
-    [[DSXUI standardUI] showPopViewWithStyle:DSXPopViewStyleDefault Message:@"注册成功"];
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{

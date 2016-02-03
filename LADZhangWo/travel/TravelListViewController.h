@@ -8,15 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "ZWCommon.h"
+#import "TravelItemCell.h"
 
-@interface TravelListViewController : UITableViewController<UIScrollViewDelegate,DSXDropDownMenuDelegate,DSXRefreshDelegate>{
-@private
-    int _page;
-    BOOL _isRefreshing;
-    UILabel *_tipsLabel;
+@interface TravelListViewController : DSXTableViewController<UITableViewDelegate,UITableViewDataSource,DSXDropDownMenuDelegate>{
+    @private
     DSXDropDownMenu *_popMenu;
 }
-@property(nonatomic,strong)NSMutableArray *travelList;
 @property(nonatomic,assign)NSInteger catid;
 
 @end

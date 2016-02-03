@@ -9,11 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "FavorItemCell.h"
 
-@interface MyFavoriteViewController : UITableViewController<UIScrollViewDelegate,DSXRefreshDelegate>{
-    int _page;
-    BOOL _isRefreshing;
+@interface MyFavoriteViewController : DSXTableViewController<UIScrollViewDelegate,UITableViewDelegate,UITableViewDataSource,DSXRefreshDelegate>{
     UIToolbar *_toolbar;
 }
 
-@property(nonatomic,strong)NSMutableArray *favoriteList;
 @end

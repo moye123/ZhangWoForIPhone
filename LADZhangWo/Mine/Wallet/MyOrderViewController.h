@@ -10,19 +10,15 @@
 #import "OrderItemCell.h"
 #import "OrderCommonCell.h"
 
-@interface MyOrderViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,DSXDropDownMenuDelegate,DSXRefreshDelegate>{
+@interface MyOrderViewController : DSXTableViewController<UITableViewDelegate,UITableViewDataSource,DSXDropDownMenuDelegate>{
     @private
-    int _page;
-    BOOL _isRefreshing;
     UILabel *_tipsView;
     DSXDropDownMenu *_popMenu;
 }
 
-@property(nonatomic,strong)NSMutableArray *orderList;
-@property(nonatomic,retain)UITableView *tableView;
 @property(nonatomic,strong)NSString *orderStatus;
 @property(nonatomic,strong)NSString *payStatus;
 @property(nonatomic,strong)NSString *shippingStatus;
 @property(nonatomic,strong)NSString *evaluateStatus;
-
+- (instancetype)init;
 @end

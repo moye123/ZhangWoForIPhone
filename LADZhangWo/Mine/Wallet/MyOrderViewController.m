@@ -14,12 +14,15 @@
 #import "OrderDetailViewController.h"
 
 @implementation MyOrderViewController
-@synthesize orderList      = _orderList;
-@synthesize tableView      = _tableView;
 @synthesize orderStatus    = _orderStatus;
 @synthesize payStatus      = _payStatus;
 @synthesize shippingStatus = _shippingStatus;
 @synthesize evaluateStatus = _evaluateStatus;
+
+- (instancetype)init{
+    //return [super initWithStyle:UITableViewStyleGrouped];
+    return [super init];
+}
 
 - (void)viewDidLoad{
     [super viewDidLoad];
@@ -34,22 +37,14 @@
     _popMenu = [[DSXDropDownMenu alloc] initWithFrame:CGRectMake(SWIDTH-110, 60, 100, 140)];
     _popMenu.delegate = self;
     [self.navigationController.view addSubview:_popMenu];
-    
-    _orderList = [NSMutableArray array];
-    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
-    _tableView.delegate = self;
-    _tableView.dataSource = self;
-    _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    
-    [_tableView registerClass:[OrderItemCell class] forCellReuseIdentifier:@"orderGoodsCell"];
-    [_tableView registerClass:[OrderCommonCell class] forCellReuseIdentifier:@"Cell1"];
-    [_tableView registerClass:[OrderCommonCell class] forCellReuseIdentifier:@"Cell2"];
-    [_tableView registerClass:[OrderCommonCell class] forCellReuseIdentifier:@"Cell3"];
-    [self.view addSubview:self.tableView];
-    
-    DSXRefreshControl *refreshControl = [[DSXRefreshControl alloc] initWithScrollView:_tableView];
-    refreshControl.delegate = self;
-    [self refresh];
+
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.backgroundColor = [UIColor colorWithHexString:@"0xf0f0f0"];
+    [self.tableView registerClass:[OrderItemCell class] forCellReuseIdentifier:@"orderGoodsCell"];
+    [self.tableView registerClass:[OrderCommonCell class] forCellReuseIdentifier:@"Cell1"];
+    [self.tableView registerClass:[OrderCommonCell class] forCellReuseIdentifier:@"Cell2"];
+    [self.tableView registerClass:[OrderCommonCell class] forCellReuseIdentifier:@"Cell3"];
     
     _tipsView = [[UILabel alloc] init];
     _tipsView.text = @"订单空空也";
@@ -59,6 +54,8 @@
     [_tipsView sizeToFit];
     [_tipsView setCenter:CGPointMake(self.view.center.x, 200)];
     [self.view addSubview:_tipsView];
+    
+    [self didStartRefreshing:nil];
 }
 
 - (void)viewDidLayoutSubviews{
@@ -103,8 +100,23 @@
     [_popMenu slideUp];
 }
 
-//从服务器加载数据
-- (void)loadData{
+#pragma mark - refresh delegate
+- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
+    [super didStartRefreshing:refreshView];
+    self.currentPage = 1;
+    self.isRefreshing = YES;
+    [self loadDataSource];
+}
+
+- (void)didStartLoading:(DSXRefreshView *)refreshView{
+    [super didStartLoading:refreshView];
+    self.currentPage++;
+    self.isRefreshing = NO;
+    [self loadDataSource];
+}
+
+#pragma mark - loadDataSource
+- (void)loadDataSource{
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
@@ -120,49 +132,28 @@
     if (_evaluateStatus) {
         [params setObject:_evaluateStatus forKey:@"evaluate_status"];
     }
-    [params setObject:@(_page) forKey:@"page"];
+    [params setObject:@(self.currentPage) forKey:@"page"];
     [[DSXHttpManager sharedManager] POST:@"&c=order&a=showlist" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            [self reloadTableViewWithArray:[responseObject objectForKey:@"data"]];
+            if ([[responseObject objectForKey:@"errno"] intValue] == 0) {
+                self.moreData = [responseObject objectForKey:@"data"];
+                if (self.isRefreshing) {
+                    self.isRefreshing = NO;
+                    [self.dataList removeAllObjects];
+                    [self.tableView reloadData];
+                }
+                for (NSDictionary *dict in self.moreData) {
+                    [self.dataList addObject:dict];
+                }
+                [self.tableView reloadData];
+            }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
     }];
 }
 
-//刷新表视图
-- (void)reloadTableViewWithArray:(NSArray *)array{
-    if (_isRefreshing) {
-        _isRefreshing = NO;
-        [_orderList removeAllObjects];
-        [_tableView reloadData];
-    }
-    for (NSDictionary *order in array) {
-        [_orderList addObject:order];
-    }
-    [_tableView reloadData];
-    
-    if ([_orderList count] == 0) {
-        _tipsView.hidden = NO;
-    }else {
-        _tipsView.hidden = YES;
-    }
-}
-
-//刷新
-- (void)refresh{
-    _page = 1;
-    _isRefreshing = YES;
-    [self loadData];
-}
-
-//加载更多
-- (void)loadMore{
-    _page++;
-    _isRefreshing = NO;
-    [self loadData];
-}
-
+//
 - (float)totalValue:(NSArray *)goodsArray{
     float totlaValue = 0;
     for (NSDictionary *dict in goodsArray) {
@@ -173,27 +164,18 @@
     return totlaValue;
 }
 
-#pragma mark - refresh delegate
-- (void)didStartRefreshing:(DSXRefreshView *)refreshView{
-    [self refresh];
-}
-
-- (void)didStartLoading:(DSXRefreshView *)refreshView{
-    [self loadMore];
-}
-
 #pragma mark - tableView delegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return [_orderList count];
+    return [self.dataList count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    NSArray *goodsArray = [[_orderList objectAtIndex:section] objectForKey:@"data"];
+    NSArray *goodsArray = [[self.dataList objectAtIndex:section] objectForKey:@"data"];
     return [goodsArray count]+3;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSArray *goodsArray = [[_orderList objectAtIndex:indexPath.section] objectForKey:@"data"];
+    NSArray *goodsArray = [[self.dataList objectAtIndex:indexPath.section] objectForKey:@"data"];
     if (indexPath.row >0 && indexPath.row <= [goodsArray count]) {
         return 100.0;
     }else {
@@ -201,8 +183,16 @@
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 0.00001;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 20.0;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSDictionary *orderData = [_orderList objectAtIndex:indexPath.section];
+    NSDictionary *orderData = [self.dataList objectAtIndex:indexPath.section];
     NSArray *goodsArray = [orderData objectForKey:@"data"];
     NSInteger goodsCount = [goodsArray count];
     
@@ -317,6 +307,7 @@
                     [cell addSubview:payButton];
                 }
             }
+            cell.clipsToBounds = YES;
             return cell;
         }
         return [[UITableViewCell alloc] init];
@@ -326,7 +317,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [cell setSelected:NO animated:YES];
-    NSDictionary *orderData = [_orderList objectAtIndex:indexPath.section];
+    NSDictionary *orderData = [self.dataList objectAtIndex:indexPath.section];
     NSArray *goodsArray = [orderData objectForKey:@"data"];
     NSInteger goodsCount = [goodsArray count];
     if (indexPath.row >0 && indexPath.row <= goodsCount){
@@ -338,25 +329,18 @@
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 0.001;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 10;
-}
-
+#pragma mark - ations
 - (void)cancel:(UIButton *)button{
     NSInteger section = button.tag;
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@([[ZWUserStatus sharedStatus] uid]) forKey:@"uid"];
     [params setObject:[[ZWUserStatus sharedStatus] username] forKey:@"username"];
-    [params setObject:[_orderList[section] objectForKey:@"orderid"] forKey:@"orderid"];
+    [params setObject:[self.dataList[section] objectForKey:@"orderid"] forKey:@"orderid"];
     [[DSXHttpManager sharedManager] POST:@"&c=order&a=delete" parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
             //[_orderList removeObjectAtIndex:section];
             //[_tableView deleteSections:[NSIndexSet indexSetWithIndex:section] withRowAnimation:UITableViewRowAnimationFade];
-            [self refresh];
+            [self didStartRefreshing:nil];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);
@@ -365,7 +349,7 @@
 
 - (void)pay:(UIButton *)button{
     NSInteger section = button.tag - 100;
-    NSDictionary *orderData = [_orderList objectAtIndex:section];
+    NSDictionary *orderData = [self.dataList objectAtIndex:section];
     PayViewController *payView = [[PayViewController alloc] init];
     payView.orderID = [orderData objectForKey:@"orderid"];
     payView.orderName = @"在线购物订单支付";
@@ -393,7 +377,7 @@
                               parameters:params progress:nil
                                  success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if ([responseObject isKindOfClass:[NSDictionary class]]) {
-            [self refresh];
+            [self didStartRefreshing:nil];
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@", error);

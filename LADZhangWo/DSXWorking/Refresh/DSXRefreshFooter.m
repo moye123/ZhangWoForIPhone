@@ -55,12 +55,9 @@ NSString *const DSXLoadingStateNoMoreDataText = @"没有更多内容了";
 }
 
 - (void)beginLoading{
-    if (self.loadingState != DSXLoadingStateWillLoading || self.hidden == YES) {
-        return;
-    }
     _isLoading = YES;
-    [self.indicatorView startAnimating];
     self.loadingState = DSXLoadingStateLoading;
+    [self.indicatorView startAnimating];
     UIEdgeInsets inset = self.scrollView.contentInset;
     inset.bottom = DSXRefreshFooterHeight + 10;
     self.scrollView.contentInset = inset;

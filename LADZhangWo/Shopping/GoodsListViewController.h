@@ -8,16 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "GoodsItemCell.h"
+#import "ChooseToolbar.h"
 
-@interface GoodsListViewController : UITableViewController<UIScrollViewDelegate,DSXDropDownMenuDelegate,DSXRefreshDelegate>{
+@interface GoodsListViewController : DSXTableViewController<UITableViewDelegate,UITableViewDataSource,DSXDropDownMenuDelegate,ChooseToolbarDelegate>{
     @private
-    int _page;
-    BOOL _isRefreshing;
     DSXDropDownMenu *_popMenu;
+    ChooseToolbar *_chooseBar;
+    NSString *_sortBy;
+    NSString *_asc;
 }
 
 @property(nonatomic,assign)NSInteger catid;
-@property(nonatomic,strong)NSMutableArray *goodsList;
-@property(nonatomic)UIToolbar *toolbar;
 
 @end
